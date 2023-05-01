@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "241143851123",
+    "project_id": "coinx-8e113",
+    "storage_bucket": "coinx-8e113.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241143851123:android:e9ca82b74b3e585447a206",
+        "android_client_info": {
+          "package_name": "online.pascarl.coinx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "241143851123-2psprgvd68oq4r2uh7lr9hqbj2cmrvpr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAq2teUjRu9Y25HDmibC071eChjSLVsZrI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "241143851123-2psprgvd68oq4r2uh7lr9hqbj2cmrvpr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
