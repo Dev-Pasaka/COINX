@@ -1,10 +1,9 @@
 
 package online.pascarl.coinx.screens
 
+import android.annotation.SuppressLint
 import android.os.Build
-import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
@@ -41,24 +40,33 @@ import com.google.accompanist.pager.rememberPagerState
 import com.skydoves.cloudy.Cloudy
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import online.pascarl.coinx.*
 import online.pascarl.coinx.R
 import online.pascarl.coinx.datasource.expressCheckOut
-import online.pascarl.coinx.formatCurrency
-import online.pascarl.coinx.getCurrentTime
-import online.pascarl.coinx.model.CryptoModel
 import java.util.*
 
 
 
+@SuppressLint("ProduceStateDoesNotAssignValue", "CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Dashboard(
 ){
+    val scope = rememberCoroutineScope()
     Column(
         modifier = Modifier
             .background(color = colorResource(id = R.color.app_white))
             .fillMaxSize()
     ) {
+
+        var value by remember {
+            mutableStateOf("Loading ... ")
+        }
+            scope.launch {
+
+                value = request().toString()
+        }
+      //  Text(text = value )
         TopBarComponents()
         Salutation()
         WalletCardComposable()
@@ -356,11 +364,14 @@ fun ExpressCheckout(){
         )
         Spacer(modifier = Modifier.height(5.dp))
 
-       val expressCheckOutList = expressCheckOut()
+        val data = expressCheckOut()
+       val expressCheckOutList by remember {
+           mutableStateOf(data)
+       }
 
         val pagerState = rememberPagerState()
         HorizontalPager(
-            count = expressCheckOutList.size,
+            count = 4,
             state = pagerState,
 
         ) {
@@ -413,6 +424,7 @@ fun ExpressCheckout(){
 
 @Composable
 fun ExpressCheckOutItems(
+
     name: String = "Bitcoin",
     symbol: String = "BTC",
     imageIcon:Painter = painterResource(id = R.drawable.bitcoin_icon),
@@ -421,6 +433,7 @@ fun ExpressCheckOutItems(
     firstGradientColor:Color = colorResource(id = R.color.orange),
     secondGradientColor:Color = colorResource(id = R.color.black),
     modifier:Modifier = Modifier
+
 ){
     val gradient = linearGradient(
         0.01f to secondGradientColor,
