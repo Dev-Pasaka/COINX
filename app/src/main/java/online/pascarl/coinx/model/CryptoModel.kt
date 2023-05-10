@@ -4,11 +4,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 
 data class CryptoModel(
-    val name: String = "Tether",
-    val symbol: String,
-    val price: Double = 138.03,
-    val percentageChangeIn24Hrs: Double = -0.01,
-    val marketCap:Double,
+    var name: String = "Tether",
+    var symbol: String = "",
+    var price: Double = 138.03,
+    var percentageChangeIn24Hrs: Double = -0.01,
+    var marketCap:Double = 0.0,
     val imageIcon: Painter,
     val firstGradientColor: Color
 )

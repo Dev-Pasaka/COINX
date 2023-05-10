@@ -1,5 +1,10 @@
 package online.pascarl.coinx
 
+import androidx.compose.runtime.Composable
+import coil.ImageLoader
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.ImagePainter
+import coil.compose.rememberImagePainter
 import java.text.NumberFormat
 import java.util.*
 
@@ -26,4 +31,15 @@ fun getCurrentTime(): String{
 
     }
     return salutation
+}
+
+@OptIn(ExperimentalCoilApi::class)
+@Composable
+fun imageLoader(
+    symbol: String = "eth",
+    imageUri:String = "https://coinicons-api.vercel.app/api/icon/${symbol.lowercase()}"
+): ImagePainter{
+    
+    return rememberImagePainter(data = imageUri)
+    
 }
