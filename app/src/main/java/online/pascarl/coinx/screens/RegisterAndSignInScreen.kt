@@ -352,6 +352,7 @@ fun RegisterScreen(
                             modifier = Modifier
                                 .padding(end = 5.dp)
                                 .clickable {
+                                    navController.popBackStack()
                                     navController.navigate(Screen.CreateAccount.route)
                                 }
                 )

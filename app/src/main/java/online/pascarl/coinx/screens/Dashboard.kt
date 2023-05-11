@@ -31,18 +31,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.skydoves.cloudy.Cloudy
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.*
 import online.pascarl.coinx.R
-import online.pascarl.coinx.datasource.expressCheckOut
+import online.pascarl.coinx.datasource.FetchCryptoPrices
 import java.util.*
 
 
@@ -51,6 +50,8 @@ import java.util.*
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Dashboard(
+    navController:NavHostController
+
 ){
     val scope = rememberCoroutineScope()
     Column(
@@ -59,14 +60,6 @@ fun Dashboard(
             .fillMaxSize()
     ) {
 
-        var value by remember {
-            mutableStateOf("Loading ... ")
-        }
-            scope.launch {
-
-                value = request().toString()
-        }
-      //  Text(text = value )
         TopBarComponents()
         Salutation()
         WalletCardComposable()
@@ -78,12 +71,12 @@ fun Dashboard(
 
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+/*@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true)
 @Composable
 fun Preview(){
     Dashboard()
-}
+}*/
 
 @Composable
 fun TopBarComponents(){
@@ -91,7 +84,7 @@ fun TopBarComponents(){
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
     ) {
         Icon(
             painter = painterResource(id = R.drawable.person_icon),
@@ -145,7 +138,7 @@ fun Salutation(username:String = "Pasaka"){
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 5.dp)
+                .padding(start = 16.dp, end = 16.dp)
         ) {
 
             Column(
@@ -156,13 +149,13 @@ fun Salutation(username:String = "Pasaka"){
                     text = "$salutation,",
                     color = colorResource(id = R.color.background),
                     style = MaterialTheme.typography.body2,
-                    fontSize = 16.sp,
+                    fontSize = 14.sp,
                 )
                 Text(
                     text = "$username",
                     //color = colorResource(id = R.color.),
                     style = MaterialTheme.typography.body1,
-                    fontSize = 20.sp,
+                    fontSize = 16.sp,
                 )
             }
         }
@@ -215,6 +208,7 @@ fun WalletCardComposable(currencySymbol: String = "KES", balance: Double = 54700
            Text(
                text = "Portfolio Balance",
                style = MaterialTheme.typography.body1,
+               fontSize = 15.sp,
                fontWeight = FontWeight.W500,
                color = colorResource(id = R.color.app_white)
            )
@@ -240,24 +234,25 @@ fun WalletCardComposable(currencySymbol: String = "KES", balance: Double = 54700
                )
            }
        }
-        Cloudy(radius = hideBalanceAmount) {
+
             Text(
-                text = totalAmount,
+                text = if (hideBalance) totalAmount else "KES ****",
                 style = MaterialTheme.typography.body1,
                 fontWeight = FontWeight.W500,
-                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
                 color = colorResource(id = R.color.app_white),
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp)
 
             )
-        }
+
 
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(8.dp)
         ) {
             /**Buy Icon*/
             IconButton(
@@ -268,7 +263,7 @@ fun WalletCardComposable(currencySymbol: String = "KES", balance: Double = 54700
                 Column {
                     Icon(
                         imageVector = Outlined.ThumbUp,
-                        contentDescription = "Profile Icon",
+                        contentDescription = "Buy Icon",
                         tint = colorResource(id = R.color.app_white) ,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
@@ -289,10 +284,10 @@ fun WalletCardComposable(currencySymbol: String = "KES", balance: Double = 54700
                 Column {
                     Icon(
                         imageVector = Outlined.CreditCard,
-                        contentDescription = "Profile Icon",
+                        contentDescription = "Pay Icon",
                         tint = colorResource(id = R.color.app_white) ,
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Pay",
                         style = MaterialTheme.typography.body1,
@@ -310,10 +305,10 @@ fun WalletCardComposable(currencySymbol: String = "KES", balance: Double = 54700
                 Column {
                     Icon(
                         imageVector = Outlined.Send,
-                        contentDescription = "Profile Icon",
+                        contentDescription = "Send Icon",
                         tint = colorResource(id = R.color.app_white) ,
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Send",
                         style = MaterialTheme.typography.body1,
@@ -334,7 +329,7 @@ fun WalletCardComposable(currencySymbol: String = "KES", balance: Double = 54700
                         contentDescription = "Profile Icon",
                         tint = colorResource(id = R.color.app_white) ,
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Sell",
                         style = MaterialTheme.typography.body1,
@@ -355,17 +350,17 @@ fun ExpressCheckout(){
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(start = 16.dp, end=16.dp, top=5.dp)
+            .padding(start = 16.dp, end=16.dp, top=5.dp, bottom = 5.dp)
     )
     {
         Text(
             text = "Express Checkout",
             style = MaterialTheme.typography.body2,
         )
-        Spacer(modifier = Modifier.height(5.dp))
-
-        val data = expressCheckOut()
-       val expressCheckOutList by remember {
+        //Spacer(modifier = Modifier.height(5.dp))
+        val context = LocalContext.current
+        val data = FetchCryptoPrices.loadData
+        val expressCheckOutList by remember {
            mutableStateOf(data)
        }
 
@@ -398,26 +393,16 @@ fun ExpressCheckout(){
                 ExpressCheckOutItems(
                     name = expressCheckOutList[it].name,
                     symbol = expressCheckOutList[it].symbol,
-                    imageIcon = expressCheckOutList[it].imageIcon,
+                    imageIcon = imageLoader(expressCheckOutList[it].symbol),
                     price =  expressCheckOutList[it].price,
                     percentageChangeIn24Hrs = expressCheckOutList[it].percentageChangeIn24Hrs,
                     firstGradientColor = expressCheckOutList[it].firstGradientColor,
+                    modifier = Modifier.clickable {
+                        showMessage(context, "Buying ${expressCheckOutList[it].name}")
+                    }
                 )
             Spacer(modifier = Modifier.width(20.dp))
-
         }
-        Spacer(modifier = Modifier.height(5.dp))
-        Box(
-            modifier = Modifier
-                .height(10.dp)
-                .width(10.dp)
-                .align(Alignment.CenterHorizontally)
-                .clip(RoundedCornerShape(100))
-                .background(color = Color.LightGray)
-        ) {
-
-        }
-
     }
 }
 
@@ -502,7 +487,7 @@ fun ExpressCheckOutItems(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 5.dp)
+                .padding(start = 16.dp, end = 16.dp)
         ) {
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -531,9 +516,7 @@ fun ExpressCheckOutItems(
                     .width(70.dp)
                     .clip(RoundedCornerShape(30.dp))
                     .background(color = colorResource(id = R.color.app_white))
-                    .clickable {
 
-                    }
             ) {
                 Text(
                     text = "Buy Now",
@@ -550,8 +533,6 @@ fun CoinsOrWatchList(){
     var isCoinSelected by rememberSaveable { mutableStateOf(true) }
     var isWatchListSelected by rememberSaveable{ mutableStateOf(false) }
     Column {
-
-
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
@@ -585,7 +566,7 @@ fun CoinsOrWatchList(){
                         }
                 )
             }
-            Spacer(modifier = Modifier.width(120.dp))
+            Spacer(modifier = Modifier.width(105.dp))
             Column {
                 Text(
                     text = "See all",
@@ -613,7 +594,7 @@ fun FilterChips(isCoinSelected:Boolean){
     var isMarketCapSelected by rememberSaveable { mutableStateOf(true) }
     var isPriceSelected by rememberSaveable{ mutableStateOf(false) }
     var is24HrChangeSelected by rememberSaveable{ mutableStateOf(false) }
-    val list = expressCheckOut().sortedBy { it.marketCap }.asReversed()
+    val list = FetchCryptoPrices.loadData.sortedBy { it.marketCap }.asReversed()
     var cryptoList by remember {
         mutableStateOf(list)
     }
@@ -703,7 +684,7 @@ fun FilterChips(isCoinSelected:Boolean){
             CryptoCoinListItem(
                 name = cryptoList[it].name,
                 symbol = cryptoList[it].symbol,
-                imageIcon = cryptoList[it].imageIcon,
+                imageIcon = imageLoader(symbol = cryptoList[it].symbol),
                 percentageChangeIn24Hrs = cryptoList[it].percentageChangeIn24Hrs,
                 price = cryptoList[it].price,
                 modifier = Modifier.clickable {

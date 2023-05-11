@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -18,11 +19,14 @@ import androidx.core.view.WindowCompat
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import online.pascarl.coinx.datasource.FetchCryptoPrices
+import online.pascarl.coinx.datasource.expressCheckOut
 import online.pascarl.coinx.navigation.NavGraph
 import online.pascarl.coinx.ui.theme.COINXTheme
 
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -31,6 +35,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ){
+                    FetchCryptoPrices.loadData = expressCheckOut()
                     navController = rememberNavController()
 
                     NavGraph(navController = navController)
