@@ -1,5 +1,7 @@
 package online.pascarl.coinx.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
@@ -12,6 +14,7 @@ import online.pascarl.coinx.screens.AnimatedSplashScreen
 import online.pascarl.spx.screens.CreateAccount
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(navController: NavHostController){
 
@@ -27,7 +30,7 @@ fun NavGraph(navController: NavHostController){
             CreateAccount(navController = navController)
         }
         composable(route = Screen.Dashboard.route){
-           // Dashboard(navController = navController)
+            Dashboard(navController = navController)
         }
     }
 

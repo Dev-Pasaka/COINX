@@ -1,7 +1,6 @@
 package online.pascarl.coinx.screens
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -19,9 +18,10 @@ import androidx.compose.ui.res.painterResource
 import online.pascarl.coinx.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
+import online.pascarl.coinx.datasource.FetchCryptoPrices
+import online.pascarl.coinx.datasource.expressCheckOut
 import online.pascarl.coinx.navigation.Screen
 
 
@@ -41,6 +41,7 @@ fun AnimatedSplashScreen(navController: NavHostController){
         )
     )
 
+
     LaunchedEffect(key1 = true){
         startAnimation = true
         delay(4000)
@@ -54,17 +55,6 @@ fun AnimatedSplashScreen(navController: NavHostController){
 @SuppressLint("ResourceAsColor")
 @Composable
 fun SplashScreen(image: Painter= painterResource(id = R.drawable.coinx), alpha:Float){
-/*
-    val systemUiController = rememberSystemUiController()
-    if(darkTheme){
-        systemUiController.setSystemBarsColor(
-            color = Color.Transparent
-        )
-    }else{
-        systemUiController.setSystemBarsColor(
-            color = Color.White
-        )
-    }*/
     Box(
         modifier = Modifier
             .fillMaxSize()
