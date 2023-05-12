@@ -275,11 +275,11 @@ fun RegisterScreen(
                         .clip(RoundedCornerShape(10.dp))
 
                 ) {
-
                     Button(
                         onClick = {
                             scope.launch {
-                                val signIn = signIn(
+                                showMessage(context, "Signing you in ...")
+                                 val signIn = signIn(
                                     email = email,
                                     password = password
                                 )
@@ -290,6 +290,7 @@ fun RegisterScreen(
                                     showMessage(context, "wrong email or password")
                                     error = true
                                 }
+
                             }
 
                         },
@@ -306,10 +307,7 @@ fun RegisterScreen(
                             color = colorResource(id = R.color.app_white),
                             style = MaterialTheme.typography.body1,
                             fontWeight = FontWeight.W400
-
-
-                        )
-
+                            )
                     }
 
 
@@ -318,31 +316,7 @@ fun RegisterScreen(
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-//                Text(
-//                    text = "Sign In With",
-//                    color = Color.DarkGray,
-//                    fontSize = 14.sp,
-//                    style = MaterialTheme.typography.body2
-//
-//                )
-//
-//                Spacer(modifier = Modifier.height(16.dp))
-//
-//                Row(
-//                    horizontalArrangement = Arrangement.Center,
-//                )
-//                {
-//
-//                }
-//
-//                Spacer(modifier = Modifier.height(16.dp))
-//                Text(
-//                    text = "or",
-//                    color = Color.DarkGray,
-//                    fontSize = 14.sp,
-//                    style = MaterialTheme.typography.body2
-//
-//                )
+
                 Text(
                     text = "Create Account",
                     color = colorResource(id = R.color.background),
@@ -352,12 +326,11 @@ fun RegisterScreen(
                             modifier = Modifier
                                 .padding(end = 5.dp)
                                 .clickable {
-                                    navController.popBackStack()
                                     navController.navigate(Screen.CreateAccount.route)
                                 }
                 )
 
-                Spacer(modifier = Modifier.height(150.dp))
+                Spacer(modifier = Modifier.height(250.dp))
             }
         }
 
