@@ -41,7 +41,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.*
 import online.pascarl.coinx.R
-import online.pascarl.coinx.datasource.FetchCryptoPrices
+import online.pascarl.coinx.datasource.expressCheckOut
 import java.util.*
 
 
@@ -59,17 +59,23 @@ fun Dashboard(
             .background(color = colorResource(id = R.color.app_white))
             .fillMaxSize()
     ) {
-
         TopBarComponents()
-        Salutation()
-        WalletCardComposable()
-        ExpressCheckout()
-        CoinsOrWatchList()
 
+        FetchCryptoPrices.loadData = expressCheckOut()
+        Column {
+            Salutation()
+            WalletCardComposable()
+            ExpressCheckout()
+            CoinsOrWatchList()
+        }
     }
 
 
+
 }
+
+
+
 
 /*@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true)

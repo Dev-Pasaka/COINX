@@ -31,6 +31,7 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
 import online.pascarl.coinx.authentication.createAccount
+import online.pascarl.coinx.isInternetAvailable
 import online.pascarl.coinx.navigation.Screen
 
 @Composable
@@ -53,6 +54,9 @@ fun CreateAccount(
     var confirmPassword by remember {
         mutableStateOf("")
     }
+    val context = LocalContext.current
+    val internet = isInternetAvailable(context = context)
+
 
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
@@ -399,7 +403,7 @@ fun CreateAccount(
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Column {
-                        val context = LocalContext.current
+
 
                         Box(
                             contentAlignment = Alignment.Center,
@@ -456,7 +460,11 @@ fun CreateAccount(
                                                 navController.popBackStack()
                                                 navController.navigate(Screen.Dashboard.route)
 
-                                            }else{
+                                            }
+                                            else if(!internet){
+                                                showMessage(context, "No Internet connection")
+                                            }
+                                            else{
                                                 showMessage(context, "Registration failed ")
 
                                             }

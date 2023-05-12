@@ -12,20 +12,25 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import online.pascarl.coinx.datasource.FetchCryptoPrices
 import online.pascarl.coinx.datasource.expressCheckOut
+import online.pascarl.coinx.model.CryptoModel
 import online.pascarl.coinx.navigation.NavGraph
+import online.pascarl.coinx.navigation.Screen
+import online.pascarl.coinx.screens.AnimatedSplashScreen
+import online.pascarl.coinx.screens.NoInternet
+import online.pascarl.coinx.screens.SplashScreen
 import online.pascarl.coinx.ui.theme.COINXTheme
 
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
+    private var keepSplashScreenOpened = true
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +40,14 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ){
-                    FetchCryptoPrices.loadData = expressCheckOut()
-                    navController = rememberNavController()
 
+                    navController = rememberNavController()
+                    AnimatedSplashScreen(navController =navController )
                     NavGraph(navController = navController)
+
+
                 }
+
 
 
             }
@@ -49,6 +57,10 @@ class MainActivity : ComponentActivity() {
 
 
 
+}
+
+object FetchCryptoPrices{
+    var loadData = listOf<CryptoModel>()
 }
 
 @Composable
@@ -62,14 +74,4 @@ fun DefaultPreview() {
     COINXTheme {
         Greeting("Android")
     }
-}
-
-fun hideSystemUI() {
-
-    //Hides the ugly action bar at the top
-
-
-    //Hide the status bars
-
-
 }

@@ -43,6 +43,3 @@ fun expressCheckOut(): List<CryptoModel>{
     return  newData
 }
 
-object FetchCryptoPrices{
-    var loadData = listOf<CryptoModel>()
-}

@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import online.pascarl.coinx.screens.Dashboard
 import online.pascarl.coinx.screens.RegisterScreen
 import online.pascarl.coinx.screens.AnimatedSplashScreen
+import online.pascarl.coinx.screens.NoInternet
 import online.pascarl.spx.screens.CreateAccount
 
 
@@ -32,6 +33,7 @@ fun NavGraph(navController: NavHostController){
         composable(route = Screen.Dashboard.route){
             Dashboard(navController = navController)
         }
+
     }
 
 }

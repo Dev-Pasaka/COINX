@@ -20,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
-import online.pascarl.coinx.datasource.FetchCryptoPrices
 import online.pascarl.coinx.datasource.expressCheckOut
 import online.pascarl.coinx.navigation.Screen
 
@@ -48,7 +47,6 @@ fun AnimatedSplashScreen(navController: NavHostController){
         navController.popBackStack()
         navController.navigate(Screen.Register.route)
     }
-
     SplashScreen(alpha = alphaAnim.value)
 }
 
