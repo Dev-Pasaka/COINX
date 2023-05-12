@@ -49,6 +49,7 @@ import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
 import online.pascarl.coinx.authentication.signIn
+import online.pascarl.coinx.isInternetAvailable
 import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.screens.showMessage
 
@@ -70,6 +71,7 @@ fun RegisterScreen(
     var error by rememberSaveable { mutableStateOf(false) }
     val isBlank =  email.isBlank() && password.isBlank()
     val context = LocalContext.current
+    val internet = isInternetAvailable(context = context)
 
 
     Column(
@@ -286,7 +288,12 @@ fun RegisterScreen(
                                 if (signIn == ""){
                                     navController.popBackStack()
                                     navController.navigate(Screen.Dashboard.route)
-                                }else{
+                                }
+                                else if(!internet){
+                                    showMessage(context, "No Internet connection")
+                                    error = false
+                                }
+                                else{
                                     showMessage(context, "wrong email or password")
                                     error = true
                                 }
