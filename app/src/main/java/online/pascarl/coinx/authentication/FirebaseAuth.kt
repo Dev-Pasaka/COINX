@@ -14,6 +14,7 @@ suspend fun createAccount(email:String, password :String): Boolean? {
         val auth = Firebase.auth
         auth.createUserWithEmailAndPassword(email, password)
             .await()
+
         return true
     } catch (e: Exception) {
         false
@@ -35,20 +36,17 @@ suspend fun signIn(email: String, password: String): String{
 
 }
 
-suspend fun signInWithGoogle(){
-   val signInRequest = BeginSignInRequest.builder()
-        .setGoogleIdTokenRequestOptions(
-            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                .setSupported(true)
-                // Your server's client ID, not your Android client ID.
-                .setServerClientId("241143851123-2psprgvd68oq4r2uh7lr9hqbj2cmrvpr.apps.googleusercontent.com")
-                // Only show accounts previously used to sign in.
-                .setFilterByAuthorizedAccounts(true)
-                .build())
-        .build()
-
-
+suspend fun updatePassword(newPassword: String): Boolean{
+    val user = Firebase.auth.currentUser;
+   return try {
+        user?.updatePassword(newPassword)
+        true
+    }catch (e: Exception){
+        false
+    }
 }
+
+
 
 
 

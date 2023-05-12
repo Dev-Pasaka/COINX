@@ -410,6 +410,7 @@ fun CreateAccount(
                                 .background(color = colorResource(id = R.color.background))
                                 .clickable {
 
+
                                     if (fullName.length < 6) {
 
                                         showMessage(
@@ -443,7 +444,7 @@ fun CreateAccount(
                                     ) {
 
                                         scope.launch {
-
+                                           showMessage(context, "Registering ...")
                                             val account = createAccount(
                                                 email = email,
                                                 password =  registerPassword
@@ -451,6 +452,7 @@ fun CreateAccount(
 
                                             if (account == true){
                                                 showMessage(context, "Registration is successful")
+                                                navController.popBackStack()
                                                 navController.popBackStack()
                                                 navController.navigate(Screen.Dashboard.route)
 
