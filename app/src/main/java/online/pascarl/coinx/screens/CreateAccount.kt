@@ -32,7 +32,10 @@ import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
 import online.pascarl.coinx.authentication.createAccount
 import online.pascarl.coinx.isInternetAvailable
+import online.pascarl.coinx.model.User
 import online.pascarl.coinx.navigation.Screen
+import online.pascarl.coinx.networkcalls.registerUser
+import online.pascarl.coinx.networkcalls.validateUserCreationResponse
 
 @Composable
 fun CreateAccount(
@@ -299,11 +302,6 @@ fun CreateAccount(
                             trailingIcon = {
                                 if (showPassword){
                                     IconButton(onClick = {showPassword = false}) {
-
-                                        /*      Icon(
-                                                   imageVector = Icons.Filled.Visibility,
-                                                   contentDescription = "Hide password"
-                                               )*/
                                         Text(
                                             text = "hide",
                                             fontSize = 14.sp
@@ -334,7 +332,6 @@ fun CreateAccount(
                     }
 
                     if (registerPassword.length in 1..6){
-                        //ErrorComposable(message = "Password must be more than 6 characters")
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -450,21 +447,26 @@ fun CreateAccount(
                                         scope.launch {
                                            showMessage(context, "Registering ...")
                                             val account = createAccount(
+                                                username = userName,
+                                                fullName = fullName,
                                                 email = email,
                                                 password =  registerPassword
                                             )
 
-                                            if (account == true){
+                                            if (account == "user created"){
                                                 showMessage(context, "Registration is successful")
                                                 navController.popBackStack()
                                                 navController.popBackStack()
                                                 navController.navigate(Screen.Dashboard.route)
 
                                             }
+                                            else if(account == "user exists"){
+                                                showMessage(context, "Email already exists")
+                                            }
                                             else if(!internet){
                                                 showMessage(context, "No Internet connection")
                                             }
-                                            else{
+                                            else if(account == null){
                                                 showMessage(context, "Registration failed ")
 
                                             }

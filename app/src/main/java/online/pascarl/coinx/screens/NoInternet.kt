@@ -32,15 +32,15 @@ import online.pascarl.coinx.R
 import online.pascarl.coinx.datasource.expressCheckOut
 
 
-//@Preview(showSystemUi = true)
-//@Composable
-//fun Preview(){
-//    NoInternet()
-//}
+@Preview(showSystemUi = true)
+@Composable
+fun Preview(){
+    NoInternet()
+}
 
 @Composable
 fun NoInternet(){
-    var reFetchCryptoData = expressCheckOut()
+
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.internet))
     var isPlaying by remember {
         mutableStateOf(true)
@@ -88,7 +88,6 @@ fun NoInternet(){
                 modifier = Modifier
                     .clickable {
                         isPlaying = true
-                        FetchCryptoPrices.loadData = reFetchCryptoData
                     }
             ) {
                 Row {

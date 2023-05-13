@@ -2,24 +2,42 @@ package online.pascarl.coinx.authentication
 
 import android.provider.Settings.Global.getString
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import online.pascarl.coinx.R
+import online.pascarl.coinx.model.User
+import online.pascarl.coinx.networkcalls.registerUser
+import online.pascarl.coinx.networkcalls.validateUserCreationResponse
 
 
-suspend fun createAccount(email:String, password :String): Boolean? {
+suspend fun createAccount(username:String, fullName:String, email:String, password :String): String? {
+    val auth = Firebase.auth
 
     return try {
-        val auth = Firebase.auth
         auth.createUserWithEmailAndPassword(email, password)
-            .await()
+                .await()
+        val registerUser = registerUser(
+            user = User(
+                username = username,
+                fullName = fullName,
+                email = email,
+                password = password
+            )
+        )
+        if (validateUserCreationResponse(response = registerUser) == true) return  "user created" else return  null
 
-        return true
-    } catch (e: Exception) {
-        false
+
     }
-}
+    catch (_: FirebaseAuthUserCollisionException){
+        "user exists"
+    }
+    catch (_: Exception) {
+            null
+        }
+    }
+
 
 
 suspend fun signIn(email: String, password: String): String{

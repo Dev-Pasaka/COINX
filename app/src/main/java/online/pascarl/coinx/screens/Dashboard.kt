@@ -13,6 +13,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -38,6 +41,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.*
 import online.pascarl.coinx.R
@@ -46,6 +50,7 @@ import java.util.*
 
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("ProduceStateDoesNotAssignValue", "CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -53,21 +58,24 @@ fun Dashboard(
     navController:NavHostController
 
 ){
-    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .background(color = colorResource(id = R.color.app_white))
             .fillMaxSize()
     ) {
         TopBarComponents()
-
-        FetchCryptoPrices.loadData = expressCheckOut()
-        Column {
-            Salutation()
-            WalletCardComposable()
-            ExpressCheckout()
-            CoinsOrWatchList()
-        }
+            if(isInternetAvailable(context = context)){
+                FetchCryptoPrices.loadData = expressCheckOut()
+                Column {
+                    Salutation()
+                    WalletCardComposable()
+                    ExpressCheckout()
+                    CoinsOrWatchList()
+                }
+            }else{
+                NoInternet()
+            }
     }
 
 
