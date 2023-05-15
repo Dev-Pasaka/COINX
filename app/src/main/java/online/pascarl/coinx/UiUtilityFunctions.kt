@@ -4,7 +4,11 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.view.ViewTreeObserver
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
@@ -77,4 +81,27 @@ fun imageLoader(
         }
     }
     return result
+}
+
+
+@Composable
+fun rememberImeState(): State<Boolean> {
+    val imeState = remember {
+        mutableStateOf(false)
+    }
+
+    val view = LocalView.current
+    DisposableEffect(view) {
+        val listener = ViewTreeObserver.OnGlobalLayoutListener {
+            val isKeyboardOpen = ViewCompat.getRootWindowInsets(view)
+                ?.isVisible(WindowInsetsCompat.Type.ime()) ?: true
+            imeState.value = isKeyboardOpen
+        }
+
+        view.viewTreeObserver.addOnGlobalLayoutListener(listener)
+        onDispose {
+            view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
+        }
+    }
+    return imeState
 }

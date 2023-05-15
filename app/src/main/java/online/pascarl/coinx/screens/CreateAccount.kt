@@ -36,31 +36,21 @@ import online.pascarl.coinx.model.User
 import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.networkcalls.registerUser
 import online.pascarl.coinx.networkcalls.validateUserCreationResponse
+import online.pascarl.coinx.screens.CircularProgressBar
 
 @Composable
 fun CreateAccount(
     image: Painter = painterResource(id = R.drawable.coinx),
     navController: NavHostController
 ){
-    var fullName by remember {
-        mutableStateOf("")
-    }
-    var userName by remember {
-        mutableStateOf("")
-    }
-    var email by remember {
-        mutableStateOf("")
-    }
-    var registerPassword by remember {
-        mutableStateOf("")
-    }
-    var confirmPassword by remember {
-        mutableStateOf("")
-    }
+    var fullName by remember { mutableStateOf("") }
+    var userName by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var registerPassword by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var showCircularProgressBar by remember{ mutableStateOf(false) }
     val context = LocalContext.current
     val internet = isInternetAvailable(context = context)
-
-
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
     Column(
@@ -132,12 +122,14 @@ fun CreateAccount(
                 style = MaterialTheme.typography.h4,
                 modifier = Modifier.padding(top = 5.dp),
             )
+            if (showCircularProgressBar) CircularProgressBar()
+            Spacer(modifier = Modifier.height(5.dp))
         }
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(start = 16.dp, end = 16.dp)
                 .verticalScroll(state = scrollState)
             ) {
                 Column(
@@ -146,7 +138,7 @@ fun CreateAccount(
                     modifier = Modifier
                         .fillMaxSize()
                         .fillMaxWidth()
-                        .padding(top = 8.dp, bottom = 20.dp)
+                        .padding( bottom = 20.dp)
 
 
 
@@ -302,10 +294,9 @@ fun CreateAccount(
                             trailingIcon = {
                                 if (showPassword){
                                     IconButton(onClick = {showPassword = false}) {
-                                        Text(
-                                            text = "hide",
-                                            fontSize = 14.sp
-
+                                        Icon(
+                                            imageVector = Icons.Filled.Visibility,
+                                            contentDescription = "Hide password"
                                         )
 
                                     }
@@ -445,38 +436,34 @@ fun CreateAccount(
                                     ) {
 
                                         scope.launch {
-                                           showMessage(context, "Registering ...")
+                                            showCircularProgressBar = true
+                                            showMessage(context, "Registering ...")
                                             val account = createAccount(
-                                                username = userName,
+                                                username = userName.replace("\\s".toRegex(), ""),
                                                 fullName = fullName,
                                                 email = email,
-                                                password =  registerPassword
+                                                password = registerPassword
                                             )
 
-                                            if (account == "user created"){
+                                            if (account == "user created") {
                                                 showMessage(context, "Registration is successful")
                                                 navController.popBackStack()
                                                 navController.popBackStack()
                                                 navController.navigate(Screen.Dashboard.route)
 
-                                            }
-                                            else if(account == "user exists"){
+                                            } else if (account == "user exists") {
+                                                showCircularProgressBar = false
                                                 showMessage(context, "Email already exists")
-                                            }
-                                            else if(!internet){
+                                            } else if (!internet) {
+                                                showCircularProgressBar = false
                                                 showMessage(context, "No Internet connection")
-                                            }
-                                            else if(account == null){
+                                            } else if (account == null) {
+                                                showCircularProgressBar = false
                                                 showMessage(context, "Registration failed ")
 
                                             }
-
-
                                         }
-
                                     }
-
-
                                 }
 
                         ) {
@@ -490,9 +477,6 @@ fun CreateAccount(
                         }
 
                     }
-                    Spacer(modifier = Modifier.height(230.dp))
-
-
                 }
         }
     }

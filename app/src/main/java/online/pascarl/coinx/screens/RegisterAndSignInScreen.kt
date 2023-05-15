@@ -6,6 +6,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -51,6 +52,7 @@ import online.pascarl.coinx.R
 import online.pascarl.coinx.authentication.signIn
 import online.pascarl.coinx.isInternetAvailable
 import online.pascarl.coinx.navigation.Screen
+import online.pascarl.coinx.rememberImeState
 import online.pascarl.coinx.screens.showMessage
 
 
@@ -61,18 +63,22 @@ fun RegisterScreen(
     )) {
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
-    var email by remember{
-        mutableStateOf("")
-    }
-    var password by remember {
-        mutableStateOf("")
-    }
+    var email by remember{ mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     var showPassword by rememberSaveable { mutableStateOf(false) }
     var error by rememberSaveable { mutableStateOf(false) }
+    var showCircularProgressBar by remember{ mutableStateOf(false) }
     val isBlank =  email.isBlank() && password.isBlank()
     val context = LocalContext.current
     val internet = isInternetAvailable(context = context)
 
+    val imeState = rememberImeState()
+
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value){
+            scrollState.animateScrollTo(scrollState.maxValue, tween(500))
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -101,7 +107,7 @@ fun RegisterScreen(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.h2,
-                modifier = Modifier.padding(top = 150.dp)
+                modifier = Modifier.padding(top = 130.dp)
             )
 
         }
@@ -117,21 +123,21 @@ fun RegisterScreen(
                 style = MaterialTheme.typography.h5,
                 modifier = Modifier.padding(top = 16.dp)
             )
-            
-        }      
-
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(5.dp))
+            if (showCircularProgressBar) CircularProgressBar()
+            Spacer(modifier = Modifier.height(5.dp))
+        }
 
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
 
         ) {
             Column (
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly,
+                verticalArrangement = Arrangement.Top,
                 modifier = Modifier
                     .fillMaxSize()
                     .fillMaxWidth()
@@ -244,7 +250,7 @@ fun RegisterScreen(
                     )
 
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     horizontalArrangement = Arrangement.End,
                     modifier = Modifier.fillMaxWidth()
@@ -267,7 +273,7 @@ fun RegisterScreen(
                             }
                     )
                 }
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(25.dp))
                 /** Sign In Button */
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -280,20 +286,24 @@ fun RegisterScreen(
                     Button(
                         onClick = {
                             scope.launch {
+                                showCircularProgressBar = true
                                 showMessage(context, "Signing you in ...")
                                  val signIn = signIn(
                                     email = email,
                                     password = password
                                 )
                                 if (signIn == ""){
+                                    showCircularProgressBar = false
                                     navController.popBackStack()
                                     navController.navigate(Screen.Dashboard.route)
                                 }
                                 else if(!internet){
+                                    showCircularProgressBar = false
                                     showMessage(context, "No Internet connection")
                                     error = false
                                 }
                                 else{
+                                    showCircularProgressBar = false
                                     showMessage(context, "wrong email or password")
                                     error = true
                                 }
@@ -330,14 +340,13 @@ fun RegisterScreen(
                     textDecoration = TextDecoration.Underline,
                     fontStyle = FontStyle.Normal,
                     style = MaterialTheme.typography.body2,
-                            modifier = Modifier
+                    modifier = Modifier
                                 .padding(end = 5.dp)
                                 .clickable {
                                     navController.navigate(Screen.CreateAccount.route)
                                 }
                 )
 
-                Spacer(modifier = Modifier.height(250.dp))
             }
         }
 
@@ -348,131 +357,18 @@ fun RegisterScreen(
 }
 
 @Composable
-fun GoogleButton(
-    image:Painter = painterResource(id = R.drawable.google),
-    modifier: Modifier = Modifier
-){
-
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current as ComponentActivity
-    val signInLauncher = context.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        val task: SignInCredential = Identity.getSignInClient(context).getSignInCredentialFromIntent(result.data)
-        try {
-            val idToken = task.googleIdToken
-            // TODO: Use the id token to authenticate the user with your backend
-        } catch (e: ApiException) {
-            // Handle error
-        }
-    }
-
-    IconButton(
-        modifier = modifier
-            .width(70.dp)
-            .height(55.dp)
-            .padding(start = 16.dp)
-            .clip(shape = CircleShape),
-        onClick = {
-
-            scope.launch {
-                val request = BeginSignInRequest.builder()
-                    .setGoogleIdTokenRequestOptions(
-                        BeginSignInRequest.GoogleIdTokenRequestOptions.Builder()
-                            .setServerClientId("241143851123-2psprgvd68oq4r2uh7lr9hqbj2cmrvpr.apps.googleusercontent.com")
-                            .build()
-                    )
-                    .build()
-
-            }
-
-        }
-    ) {
-        Image(
-            painter = image,
-            contentDescription = "Google Icon",
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(shape = CircleShape)
-
-        )
-
-    }
-}
-
-@Composable
-fun TwitterButton(
-    image:Painter = painterResource(id = R.drawable.google),
-    modifier: Modifier
-){
-
-
-    IconButton(
-        modifier = modifier
-            .width(70.dp)
-            .height(55.dp)
-            .padding(start = 16.dp)
-            .clip(shape = CircleShape),
-        onClick = {
-        }
-    ) {
-        Image(
-            painter = image,
-            contentDescription = "Google Icon",
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(shape = CircleShape)
-
-        )
-
-    }
-}
-
-
-
-@Composable
-fun GitHubButton(
-    image:Painter = painterResource(id = R.drawable.google),
-    modifier: Modifier
-){
-
-
-    IconButton(
-        modifier = modifier
-            .width(70.dp)
-            .height(55.dp)
-            .padding(start = 16.dp)
-            .clip(shape = CircleShape),
-        onClick = {
-
-        }
-    ) {
-        Image(
-            painter = image,
-            contentDescription = "Google Icon",
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(shape = CircleShape)
-
-        )
-
-    }
-}
-
-@Composable
-fun ErrorField(error: String){
-    Text(
-        text =error,
-        modifier = Modifier.fillMaxWidth(),
-        style = TextStyle(color = MaterialTheme.colors.error)
+fun CircularProgressBar(){
+    CircularProgressIndicator(
+        strokeWidth = 3.dp,
+        modifier = Modifier
+            .height(30.dp)
+            .width(30.dp)
     )
-
 }
-
-@Composable
-fun Button(onClick:(String)->Unit){
-    }
 
 fun showMessage(context: Context, message:String){
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
+
 
 
