@@ -24,7 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.fontResource
@@ -50,8 +52,12 @@ import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
 import online.pascarl.coinx.authentication.signIn
+import online.pascarl.coinx.datasource.userData
+import online.pascarl.coinx.datasource.userPortfolio
 import online.pascarl.coinx.isInternetAvailable
 import online.pascarl.coinx.navigation.Screen
+import online.pascarl.coinx.networkcalls.getUserData
+import online.pascarl.coinx.networkcalls.getUserPortfolio
 import online.pascarl.coinx.rememberImeState
 import online.pascarl.coinx.screens.showMessage
 
@@ -292,12 +298,18 @@ fun RegisterScreen(
                                     email = email,
                                     password = password
                                 )
-                                if (signIn == ""){
+                                val userDataAndPortfolio = try{
+                                    userData = getUserData(email = email)
+                                    userPortfolio = getUserPortfolio(email = email)
+                                }catch (e: Exception){
+                                    null
+                                }
+                                if (signIn == "" && userDataAndPortfolio != null){
                                     showCircularProgressBar = false
                                     navController.popBackStack()
                                     navController.navigate(Screen.Dashboard.route)
                                 }
-                                else if(!internet){
+                                else if(!internet || userDataAndPortfolio == null){
                                     showCircularProgressBar = false
                                     showMessage(context, "No Internet connection")
                                     error = false
@@ -341,10 +353,10 @@ fun RegisterScreen(
                     fontStyle = FontStyle.Normal,
                     style = MaterialTheme.typography.body2,
                     modifier = Modifier
-                                .padding(end = 5.dp)
-                                .clickable {
-                                    navController.navigate(Screen.CreateAccount.route)
-                                }
+                        .padding(end = 5.dp)
+                        .clickable {
+                            navController.navigate(Screen.CreateAccount.route)
+                        }
                 )
 
             }
@@ -358,12 +370,24 @@ fun RegisterScreen(
 
 @Composable
 fun CircularProgressBar(){
-    CircularProgressIndicator(
-        strokeWidth = 3.dp,
-        modifier = Modifier
-            .height(30.dp)
-            .width(30.dp)
-    )
+  Card(
+
+      elevation = 10.dp,
+      backgroundColor  = Color.White,
+      modifier = Modifier
+          .height(40.dp)
+          .width(40.dp)
+          .clip(RoundedCornerShape(100))
+
+  ){
+      CircularProgressIndicator(
+          strokeWidth = 3.dp,
+          modifier = Modifier
+              .requiredHeight(25.dp)
+              .requiredWidth(25.dp)
+
+      )
+  }
 }
 
 fun showMessage(context: Context, message:String){

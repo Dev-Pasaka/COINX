@@ -6,6 +6,8 @@ import online.pascarl.coinx.apis.KtorClient
 import online.pascarl.coinx.model.Cryptocurrency
 import online.pascarl.coinx.model.Response
 import online.pascarl.coinx.model.User
+import online.pascarl.coinx.model.UserData
+import online.pascarl.coinx.model.UserPortfolio
 
 
 suspend fun getCryptoPrices(): List<Cryptocurrency> {
@@ -24,7 +26,12 @@ suspend fun registerUser(user: User): Response?{
     }
 }
 
-
+suspend fun getUserData(email:String):UserData{
+    return KtorClient.httpClient.get(" https://coinx.herokuapp.com/getUserData?email=$email")
+}
+suspend fun getUserPortfolio(email:String): UserPortfolio {
+    return KtorClient.httpClient.get(" https://coinx.herokuapp.com/getUserPortfolio?email=$email")
+}
 fun validateUserCreationResponse(response: Response?): Boolean?{
    return response?.isRegistered
 }

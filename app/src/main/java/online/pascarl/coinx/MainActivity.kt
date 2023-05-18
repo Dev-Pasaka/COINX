@@ -7,6 +7,7 @@ import android.view.*
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -19,6 +20,8 @@ import androidx.core.view.WindowCompat
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.AnimatedComposeNavigator
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import online.pascarl.coinx.datasource.expressCheckOut
 import online.pascarl.coinx.model.CryptoModel
 import online.pascarl.coinx.navigation.NavGraph
@@ -31,6 +34,7 @@ import online.pascarl.coinx.ui.theme.COINXTheme
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
     private var keepSplashScreenOpened = true
+    @OptIn(ExperimentalAnimationApi::class)
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

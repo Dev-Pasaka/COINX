@@ -5,11 +5,23 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.view.ViewTreeObserver
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
@@ -104,4 +116,36 @@ fun rememberImeState(): State<Boolean> {
         }
     }
     return imeState
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun SlideInAnimation(content: @Composable () -> Unit) {
+    AnimatedVisibility(
+        visible = true,
+        enter = slideInHorizontally(
+            initialOffsetX = { -40 }
+        ) + expandHorizontally(
+            expandFrom = Alignment.End
+        ) + fadeIn(initialAlpha = 0.3f),
+        exit = slideOutHorizontally() + shrinkHorizontally() + fadeOut(),
+        content = content,
+        initiallyVisible = false
+    )
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun BottomUpAnimation(content: @Composable () -> Unit) {
+    AnimatedVisibility(
+        visible = true,
+        enter = slideInVertically(
+            initialOffsetY = { 100 }
+        ) + expandVertically(
+            expandFrom = Alignment.Bottom
+        ) + fadeIn(initialAlpha = 0.3f),
+        exit = slideOutVertically() + shrinkVertically() + fadeOut(),
+        content = content,
+        initiallyVisible = false
+    )
 }

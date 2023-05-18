@@ -7,5 +7,6 @@ sealed class Screen(val route:String){
     object CreateAccount: Screen("create_account")
     object Dashboard: Screen("dashboard")
     object NoInternet: Screen("no_internet")
+    object SeeAllCryptos: Screen("see_all_cryptos")
 
 }

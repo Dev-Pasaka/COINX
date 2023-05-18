@@ -13,14 +13,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush.Companion.linearGradient
@@ -41,13 +37,14 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.*
 import online.pascarl.coinx.R
 import online.pascarl.coinx.datasource.expressCheckOut
+import online.pascarl.coinx.datasource.userData
+import online.pascarl.coinx.datasource.userPortfolio
+import online.pascarl.coinx.navigation.Screen
 import java.util.*
-
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -55,9 +52,11 @@ import java.util.*
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Dashboard(
-    navController:NavHostController
+
+    navController: NavHostController
 
 ){
+
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -65,17 +64,17 @@ fun Dashboard(
             .fillMaxSize()
     ) {
         TopBarComponents()
-            if(isInternetAvailable(context = context)){
-                FetchCryptoPrices.loadData = expressCheckOut()
-                Column {
-                    Salutation()
-                    WalletCardComposable()
-                    ExpressCheckout()
-                    CoinsOrWatchList()
-                }
-            }else{
-                NoInternet()
+        if(isInternetAvailable(context = context)){
+            FetchCryptoPrices.loadData = expressCheckOut()
+            Column {
+                Salutation()
+                WalletCardComposable()
+                ExpressCheckout()
+                CoinsOrWatchList(navController)
             }
+        }else{
+            NoInternet()
+        }
     }
 
 
@@ -88,7 +87,7 @@ fun Dashboard(
 /*@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true)
 @Composable
-fun Preview(){
+fun Preview1(){
     Dashboard()
 }*/
 
@@ -149,38 +148,38 @@ fun TopBarComponents(){
 }
 @Composable
 fun Salutation(username:String = "Pasaka"){
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-        ) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp)
+    ) {
 
-            Column(
-            ){
+        Column(
+        ){
 
-                val salutation by remember { mutableStateOf(getCurrentTime())}
-                Text(
-                    text = "$salutation,",
-                    color = colorResource(id = R.color.background),
-                    style = MaterialTheme.typography.body2,
-                    fontSize = 14.sp,
-                )
-                Text(
-                    text = "$username",
-                    //color = colorResource(id = R.color.),
-                    style = MaterialTheme.typography.body1,
-                    fontSize = 16.sp,
-                )
-            }
+            val salutation by remember { mutableStateOf(getCurrentTime())}
+            Text(
+                text = "$salutation,",
+                color = colorResource(id = R.color.background),
+                style = MaterialTheme.typography.body2,
+                fontSize = 14.sp,
+            )
+            Text(
+                text = userData.username,
+                //color = colorResource(id = R.color.),
+                style = MaterialTheme.typography.body1,
+                fontSize = 16.sp,
+            )
         }
+    }
 
 }
 
 @Composable
-fun WalletCardComposable(currencySymbol: String = "KES", balance: Double = 54700.0){
+fun WalletCardComposable(currencySymbol: String = "KES"){
 
     val time by remember { mutableStateOf(getCurrentTime()) }
-    val totalAmount = formatCurrency(symbol = currencySymbol, value = balance)
+    val totalAmount = formatCurrency(symbol = currencySymbol, value = userPortfolio.balance)
     var hideBalance by rememberSaveable{
         mutableStateOf(true)
 
@@ -205,60 +204,59 @@ fun WalletCardComposable(currencySymbol: String = "KES", balance: Double = 54700
         end = Offset.Infinite
     )
     Column(
-       // verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp)
             .clip(RoundedCornerShape(10.dp))
             .background(gradient)
     ) {
-       Row(
-           horizontalArrangement = Arrangement.SpaceBetween,
-           verticalAlignment = Alignment.CenterVertically,
-           modifier = Modifier
-               .fillMaxWidth()
-               .padding(start = 16.dp, end = 16.dp)
-       ) {
-           Text(
-               text = "Portfolio Balance",
-               style = MaterialTheme.typography.body1,
-               fontSize = 15.sp,
-               fontWeight = FontWeight.W500,
-               color = colorResource(id = R.color.app_white)
-           )
-
-           IconButton(
-               onClick = {
-                   if (hideBalance){
-                       imageVictor = Outlined.Visibility
-                       hideBalance = false
-                       hideBalanceAmount = 25
-                   }else{
-                       imageVictor = Outlined.VisibilityOff
-                       hideBalance = true
-                       hideBalanceAmount = 0
-
-                   }
-               }
-           ) {
-               Icon(
-                   imageVector = imageVictor,
-                   contentDescription = "Profile Icon",
-                   tint = colorResource(id = R.color.app_white) ,
-               )
-           }
-       }
-
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
+        ) {
             Text(
-                text = if (hideBalance) totalAmount else "KES ****",
+                text = "Portfolio Balance",
                 style = MaterialTheme.typography.body1,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.W500,
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                color = colorResource(id = R.color.app_white),
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-
+                color = colorResource(id = R.color.app_white)
             )
+
+            IconButton(
+                onClick = {
+                    if (hideBalance){
+                        imageVictor = Outlined.Visibility
+                        hideBalance = false
+                        hideBalanceAmount = 25
+                    }else{
+                        imageVictor = Outlined.VisibilityOff
+                        hideBalance = true
+                        hideBalanceAmount = 0
+
+                    }
+                }
+            ) {
+                Icon(
+                    imageVector = imageVictor,
+                    contentDescription = "Profile Icon",
+                    tint = colorResource(id = R.color.app_white) ,
+                )
+            }
+        }
+
+        Text(
+            text = if (hideBalance) totalAmount else "KES ****",
+            style = MaterialTheme.typography.body1,
+            fontWeight = FontWeight.W500,
+            textAlign = TextAlign.Center,
+            fontSize = 16.sp,
+            color = colorResource(id = R.color.app_white),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+
+        )
 
 
         Row(
@@ -375,15 +373,15 @@ fun ExpressCheckout(){
         val context = LocalContext.current
         val data = FetchCryptoPrices.loadData
         val expressCheckOutList by remember {
-           mutableStateOf(data)
-       }
+            mutableStateOf(data)
+        }
 
         val pagerState = rememberPagerState()
         HorizontalPager(
             count = 4,
             state = pagerState,
 
-        ) {
+            ) {
             /**Auto scroller */
 
             LaunchedEffect(key1 = pagerState.currentPage) {
@@ -404,17 +402,17 @@ fun ExpressCheckout(){
             }
 
             pagerState.currentPage
-                ExpressCheckOutItems(
-                    name = expressCheckOutList[it].name,
-                    symbol = expressCheckOutList[it].symbol,
-                    imageIcon = imageLoader(expressCheckOutList[it].symbol),
-                    price =  expressCheckOutList[it].price,
-                    percentageChangeIn24Hrs = expressCheckOutList[it].percentageChangeIn24Hrs,
-                    firstGradientColor = expressCheckOutList[it].firstGradientColor,
-                    modifier = Modifier.clickable {
-                        showMessage(context, "Buying ${expressCheckOutList[it].name}")
-                    }
-                )
+            ExpressCheckOutItems(
+                name = expressCheckOutList[it].name,
+                symbol = expressCheckOutList[it].symbol,
+                imageIcon = imageLoader(expressCheckOutList[it].symbol),
+                price =  expressCheckOutList[it].price,
+                percentageChangeIn24Hrs = expressCheckOutList[it].percentageChangeIn24Hrs,
+                firstGradientColor = expressCheckOutList[it].firstGradientColor,
+                modifier = Modifier.clickable {
+                    showMessage(context, "Buying ${expressCheckOutList[it].name}")
+                }
+            )
             Spacer(modifier = Modifier.width(20.dp))
         }
     }
@@ -543,14 +541,13 @@ fun ExpressCheckOutItems(
 }
 
 @Composable
-fun CoinsOrWatchList(){
+fun CoinsOrWatchList(navController: NavHostController){
     var isCoinSelected by rememberSaveable { mutableStateOf(true) }
     var isWatchListSelected by rememberSaveable{ mutableStateOf(false) }
     Column {
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp,)
         ) {
             Row(){
                 Text(
@@ -592,44 +589,42 @@ fun CoinsOrWatchList(){
                     modifier = Modifier
                         .padding(top = 8.dp, end = 16.dp)
                         .clickable {
-
+                            navController.navigate(Screen.SeeAllCryptos.route)
                         }
                 )
             }
 
         }
-        FilterChips(isCoinSelected = isCoinSelected )
-
     }
+
+    CryptoListOrWatchlist(isCoinSelected)
 }
 
 @Composable
-fun FilterChips(isCoinSelected:Boolean){
+fun FilterChips(modifier: Modifier = Modifier){
     var isMarketCapSelected by rememberSaveable { mutableStateOf(true) }
     var isPriceSelected by rememberSaveable{ mutableStateOf(false) }
     var is24HrChangeSelected by rememberSaveable{ mutableStateOf(false) }
+    val onSelectedBackgroundColor = colorResource(id = R.color.background)
+    val onNotSelectedBackgroundColor = Color.Gray
     val list = FetchCryptoPrices.loadData.sortedBy { it.marketCap }.asReversed()
     var cryptoList by remember {
         mutableStateOf(list)
     }
     Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp)
-            .alpha(if (isCoinSelected) 1f else 0f)
+        horizontalArrangement = Arrangement.Start,
     ) {
         Text(
-            text = "Market Cap",
+            text = "market cap",
             style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             fontSize = 12.sp,
-            color = colorResource(id = R.color.black),
-            modifier = Modifier
+            color = colorResource(id = R.color.app_white),
+            modifier = modifier
                 .padding(start = 16.dp, top = 8.dp)
                 .width(100.dp)
-                .clip(RoundedCornerShape(30))
-                .background(if (isMarketCapSelected) Color.Gray else Color.Transparent)
+                .clip(RoundedCornerShape(40))
+                .background(if (isMarketCapSelected) onSelectedBackgroundColor else onNotSelectedBackgroundColor)
                 .clickable {
                     isMarketCapSelected = true
                     isPriceSelected = false
@@ -644,16 +639,16 @@ fun FilterChips(isCoinSelected:Boolean){
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
-            text = "Price",
+            text = "price",
             style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             fontSize = 12.sp,
-            color = colorResource(id = R.color.black),
-            modifier = Modifier
+            color = colorResource(id = R.color.app_white),
+            modifier = modifier
                 .padding(start = 16.dp, top = 8.dp)
                 .width(100.dp)
-                .clip(RoundedCornerShape(30))
-                .background(if (isPriceSelected) Color.Gray else Color.Transparent)
+                .clip(RoundedCornerShape(40))
+                .background(if (isPriceSelected) onSelectedBackgroundColor else onNotSelectedBackgroundColor)
                 .clickable {
                     isPriceSelected = true
                     isMarketCapSelected = false
@@ -667,16 +662,16 @@ fun FilterChips(isCoinSelected:Boolean){
         )
 
         Text(
-            text = "24H Change",
+            text = "24h change",
             style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             fontSize = 12.sp,
-            color = colorResource(id = R.color.black),
-            modifier = Modifier
+            color = colorResource(id = R.color.app_white),
+            modifier = modifier
                 .padding(start = 16.dp, top = 8.dp)
                 .width(100.dp)
-                .clip(RoundedCornerShape(30))
-                .background(if (is24HrChangeSelected) Color.Gray else Color.Transparent)
+                .clip(RoundedCornerShape(40))
+                .background(if (is24HrChangeSelected) onSelectedBackgroundColor else onNotSelectedBackgroundColor)
                 .clickable {
                     is24HrChangeSelected = true
                     isPriceSelected = false
@@ -716,6 +711,7 @@ fun CryptoCoinListItem(
     imageIcon: Painter = painterResource(id = R.drawable.bitcoin_icon),
     percentageChangeIn24Hrs: Double,
     price: Double,
+
     modifier: Modifier = Modifier
 ){
 
@@ -783,3 +779,19 @@ fun CryptoCoinListItem(
 }
 
 
+@Composable
+fun CryptoListOrWatchlist(isCoinlistSelected: Boolean){
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+
+    ) {
+        if(isCoinlistSelected){
+            FilterChips()
+        }else{
+            Column() {
+            }
+            }
+        }
+
+}

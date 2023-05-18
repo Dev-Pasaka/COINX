@@ -31,9 +31,13 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
 import online.pascarl.coinx.authentication.createAccount
+import online.pascarl.coinx.datasource.userData
+import online.pascarl.coinx.datasource.userPortfolio
 import online.pascarl.coinx.isInternetAvailable
 import online.pascarl.coinx.model.User
 import online.pascarl.coinx.navigation.Screen
+import online.pascarl.coinx.networkcalls.getUserData
+import online.pascarl.coinx.networkcalls.getUserPortfolio
 import online.pascarl.coinx.networkcalls.registerUser
 import online.pascarl.coinx.networkcalls.validateUserCreationResponse
 import online.pascarl.coinx.screens.CircularProgressBar
@@ -444,8 +448,13 @@ fun CreateAccount(
                                                 email = email,
                                                 password = registerPassword
                                             )
-
-                                            if (account == "user created") {
+                                            val userDataAndPortfolio = try{
+                                                userData = getUserData(email = email)
+                                                userPortfolio = getUserPortfolio(email = email)
+                                            }catch (e: Exception){
+                                                null
+                                            }
+                                            if (account == "user created" && userDataAndPortfolio != null) {
                                                 showMessage(context, "Registration is successful")
                                                 navController.popBackStack()
                                                 navController.popBackStack()
@@ -454,7 +463,7 @@ fun CreateAccount(
                                             } else if (account == "user exists") {
                                                 showCircularProgressBar = false
                                                 showMessage(context, "Email already exists")
-                                            } else if (!internet) {
+                                            } else if (!internet || userDataAndPortfolio == null) {
                                                 showCircularProgressBar = false
                                                 showMessage(context, "No Internet connection")
                                             } else if (account == null) {

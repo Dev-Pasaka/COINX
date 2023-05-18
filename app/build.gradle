@@ -119,6 +119,9 @@ dependencies {
     //Lotti Animations
     def lottieVersion = "6.0.0"
     implementation "com.airbnb.android:lottie-compose:$lottieVersion"
+    //Navigation Animation
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.16.1")
+
 
 
 
