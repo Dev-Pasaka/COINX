@@ -10,21 +10,14 @@ import online.pascarl.coinx.model.Cryptocurrency
 import online.pascarl.coinx.networkcalls.getCryptoPrices
 
 
-@Composable
+
 fun expressCheckOut(): List<CryptoModel>{
-    var apiData by remember {
-        mutableStateOf((listOf<Cryptocurrency>()))
-    }
+    var apiData  = listOf<Cryptocurrency>()
+
         runBlocking {
             apiData = getCryptoPrices()
         }
 
-    val colorGradient = listOf(
-        colorResource(id = R.color.orange),
-        colorResource(id = R.color.purple_200),
-        colorResource(id = R.color.grass_green),
-        colorResource(id = R.color.bamboo)
-    ).random()
     val newData:MutableList<CryptoModel> = mutableListOf()
         for (liveData in apiData){
             newData.add(
@@ -34,8 +27,6 @@ fun expressCheckOut(): List<CryptoModel>{
                     price = liveData.price!!.toDouble(),
                     marketCap = liveData.marketCap!!.toDouble(),
                     percentageChangeIn24Hrs = liveData.percentageChange24h!!.toDouble(),
-                    imageIcon = imageLoader(symbol = liveData.symbol.replace("\"", "")),
-                    firstGradientColor = colorGradient
                 )
             )
         }
@@ -43,3 +34,13 @@ fun expressCheckOut(): List<CryptoModel>{
     return  newData
 }
 
+
+@Composable
+fun getCryptoPrices(): List<CryptoModel>?{
+
+    FetchCryptoPrices.loadData = expressCheckOut()
+    return FetchCryptoPrices.loadData.ifEmpty {
+        null
+    }
+
+}

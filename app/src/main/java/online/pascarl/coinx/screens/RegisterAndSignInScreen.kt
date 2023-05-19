@@ -50,8 +50,10 @@ import com.google.android.gms.auth.api.identity.SignInCredential
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.launch
+import online.pascarl.coinx.FetchCryptoPrices
 import online.pascarl.coinx.R
 import online.pascarl.coinx.authentication.signIn
+import online.pascarl.coinx.datasource.expressCheckOut
 import online.pascarl.coinx.datasource.userData
 import online.pascarl.coinx.datasource.userPortfolio
 import online.pascarl.coinx.isInternetAvailable
@@ -65,8 +67,9 @@ import online.pascarl.coinx.screens.showMessage
 @Composable
 fun RegisterScreen(
     navController: NavHostController,
-    image:Painter = painterResource(id = R.drawable.coinx
-    )) {
+    image:Painter = painterResource(id = R.drawable.coinx)
+) {
+
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
     var email by remember{ mutableStateOf("") }
@@ -77,9 +80,7 @@ fun RegisterScreen(
     val isBlank =  email.isBlank() && password.isBlank()
     val context = LocalContext.current
     val internet = isInternetAvailable(context = context)
-
     val imeState = rememberImeState()
-
     LaunchedEffect(key1 = imeState.value) {
         if (imeState.value){
             scrollState.animateScrollTo(scrollState.maxValue, tween(500))
@@ -305,6 +306,7 @@ fun RegisterScreen(
                                     null
                                 }
                                 if (signIn == "" && userDataAndPortfolio != null){
+
                                     showCircularProgressBar = false
                                     navController.popBackStack()
                                     navController.navigate(Screen.Dashboard.route)

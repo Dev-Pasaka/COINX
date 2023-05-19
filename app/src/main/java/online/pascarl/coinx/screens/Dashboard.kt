@@ -43,6 +43,7 @@ import online.pascarl.coinx.R
 import online.pascarl.coinx.datasource.expressCheckOut
 import online.pascarl.coinx.datasource.userData
 import online.pascarl.coinx.datasource.userPortfolio
+import online.pascarl.coinx.model.CryptoModel
 import online.pascarl.coinx.navigation.Screen
 import java.util.*
 
@@ -63,16 +64,21 @@ fun Dashboard(
             .background(color = colorResource(id = R.color.app_white))
             .fillMaxSize()
     ) {
+        val result = try{
+            FetchCryptoPrices.loadData = expressCheckOut()
+        }catch (e: Exception){
+            FetchCryptoPrices.loadData = emptyList()
+        }
         TopBarComponents()
         if(isInternetAvailable(context = context)){
-            FetchCryptoPrices.loadData = expressCheckOut()
+
             Column {
                 Salutation()
                 WalletCardComposable()
                 ExpressCheckout()
                 CoinsOrWatchList(navController)
             }
-        }else{
+        }else if(!isInternetAvailable(context = context) || FetchCryptoPrices.loadData.isEmpty()){
             NoInternet()
         }
     }
@@ -408,7 +414,6 @@ fun ExpressCheckout(){
                 imageIcon = imageLoader(expressCheckOutList[it].symbol),
                 price =  expressCheckOutList[it].price,
                 percentageChangeIn24Hrs = expressCheckOutList[it].percentageChangeIn24Hrs,
-                firstGradientColor = expressCheckOutList[it].firstGradientColor,
                 modifier = Modifier.clickable {
                     showMessage(context, "Buying ${expressCheckOutList[it].name}")
                 }
@@ -427,14 +432,19 @@ fun ExpressCheckOutItems(
     imageIcon:Painter = painterResource(id = R.drawable.bitcoin_icon),
     price:Double =3948175.55,
     percentageChangeIn24Hrs:Double = -1.58,
-    firstGradientColor:Color = colorResource(id = R.color.orange),
+    firstGradientColor:Color =  listOf(
+        colorResource(id = R.color.orange),
+        colorResource(id = R.color.purple_200),
+        colorResource(id = R.color.grass_green),
+        colorResource(id = R.color.bamboo)
+    ).get((0..3).randomOrNull()!!.toInt()),
     secondGradientColor:Color = colorResource(id = R.color.black),
     modifier:Modifier = Modifier
 
 ){
     val gradient = linearGradient(
         0.01f to secondGradientColor,
-        50.0f to firstGradientColor,
+        50.0f to if (firstGradientColor == null ) colorResource(id = R.color.purple_200) else firstGradientColor  ,
         start = Offset.Zero,
         end = Offset.Infinite
     )
