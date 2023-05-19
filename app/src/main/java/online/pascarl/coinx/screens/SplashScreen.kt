@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
+import online.pascarl.coinx.FetchCryptoPrices
 import online.pascarl.coinx.datasource.expressCheckOut
 import online.pascarl.coinx.navigation.Screen
 
@@ -32,7 +33,6 @@ fun AnimatedSplashScreen(navController: NavHostController){
     var startAnimation by remember {
         mutableStateOf(false)
     }
-
     val alphaAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(
@@ -43,10 +43,12 @@ fun AnimatedSplashScreen(navController: NavHostController){
 
     LaunchedEffect(key1 = true){
         startAnimation = true
-        delay(4000)
+        delay(3000)
+        FetchCryptoPrices.loadData = expressCheckOut()
         navController.popBackStack()
         navController.navigate(Screen.Register.route)
     }
+
     SplashScreen(alpha = alphaAnim.value)
 }
 

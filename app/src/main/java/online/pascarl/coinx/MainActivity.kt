@@ -1,9 +1,7 @@
 package online.pascarl.coinx
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import android.view.*
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -11,24 +9,16 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.view.WindowCompat
-
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.navigation.animation.AnimatedComposeNavigator
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import online.pascarl.coinx.datasource.expressCheckOut
 import online.pascarl.coinx.model.CryptoModel
 import online.pascarl.coinx.navigation.NavGraph
-import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.screens.AnimatedSplashScreen
-import online.pascarl.coinx.screens.NoInternet
-import online.pascarl.coinx.screens.SplashScreen
 import online.pascarl.coinx.ui.theme.COINXTheme
 
 class MainActivity : ComponentActivity() {
@@ -44,11 +34,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ){
-
                     navController = rememberNavController()
                     AnimatedSplashScreen(navController =navController )
                     NavGraph(navController = navController)
-
 
                 }
 
