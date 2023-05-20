@@ -19,12 +19,14 @@ import online.pascarl.coinx.datasource.expressCheckOut
 import online.pascarl.coinx.model.CryptoModel
 import online.pascarl.coinx.navigation.NavGraph
 import online.pascarl.coinx.screens.AnimatedSplashScreen
+import online.pascarl.coinx.screens.EmailResetConfirmation
+import online.pascarl.coinx.screens.ResetPassword
 import online.pascarl.coinx.ui.theme.COINXTheme
 
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
-    private var keepSplashScreenOpened = true
-    @OptIn(ExperimentalAnimationApi::class)
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,14 +36,12 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ){
+
                     navController = rememberNavController()
                     AnimatedSplashScreen(navController =navController )
                     NavGraph(navController = navController)
 
                 }
-
-
-
             }
         }
 
@@ -53,17 +53,4 @@ class MainActivity : ComponentActivity() {
 
 object FetchCryptoPrices{
     var loadData = listOf<CryptoModel>()
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    COINXTheme {
-        Greeting("Android")
-    }
 }

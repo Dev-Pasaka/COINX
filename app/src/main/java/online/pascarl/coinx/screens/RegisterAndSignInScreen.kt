@@ -276,7 +276,7 @@ fun RegisterScreen(
                         modifier = Modifier
                             .padding(start = 5.dp)
                             .clickable {
-
+                                navController.navigate(Screen.ResetPassword.route)
                             }
                     )
                 }

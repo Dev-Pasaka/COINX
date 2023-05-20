@@ -57,7 +57,7 @@ fun Dashboard(
     navController: NavHostController
 
 ){
-
+    FetchCryptoPrices.loadData = expressCheckOut()
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -444,7 +444,7 @@ fun ExpressCheckOutItems(
 ){
     val gradient = linearGradient(
         0.01f to secondGradientColor,
-        50.0f to if (firstGradientColor == null ) colorResource(id = R.color.purple_200) else firstGradientColor  ,
+        50.0f to firstGradientColor,
         start = Offset.Zero,
         end = Offset.Infinite
     )
