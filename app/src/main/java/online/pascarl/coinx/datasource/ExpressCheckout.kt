@@ -44,3 +44,7 @@ fun getCryptoPrices(): List<CryptoModel>?{
     }
 
 }
+
+object UserEmail{
+    var email = ""
+}

@@ -1,12 +1,9 @@
 package online.pascarl.coinx.authentication
 
-import android.provider.Settings.Global.getString
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
-import online.pascarl.coinx.R
 import online.pascarl.coinx.model.User
 import online.pascarl.coinx.networkcalls.registerUser
 import online.pascarl.coinx.networkcalls.validateUserCreationResponse
@@ -54,12 +51,13 @@ suspend fun signIn(email: String, password: String): String{
 
 }
 
-suspend fun updatePassword(newPassword: String): Boolean{
-    val user = Firebase.auth.currentUser;
-   return try {
-        user?.updatePassword(newPassword)
+suspend fun resetPassword(email: String): Boolean{
+    return try{
+        val auth = Firebase.auth
+        auth.sendPasswordResetEmail(email).await()
         true
-    }catch (e: Exception){
+    }
+    catch (e: Exception){
         false
     }
 }

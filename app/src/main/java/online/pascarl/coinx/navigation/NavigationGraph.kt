@@ -8,10 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import online.pascarl.coinx.BottomUpAnimation
 import online.pascarl.coinx.SlideInAnimation
-import online.pascarl.coinx.screens.Dashboard
-import online.pascarl.coinx.screens.RegisterScreen
-import online.pascarl.coinx.screens.AnimatedSplashScreen
-import online.pascarl.coinx.screens.SeeAllCryptos
+import online.pascarl.coinx.screens.*
 import online.pascarl.spx.screens.CreateAccount
 
 
@@ -27,6 +24,11 @@ fun NavGraph(navController: NavHostController){
                 AnimatedSplashScreen(navController=navController)
             }
         }
+       composable(route = Screen.SeeAllCryptos.route){
+           BottomUpAnimation {
+               SeeAllCryptos(navController = navController)
+           }
+       }
         composable(route = Screen.Register.route){
             SlideInAnimation {
                 RegisterScreen(navController = navController)
@@ -43,11 +45,17 @@ fun NavGraph(navController: NavHostController){
                 Dashboard(navController = navController)
             }
         }
-        composable(route = Screen.SeeAllCryptos.route){
-            BottomUpAnimation {
-                SeeAllCryptos(navController = navController)
-            }
-        }
+       composable(route = Screen.ResetPassword.route){
+           SlideInAnimation {
+               ResetPassword(navController = navController)
+           }
+       }
+       composable(route = Screen.EmailResetConfirmation.route){
+           SlideInAnimation {
+               EmailResetConfirmation(navController = navController)
+           }
+       }
+
 
     }
 

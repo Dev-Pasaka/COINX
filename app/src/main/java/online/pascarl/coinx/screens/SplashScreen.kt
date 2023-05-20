@@ -44,8 +44,8 @@ fun AnimatedSplashScreen(navController: NavHostController){
     LaunchedEffect(key1 = true){
         startAnimation = true
         delay(3000)
-        FetchCryptoPrices.loadData = expressCheckOut()
         navController.popBackStack()
+        navController.clearBackStack(Screen.SplashScreen.route)
         navController.navigate(Screen.Register.route)
     }
 
