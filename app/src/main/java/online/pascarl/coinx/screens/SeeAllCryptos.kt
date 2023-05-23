@@ -20,15 +20,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import io.ktor.http.cio.websocket.Frame
 import online.pascarl.coinx.FetchCryptoPrices
 import online.pascarl.coinx.R
 import online.pascarl.coinx.imageLoader
 import online.pascarl.coinx.navigation.Screen
+import online.pascarl.coinx.screens.auth_screen.showMessage
+import online.pascarl.coinx.screens.bottom_bar_navigation.CryptoCoinListItem
 
 @Composable
 fun SeeAllCryptos(navController: NavHostController){
