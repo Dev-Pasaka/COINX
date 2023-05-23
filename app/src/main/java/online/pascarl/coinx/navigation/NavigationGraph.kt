@@ -6,9 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import online.pascarl.coinx.BottomUpAnimation
 import online.pascarl.coinx.SlideInAnimation
 import online.pascarl.coinx.screens.*
+import online.pascarl.coinx.screens.auth_screen.EmailResetConfirmation
+import online.pascarl.coinx.screens.auth_screen.RegisterScreen
+import online.pascarl.coinx.screens.auth_screen.ResetPassword
+import online.pascarl.coinx.screens.bottom_bar_navigation.*
 import online.pascarl.spx.screens.CreateAccount
 
 
@@ -17,18 +22,12 @@ import online.pascarl.spx.screens.CreateAccount
 fun NavGraph(navController: NavHostController){
 
 
+    val bottomNavController = rememberNavController()
 
    NavHost(navController = navController, startDestination = Screen.SplashScreen.route ){
         composable(route = Screen.SplashScreen.route){
-            SlideInAnimation {
-                AnimatedSplashScreen(navController=navController)
-            }
+            AnimatedSplashScreen(navController=navController)
         }
-       composable(route = Screen.SeeAllCryptos.route){
-           BottomUpAnimation {
-               SeeAllCryptos(navController = navController)
-           }
-       }
         composable(route = Screen.Register.route){
             SlideInAnimation {
                 RegisterScreen(navController = navController)
@@ -38,11 +37,6 @@ fun NavGraph(navController: NavHostController){
         composable(route = Screen.CreateAccount.route){
             SlideInAnimation {
                 CreateAccount(navController = navController)
-            }
-        }
-        composable(route = Screen.Dashboard.route){
-            SlideInAnimation {
-                Dashboard(navController = navController)
             }
         }
        composable(route = Screen.ResetPassword.route){
@@ -55,6 +49,13 @@ fun NavGraph(navController: NavHostController){
                EmailResetConfirmation(navController = navController)
            }
        }
+       composable(route = Screen.BottomBarNavigationContainer.route){
+           SlideInAnimation {
+               BottomBarNavigationContainer(navController = bottomNavController)
+           }
+       }
+
+
 
 
     }

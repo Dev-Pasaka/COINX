@@ -43,7 +43,12 @@ fun AnimatedSplashScreen(navController: NavHostController){
 
     LaunchedEffect(key1 = true){
         startAnimation = true
-        delay(3000)
+        val result = try {
+            FetchCryptoPrices.loadData = expressCheckOut()
+        } catch (e: Exception) {
+            FetchCryptoPrices.loadData = emptyList()
+        }
+        delay(2000)
         navController.popBackStack()
         navController.clearBackStack(Screen.SplashScreen.route)
         navController.navigate(Screen.Register.route)
@@ -55,6 +60,7 @@ fun AnimatedSplashScreen(navController: NavHostController){
 @SuppressLint("ResourceAsColor")
 @Composable
 fun SplashScreen(image: Painter= painterResource(id = R.drawable.coinx), alpha:Float){
+
     Box(
         modifier = Modifier
             .fillMaxSize()
