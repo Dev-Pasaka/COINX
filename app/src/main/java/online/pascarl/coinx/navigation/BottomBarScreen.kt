@@ -15,14 +15,14 @@ sealed class BottomBarScreen(
         icon = Icons.Default.Home
     )
     object Profile:BottomBarScreen(
-        route = "profile",
-        title = "Profile",
-        icon = Icons.Default.Person
+        route = "orders",
+        title = "Orders",
+        icon = Icons.Default.Wallet
     )
     object Wallet:BottomBarScreen(
         route = "wallet",
         title = "Wallet",
-        icon = Icons.Default.Wallet
+        icon = Icons.Default.AccountBalanceWallet
     )
     object Swap:BottomBarScreen(
         route = "swap",
