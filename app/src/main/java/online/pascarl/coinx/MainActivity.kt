@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
 
                     navController = rememberNavController()
                     NavGraph(navController = navController)
+                 /*   BottomNavGraph(navController = navController)*/
 
                 }
             }

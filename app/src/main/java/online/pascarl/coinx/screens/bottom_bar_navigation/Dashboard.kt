@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -43,6 +44,8 @@ import online.pascarl.coinx.R
 import online.pascarl.coinx.datasource.expressCheckOut
 import online.pascarl.coinx.datasource.userData
 import online.pascarl.coinx.datasource.userPortfolio
+import online.pascarl.coinx.navigation.Body
+import online.pascarl.coinx.navigation.NavigationDrawer
 import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.navigation.bottomNavigationItems
 import online.pascarl.coinx.screens.NoInternet
@@ -50,6 +53,7 @@ import online.pascarl.coinx.screens.auth_screen.showMessage
 
 
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -59,8 +63,14 @@ fun Dashboard(
     navController: NavHostController
 
 ){
-    FetchCryptoPrices.loadData = expressCheckOut()
-    val context = LocalContext.current
+    val scaffoldState = rememberScaffoldState()
+
+    Scaffold(
+        scaffoldState = scaffoldState,
+        drawerContent = { NavigationDrawer()}
+    ) {
+        FetchCryptoPrices.loadData = expressCheckOut()
+        val context = LocalContext.current
 
         Column(
             modifier = Modifier
@@ -68,7 +78,9 @@ fun Dashboard(
                 .fillMaxSize()
         ) {
 
-            TopBarComponents()
+            TopBarComponents(
+                navDrawer = scaffoldState
+            )
             if (isInternetAvailable(context = context)) {
 
                 Column {
@@ -82,8 +94,7 @@ fun Dashboard(
             }
         }
 
-
-
+    }
 }
 
 
@@ -97,61 +108,63 @@ fun Preview1(){
 }*/
 
 @Composable
-fun TopBarComponents(){
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
-    ) {
+fun TopBarComponents(navDrawer: ScaffoldState){
 
-
-        Icon(
-            painter = painterResource(id = R.drawable.person_icon),
-            tint = Color.Gray,
-            contentDescription = "Profile Icon",
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-                .size(25.dp)
-                .clip(RoundedCornerShape(360.dp))
-                .background(color = Color.LightGray)
-                .clickable {
-
-                }
-        )
-
-        Spacer(modifier = Modifier.width(50.dp))
-
-        Row {
-
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
+        ) {
+            val scope = rememberCoroutineScope()
             Icon(
-                painter = painterResource(id = R.drawable.qr_code_scanner),
-                contentDescription = "Profile Icon",
+                painter = painterResource(id = R.drawable.person_icon),
                 tint = Color.Gray,
+                contentDescription = "Profile Icon",
                 modifier = Modifier
                     .size(25.dp)
                     .clip(RoundedCornerShape(360.dp))
+                    .background(color = Color.LightGray)
                     .clickable {
-
+                        scope.launch {
+                            navDrawer.drawerState.open()
+                        }
                     }
             )
-            Spacer(modifier = Modifier.width(16.dp))
 
-            Icon(
-                imageVector = Outlined.Notifications,
-                contentDescription = "Profile Icon",
-                tint = Color.Gray,
-                modifier = Modifier
-                    .size(25.dp)
-                    .clip(RoundedCornerShape(360.dp))
-                    .clickable {
+            Spacer(modifier = Modifier.width(50.dp))
 
-                    },
+            Row {
 
+                Icon(
+                    painter = painterResource(id = R.drawable.qr_code_scanner),
+                    contentDescription = "Profile Icon",
+                    tint = Color.Gray,
+                    modifier = Modifier
+                        .size(25.dp)
+                        .clip(RoundedCornerShape(360.dp))
+                        .clickable {
+
+                        }
                 )
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Icon(
+                    imageVector = Outlined.Notifications,
+                    contentDescription = "Profile Icon",
+                    tint = Color.Gray,
+                    modifier = Modifier
+                        .size(25.dp)
+                        .clip(RoundedCornerShape(360.dp))
+                        .clickable {
+
+                        },
+
+                    )
+            }
+
+
         }
-
-
-    }
 }
 @Composable
 fun Salutation(username:String = "Pasaka"){
@@ -181,7 +194,11 @@ fun Salutation(username:String = "Pasaka"){
     }
 
 }
-
+@Preview(showSystemUi = true)
+@Composable
+fun Preview(){
+    WalletCardComposable()
+}
 @Composable
 fun WalletCardComposable(currencySymbol: String = "KES"){
 
@@ -274,18 +291,14 @@ fun WalletCardComposable(currencySymbol: String = "KES"){
                 .padding(8.dp)
         ) {
             /**Buy Icon*/
-            IconButton(
-                onClick = {
-
-                }
-            ) {
+            IconButton(onClick = { /*TODO*/ }){
                 Column {
                     Icon(
-                        imageVector = Outlined.ThumbUp,
+                        imageVector = Outlined.CurrencyBitcoin,
                         contentDescription = "Buy Icon",
-                        tint = colorResource(id = R.color.app_white) ,
+                        tint = colorResource(id = R.color.app_white),
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Buy",
                         style = MaterialTheme.typography.body1,
@@ -294,17 +307,14 @@ fun WalletCardComposable(currencySymbol: String = "KES"){
                     )
                 }
             }
-            /**Pay Icon*/
-            IconButton(
-                onClick = {
 
-                }
-            ) {
-                Column {
+            /**Pay Icon*/
+            IconButton(onClick = { /*TODO*/ }) {
+                Column() {
                     Icon(
                         imageVector = Outlined.CreditCard,
                         contentDescription = "Pay Icon",
-                        tint = colorResource(id = R.color.app_white) ,
+                        tint = colorResource(id = R.color.app_white),
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
@@ -314,18 +324,16 @@ fun WalletCardComposable(currencySymbol: String = "KES"){
                         color = colorResource(id = R.color.app_white),
                     )
                 }
-            }
-            /**Send Icon*/
-            IconButton(
-                onClick = {
-
                 }
-            ) {
-                Column {
+
+            /**Send Icon*/
+
+            IconButton(onClick = { /*TODO*/ }){
+                Column() {
                     Icon(
                         imageVector = Outlined.Send,
                         contentDescription = "Send Icon",
-                        tint = colorResource(id = R.color.app_white) ,
+                        tint = colorResource(id = R.color.app_white),
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
@@ -335,18 +343,17 @@ fun WalletCardComposable(currencySymbol: String = "KES"){
                         color = colorResource(id = R.color.app_white),
                     )
                 }
-            }
-            /**Sell Icon*/
-            IconButton(
-                onClick = {
-
                 }
-            ) {
-                Column {
+
+            /**Sell Icon*/
+
+            IconButton(onClick = { /*TODO*/ }){
+                Column() {
+
                     Icon(
                         imageVector = Outlined.Payments,
                         contentDescription = "Profile Icon",
-                        tint = colorResource(id = R.color.app_white) ,
+                        tint = colorResource(id = R.color.app_white),
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
@@ -356,7 +363,7 @@ fun WalletCardComposable(currencySymbol: String = "KES"){
                         color = colorResource(id = R.color.app_white),
                     )
                 }
-            }
+                }
 
         }
     }
