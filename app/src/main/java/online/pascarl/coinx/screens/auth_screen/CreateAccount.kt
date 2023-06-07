@@ -36,7 +36,6 @@ import online.pascarl.coinx.datasource.userPortfolio
 import online.pascarl.coinx.isInternetAvailable
 import online.pascarl.coinx.navigation.BottomBarScreen
 import online.pascarl.coinx.navigation.Screen
-import online.pascarl.coinx.networkcalls.getUserData
 import online.pascarl.coinx.networkcalls.getUserPortfolio
 import online.pascarl.coinx.screens.auth_screen.CircularProgressBar
 
@@ -438,37 +437,7 @@ fun CreateAccount(
                                     ) {
 
                                         scope.launch {
-                                            showCircularProgressBar = true
-                                            showMessage(context, "Registering ...")
-                                            val account = createAccount(
-                                                username = userName.replace("\\s".toRegex(), ""),
-                                                fullName = fullName,
-                                                email = email,
-                                                password = registerPassword
-                                            )
-                                            val userDataAndPortfolio = try{
-                                                userData = getUserData(email = email)
-                                                userPortfolio = getUserPortfolio(email = email)
-                                            }catch (e: Exception){
-                                                null
-                                            }
-                                            if (account == "user created" && userDataAndPortfolio != null) {
-                                                showMessage(context, "Registration is successful")
-                                                navController.popBackStack()
-                                                navController.popBackStack()
-                                                navController.navigate(Screen.BottomBarNavigationContainer.route)
 
-                                            } else if (account == "user exists") {
-                                                showCircularProgressBar = false
-                                                showMessage(context, "Email already exists")
-                                            } else if (!internet || userDataAndPortfolio == null) {
-                                                showCircularProgressBar = false
-                                                showMessage(context, "No Internet connection")
-                                            } else if (account == null) {
-                                                showCircularProgressBar = false
-                                                showMessage(context, "Registration failed ")
-
-                                            }
                                         }
                                     }
                                 }

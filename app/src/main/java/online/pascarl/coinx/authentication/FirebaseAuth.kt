@@ -37,19 +37,19 @@ suspend fun createAccount(username:String, fullName:String, email:String, passwo
 
 
 
-suspend fun signIn(email: String, password: String): String{
+/*
+suspend fun signIn(email: String, password: String): Boolean{
 
-    return try {
+   return  try {
         val auth = Firebase.auth
         auth.signInWithEmailAndPassword(email, password)
             .await()
-        ""
+        true
     }catch (e: Exception) {
-        "${e.printStackTrace()}"
+        false
     }
-
-
 }
+*/
 
 suspend fun resetPassword(email: String): Boolean{
     return try{

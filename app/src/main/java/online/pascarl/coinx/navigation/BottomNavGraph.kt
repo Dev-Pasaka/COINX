@@ -15,7 +15,7 @@ import online.pascarl.coinx.screens.bottom_bar_navigation.*
 fun BottomNavGraph(navController: NavHostController){
     NavHost(navController = navController, startDestination = Screen.Dashboard.route ) {
         composable(route = Screen.Dashboard.route) {
-            Dashboard(navController = navController)
+            //Dashboard(navController = navController)
         }
         composable(route = BottomBarScreen.Profile.route) {
             Profile(navController = navController)
