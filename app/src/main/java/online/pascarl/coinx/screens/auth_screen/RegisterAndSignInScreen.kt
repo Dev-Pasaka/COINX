@@ -1,6 +1,7 @@
 package online.pascarl.coinx.screens.auth_screen
 
 
+import android.app.Application
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.core.tween
@@ -33,39 +34,39 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
-import online.pascarl.coinx.FetchCryptoPrices
 import online.pascarl.coinx.R
-import online.pascarl.coinx.authentication.signIn
-import online.pascarl.coinx.datasource.expressCheckOut
-import online.pascarl.coinx.datasource.userData
-import online.pascarl.coinx.datasource.userPortfolio
 import online.pascarl.coinx.isInternetAvailable
-import online.pascarl.coinx.navigation.BottomBarScreen
 import online.pascarl.coinx.navigation.Screen
-import online.pascarl.coinx.networkcalls.getUserData
-import online.pascarl.coinx.networkcalls.getUserPortfolio
 import online.pascarl.coinx.rememberImeState
+import online.pascarl.coinx.roomDB.RoomUser
+import online.pascarl.coinx.roomDB.RoomViewModel
+import online.pascarl.coinx.roomDB.UserDatabase
+import online.pascarl.coinx.roomDB.UserRepository
 
 
 @Composable
 fun RegisterScreen(
     navController: NavHostController,
-    image:Painter = painterResource(id = R.drawable.coinx)
+    image:Painter = painterResource(id = R.drawable.coinx),
+    signInViewModel: SignInViewModel = viewModel()
+
 ) {
+    val roomDB = RoomViewModel(
+        application = Application(),
+        userRepository = UserRepository(UserDatabase.getInstance(LocalContext.current.applicationContext).userDao())
+    )
 
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
-    var email by remember{ mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+
     var showPassword by rememberSaveable { mutableStateOf(false) }
-    var error by rememberSaveable { mutableStateOf(false) }
-    var showCircularProgressBar by remember{ mutableStateOf(false) }
-    val isBlank =  email.isBlank() && password.isBlank()
     val context = LocalContext.current
     val internet = isInternetAvailable(context = context)
     val imeState = rememberImeState()
+
     LaunchedEffect(key1 = imeState.value) {
         if (imeState.value){
             scrollState.animateScrollTo(scrollState.maxValue, tween(500))
@@ -116,7 +117,7 @@ fun RegisterScreen(
                 modifier = Modifier.padding(top = 16.dp)
             )
             Spacer(modifier = Modifier.height(5.dp))
-            if (showCircularProgressBar) CircularProgressBar()
+          //  if (signInViewModel.showProgress) CircularProgressBar()
             Spacer(modifier = Modifier.height(5.dp))
         }
 
@@ -139,9 +140,9 @@ fun RegisterScreen(
 
                 Column {
                     TextField(
-                        value = email,
+                        value = signInViewModel.email,
                         onValueChange = {
-                            email = it
+                            signInViewModel.email = it
                         },
                         label = {
                             Text(
@@ -164,7 +165,7 @@ fun RegisterScreen(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent
                         ),
-                        isError = error,
+                        isError = !signInViewModel.isSignInSuccessful(),
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -174,9 +175,9 @@ fun RegisterScreen(
 
                 Column {
                     TextField(
-                        value = password,
+                        value = signInViewModel.password,
                         onValueChange = {
-                            password = it
+                            signInViewModel.password = it
                         },
                         label = {
                             Text(
@@ -194,14 +195,7 @@ fun RegisterScreen(
 
                         ),
                         singleLine = true,
-                        isError = if (error){
-                            true
-                        }
-                        else if (isBlank){
-                            false
-                        } else {
-                                   false
-                        },
+                        isError = !signInViewModel.isSignInSuccessful(),
                         leadingIcon ={
                             IconButton(onClick = { /*TODO*/ }) {
                                 Icon(imageVector = Icons.Filled.Lock, contentDescription = "Password icon")
@@ -278,36 +272,45 @@ fun RegisterScreen(
                     Button(
                         onClick = {
                             scope.launch {
-                                showCircularProgressBar = true
-                                showMessage(context, "Signing you in ...")
-                                 val signIn = signIn(
-                                    email = email,
-                                    password = password
+                                //Firebase Auth
+                                signInViewModel.firebaseSignInResult = signInViewModel.firebaseSignIn(
+                                    email = signInViewModel.email,
+                                    password = signInViewModel.password
                                 )
-                                val userDataAndPortfolio = try{
-                                    userData = getUserData(email = email)
-                                    userPortfolio = getUserPortfolio(email = email)
-                                }catch (e: Exception){
-                                    null
+                                //Backend Auth
+                                signInViewModel.backendAuthToken = signInViewModel.getSignInToken(
+                                    email = signInViewModel.email,
+                                    password = signInViewModel.password
+                                )
+                                if (signInViewModel.isSignInSuccessful()){
+                                    signInViewModel.roomUser = roomDB.getUser(id="12345678")
+
+                                    if (signInViewModel.roomUser == null){
+                                        roomDB.addUser(
+                                            user = RoomUser(
+                                                email = signInViewModel.email,
+                                                token = signInViewModel.backendAuthToken!!
+                                            )
+                                        )
+                                        showMessage(context, "User was added successfully")
+                                    }else{
+                                        roomDB.updateUser(
+                                            user = RoomUser(
+                                                email = signInViewModel.email,
+                                                token = signInViewModel.backendAuthToken!!
+                                            )
+                                        )
+                                        showMessage(context, "user exists so we updated")
+                                    }
+
+
                                 }
 
-                                if (signIn == "" && userDataAndPortfolio != null){
-
-                                    showCircularProgressBar = false
-                                    navController.popBackStack()
-                                    navController.navigate(Screen.BottomBarNavigationContainer.route)
-                                }
-                                else if(!internet || userDataAndPortfolio == null){
-                                    showCircularProgressBar = false
-                                    showMessage(context, "No Internet connection")
-                                    error = false
-                                }
-                                else{
-                                    showCircularProgressBar = false
-                                    showMessage(context, "wrong email or password")
-                                    error = true
-                                }
-
+                             /*   if (signInViewModel.isSignInSuccessful())navController.navigate(
+                                    Screen.BottomBarNavigationContainer.route
+                                )else{
+                                    showMessage(context, "Invalid email or password")
+                                }*/
                             }
 
                         },

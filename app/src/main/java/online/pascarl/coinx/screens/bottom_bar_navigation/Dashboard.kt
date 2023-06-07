@@ -2,10 +2,9 @@
 package online.pascarl.coinx.screens.bottom_bar_navigation
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,44 +31,59 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.*
 import online.pascarl.coinx.R
-import online.pascarl.coinx.datasource.expressCheckOut
-import online.pascarl.coinx.datasource.userData
 import online.pascarl.coinx.datasource.userPortfolio
-import online.pascarl.coinx.navigation.Body
+import online.pascarl.coinx.model.CryptoModel
 import online.pascarl.coinx.navigation.NavigationDrawer
-import online.pascarl.coinx.navigation.Screen
-import online.pascarl.coinx.navigation.bottomNavigationItems
+import online.pascarl.coinx.roomDB.RoomViewModel
+import online.pascarl.coinx.roomDB.UserDatabase
+import online.pascarl.coinx.roomDB.UserRepository
 import online.pascarl.coinx.screens.NoInternet
 import online.pascarl.coinx.screens.auth_screen.showMessage
 
 
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showSystemUi = true)
+@Composable
+fun Preview1(){
+    Dashboard()
+}
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Dashboard(
-
-    navController: NavHostController
+ fun Dashboard(
+    dashboardViewModel: DashboardViewModel = viewModel()
 
 ){
     val scaffoldState = rememberScaffoldState()
+    val roomDB = RoomViewModel(
+        application = Application(),
+        userRepository = UserRepository(UserDatabase.getInstance(LocalContext.current.applicationContext).userDao())
+    )
 
+    LaunchedEffect(Unit){
+        dashboardViewModel.roomUser = roomDB.getUser("12345678")!!
+        dashboardViewModel.getCryptoPrices()
+        dashboardViewModel.cryptoPrices()
+        dashboardViewModel.getUserData()
+        dashboardViewModel.getUserPortfolio()
+
+    }
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = { NavigationDrawer()}
     ) {
-        FetchCryptoPrices.loadData = expressCheckOut()
+
         val context = LocalContext.current
 
         Column(
@@ -79,15 +93,16 @@ fun Dashboard(
         ) {
 
             TopBarComponents(
-                navDrawer = scaffoldState
+                navDrawer = scaffoldState,
+                dashboardViewModel = dashboardViewModel
             )
             if (isInternetAvailable(context = context)) {
 
                 Column {
-                    Salutation()
-                    WalletCardComposable()
-                    ExpressCheckout()
-                    CoinsOrWatchList(navController)
+                    Salutation(dashboardViewModel = dashboardViewModel)
+                    WalletCardComposable(dashboardViewModel = dashboardViewModel)
+                    ExpressCheckout(dashboardViewModel = dashboardViewModel)
+                    CoinsOrWatchList(dashboardViewModel = dashboardViewModel)
                 }
             } else if (!isInternetAvailable(context = context) || FetchCryptoPrices.loadData.isEmpty()) {
                 NoInternet()
@@ -98,17 +113,8 @@ fun Dashboard(
 }
 
 
-
-
-/*@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showSystemUi = true)
 @Composable
-fun Preview1(){
-    Dashboard()
-}*/
-
-@Composable
-fun TopBarComponents(navDrawer: ScaffoldState){
+fun TopBarComponents(navDrawer: ScaffoldState, dashboardViewModel: DashboardViewModel){
 
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -167,7 +173,7 @@ fun TopBarComponents(navDrawer: ScaffoldState){
         }
 }
 @Composable
-fun Salutation(username:String = "Pasaka"){
+fun Salutation(username:String = "Pasaka", dashboardViewModel: DashboardViewModel){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -185,7 +191,7 @@ fun Salutation(username:String = "Pasaka"){
                 fontSize = 14.sp,
             )
             Text(
-                text = userData.username,
+                text = dashboardViewModel.userInformation.username,
                 //color = colorResource(id = R.color.),
                 style = MaterialTheme.typography.body1,
                 fontSize = 16.sp,
@@ -194,19 +200,14 @@ fun Salutation(username:String = "Pasaka"){
     }
 
 }
-@Preview(showSystemUi = true)
+
 @Composable
-fun Preview(){
-    WalletCardComposable()
-}
-@Composable
-fun WalletCardComposable(currencySymbol: String = "KES"){
+fun WalletCardComposable(currencySymbol: String = "KES", dashboardViewModel: DashboardViewModel){
 
     val time by remember { mutableStateOf(getCurrentTime()) }
-    val totalAmount = formatCurrency(symbol = currencySymbol, value = userPortfolio.balance)
+    val totalAmount = formatCurrency(symbol = currencySymbol, value = dashboardViewModel.userPortfolio.balance)
     var hideBalance by rememberSaveable{
         mutableStateOf(true)
-
     }
     var hideBalanceAmount by remember{ mutableStateOf(0) }
     var imageVictor:ImageVector by remember { mutableStateOf(Outlined.VisibilityOff) }
@@ -372,11 +373,11 @@ fun WalletCardComposable(currencySymbol: String = "KES"){
 
 @OptIn( ExperimentalPagerApi::class)
 @Composable
-fun ExpressCheckout(){
+fun ExpressCheckout(dashboardViewModel:DashboardViewModel){
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(start = 16.dp, end=16.dp, top=5.dp, bottom = 5.dp)
+            .padding(start=12.dp, end=12.dp, top=5.dp, bottom = 5.dp)
     )
     {
         Text(
@@ -385,49 +386,35 @@ fun ExpressCheckout(){
         )
         //Spacer(modifier = Modifier.height(5.dp))
         val context = LocalContext.current
-        val data = FetchCryptoPrices.loadData
-        val expressCheckOutList by remember {
-            mutableStateOf(data)
-        }
-
         val pagerState = rememberPagerState()
-        HorizontalPager(
-            count = 4,
-            state = pagerState,
-
+        if (dashboardViewModel.cryptoModel.isNullOrEmpty()) {
+            // Display a loading indicator or placeholder UI until the data arrives
+        } else {
+            HorizontalPager(
+                count = dashboardViewModel.expressCheckoutCryptoList.size,
+                state = pagerState,
             ) {
-            /**Auto scroller */
-/*
-            LaunchedEffect(key1 = pagerState.currentPage) {
-                launch {
-                    delay(3000)
-                    with(pagerState) {
-                        val target = if (currentPage < pageCount - 1) currentPage + 1 else 0
-
-                        animateScrollToPage(
-                            page = target,
-                            animationSpec = tween(
-                                durationMillis = 1000,
-                                easing = LinearOutSlowInEasing
-                            )
-                        )
-                    }
+                println("number of cryptos ${dashboardViewModel.expressCheckoutCryptoList}")
+                val index = it
+                if (index >= 0 && index < dashboardViewModel.expressCheckoutCryptoList.size) {
+                    val cryptoItem = dashboardViewModel.expressCheckoutCryptoList[index]
+                    ExpressCheckOutItems(
+                        name = cryptoItem.name,
+                        symbol = cryptoItem.symbol,
+                        imageIcon = imageLoader(cryptoItem.symbol),
+                        price = cryptoItem.price,
+                        percentageChangeIn24Hrs = cryptoItem.percentageChangeIn24Hrs,
+                        modifier = Modifier.clickable {
+                            showMessage(context, "Buying ${cryptoItem.name}")
+                        }
+                    )
+                } else {
+                    // Handle index out of bounds error if necessary
                 }
-            }*/
-
-            pagerState.currentPage
-            ExpressCheckOutItems(
-                name = expressCheckOutList[it].name,
-                symbol = expressCheckOutList[it].symbol,
-                imageIcon = imageLoader(expressCheckOutList[it].symbol),
-                price =  expressCheckOutList[it].price,
-                percentageChangeIn24Hrs = expressCheckOutList[it].percentageChangeIn24Hrs,
-                modifier = Modifier.clickable {
-                    showMessage(context, "Buying ${expressCheckOutList[it].name}")
-                }
-            )
-            Spacer(modifier = Modifier.width(20.dp))
+            }
         }
+
+
     }
 }
 
@@ -440,12 +427,7 @@ fun ExpressCheckOutItems(
     imageIcon:Painter = painterResource(id = R.drawable.bitcoin_icon),
     price:Double =3948175.55,
     percentageChangeIn24Hrs:Double = -1.58,
-    firstGradientColor:Color =  listOf(
-        colorResource(id = R.color.orange),
-        colorResource(id = R.color.purple_200),
-        colorResource(id = R.color.grass_green),
-        colorResource(id = R.color.bamboo)
-    ).get((0..3).randomOrNull()!!.toInt()),
+    firstGradientColor:Color = colorResource(id = R.color.background),
     secondGradientColor:Color = colorResource(id = R.color.black),
     modifier:Modifier = Modifier
 
@@ -559,7 +541,7 @@ fun ExpressCheckOutItems(
 }
 
 @Composable
-fun CoinsOrWatchList(navController: NavHostController){
+fun CoinsOrWatchList(dashboardViewModel: DashboardViewModel){
     var isCoinSelected by rememberSaveable { mutableStateOf(true) }
     var isWatchListSelected by rememberSaveable{ mutableStateOf(false) }
     Column {
@@ -607,7 +589,6 @@ fun CoinsOrWatchList(navController: NavHostController){
                     modifier = Modifier
                         .padding(top = 8.dp, end = 16.dp)
                         .clickable {
-                            navController.navigate(Screen.SeeAllCryptos.route)
                         }
                 )
             }
@@ -615,20 +596,17 @@ fun CoinsOrWatchList(navController: NavHostController){
         }
     }
 
-    CryptoListOrWatchlist(isCoinSelected)
+    CryptoListOrWatchlist(isCoinSelected, dashboardViewModel = dashboardViewModel)
 }
 
 @Composable
-fun FilterChips(modifier: Modifier = Modifier){
+fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardViewModel){
     var isMarketCapSelected by rememberSaveable { mutableStateOf(true) }
     var isPriceSelected by rememberSaveable{ mutableStateOf(false) }
     var is24HrChangeSelected by rememberSaveable{ mutableStateOf(false) }
     val onSelectedBackgroundColor = colorResource(id = R.color.background)
     val onNotSelectedBackgroundColor = Color.Gray
-    val list = FetchCryptoPrices.loadData.sortedBy { it.marketCap }.asReversed()
-    var cryptoList by remember {
-        mutableStateOf(list)
-    }
+
     Row(
         horizontalArrangement = Arrangement.Start,
     ) {
@@ -647,12 +625,7 @@ fun FilterChips(modifier: Modifier = Modifier){
                     isMarketCapSelected = true
                     isPriceSelected = false
                     is24HrChangeSelected = false
-
-                    cryptoList = cryptoList
-                        .sortedBy {
-                            it.marketCap
-                        }
-                        .asReversed()
+                    dashboardViewModel.sortCryptos("marketcap")
                 }
         )
         Spacer(modifier = Modifier.width(16.dp))
@@ -671,11 +644,7 @@ fun FilterChips(modifier: Modifier = Modifier){
                     isPriceSelected = true
                     isMarketCapSelected = false
                     is24HrChangeSelected = false
-                    cryptoList = cryptoList
-                        .sortedBy {
-                            it.price
-                        }
-                        .asReversed()
+                    dashboardViewModel.sortCryptos("price")
                 }
         )
 
@@ -694,12 +663,7 @@ fun FilterChips(modifier: Modifier = Modifier){
                     is24HrChangeSelected = true
                     isPriceSelected = false
                     isMarketCapSelected = false
-
-                    cryptoList = cryptoList
-                        .sortedBy {
-                            it.percentageChangeIn24Hrs
-                        }
-                        .asReversed()
+                    dashboardViewModel.sortCryptos("24h-change")
                 }
         )
     }
@@ -707,15 +671,15 @@ fun FilterChips(modifier: Modifier = Modifier){
     val context = LocalContext.current
     LazyColumn(modifier = Modifier.fillMaxWidth()){
 
-        items(cryptoList.size){
+        items(dashboardViewModel.cryptoModel.size){
             CryptoCoinListItem(
-                name = cryptoList[it].name,
-                symbol = cryptoList[it].symbol,
-                imageIcon = imageLoader(symbol = cryptoList[it].symbol),
-                percentageChangeIn24Hrs = cryptoList[it].percentageChangeIn24Hrs,
-                price = cryptoList[it].price,
+                name = dashboardViewModel.cryptoModel[it].name,
+                symbol = dashboardViewModel.cryptoModel[it].symbol,
+                imageIcon = imageLoader(symbol = dashboardViewModel.cryptoModel[it].symbol),
+                percentageChangeIn24Hrs = dashboardViewModel.cryptoModel[it].percentageChangeIn24Hrs,
+                price = dashboardViewModel.cryptoModel[it].price,
                 modifier = Modifier.clickable {
-                    showMessage(context, cryptoList[it].name)
+                    showMessage(context, dashboardViewModel.cryptoModel[it].name)
                 }
             )
         }
@@ -798,14 +762,14 @@ fun CryptoCoinListItem(
 
 
 @Composable
-fun CryptoListOrWatchlist(isCoinlistSelected: Boolean){
+fun CryptoListOrWatchlist(isCoinlistSelected: Boolean, dashboardViewModel: DashboardViewModel){
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
     ) {
         if(isCoinlistSelected){
-            FilterChips()
+            FilterChips(dashboardViewModel = dashboardViewModel)
         }else{
             Column() {
             }
