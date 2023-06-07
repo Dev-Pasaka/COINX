@@ -1,48 +1,55 @@
 package online.pascarl.coinx.screens.bottom_bar_navigation
 
-import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.url
 import online.pascarl.coinx.apis.KtorClient
 import online.pascarl.coinx.model.Cryptocurrency
 import io.ktor.http.HttpHeaders.Authorization
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import online.pascarl.coinx.model.CryptoModel
 import online.pascarl.coinx.model.UserData
 import online.pascarl.coinx.model.UserPortfolio
 import online.pascarl.coinx.roomDB.RoomUser
-import online.pascarl.coinx.roomDB.RoomViewModel
-import online.pascarl.coinx.roomDB.UserDatabase
-import online.pascarl.coinx.roomDB.UserRepository
+import java.text.NumberFormat
+import java.util.Currency
 
 class DashboardViewModel: ViewModel() {
 
     var roomUser by mutableStateOf(RoomUser())
-    private var _cryptocurrencies  =   mutableStateListOf<Cryptocurrency>()
+    private var _cryptocurrencies  =   mutableStateListOf<Cryptocurrency?>()
     private val _cryptoModel  =   mutableStateListOf<CryptoModel>()
     val cryptoModel: List<CryptoModel> get() = _cryptoModel.take(10)
     private  var _expressCheckoutCryptoList  = mutableStateListOf<CryptoModel>()
     val expressCheckoutCryptoList:List<CryptoModel> get() = _expressCheckoutCryptoList.take(4)
 
 
+    //UsersInformation
     private var _userInformation  by mutableStateOf(UserData())
     val userInformation get() = _userInformation
+
+    //UserPortfolio
     private var _userPortfolio by mutableStateOf(UserPortfolio())
-    val userPortfolio get() = _userPortfolio
+    private val userPortfolio get() = _userPortfolio
+    private var _showBalance by mutableStateOf(true)
+    val showBalance get() = _showBalance
+
+    //Cryptos and Watchlist toggle
+    private var _isCoinOrWatchlistSelected by mutableStateOf(true)
+    val isCoinOrWatchlistSelected get() = _isCoinOrWatchlistSelected
+
+    // Filter chips toggle
+    private var _filterChip by mutableStateOf("market-cap")
+    val filterChip get() = _filterChip
 
     fun sortCryptos(sortMethod: String) {
+        println("Here is the token : ${roomUser.token}")
         val sortedList = when (sortMethod) {
-            "marketcap" -> _cryptoModel.sortedByDescending { it.marketCap }
+            "market-cap" -> _cryptoModel.sortedByDescending { it.marketCap }
             "price" -> _cryptoModel.sortedByDescending { it.price }
             "24h-change" -> _cryptoModel.sortedByDescending { it.percentageChangeIn24Hrs }
             else -> _cryptoModel.sortedByDescending { it.marketCap }
@@ -78,9 +85,8 @@ class DashboardViewModel: ViewModel() {
             }
         }catch (_: Exception){
             null
-        }!!
-
-           _cryptocurrencies.addAll(data)
+        }
+        if (data != null) _cryptocurrencies.addAll(data)
 
 
 
@@ -89,15 +95,17 @@ class DashboardViewModel: ViewModel() {
     fun cryptoPrices() {
         val newData = mutableListOf<CryptoModel>()
         for (liveData in _cryptocurrencies) {
-            newData.add(
-                CryptoModel(
-                    name = liveData.name.replace("\"", ""),
-                    symbol = liveData.symbol.replace("\"", ""),
-                    price = liveData.price!!.toDouble(),
-                    marketCap = liveData.marketCap!!.toDouble(),
-                    percentageChangeIn24Hrs = liveData.percentageChange24h!!.toDouble(),
+            if (liveData != null) {
+                newData.add(
+                    CryptoModel(
+                        name = liveData.name.replace("\"", ""),
+                        symbol = liveData.symbol.replace("\"", ""),
+                        price = liveData.price!!.toDouble(),
+                        marketCap = liveData.marketCap!!.toDouble(),
+                        percentageChangeIn24Hrs = liveData.percentageChange24h!!.toDouble(),
+                    )
                 )
-            )
+            }
         }
         _cryptoModel.clear()
         _cryptoModel.addAll(newData)
@@ -120,6 +128,43 @@ class DashboardViewModel: ViewModel() {
         }
         println("Here is user information $result")
         if (result != null) _userPortfolio = result
+    }
+
+    fun showBalance(){
+        _showBalance = !_showBalance
+
+    }
+    fun isCoinOrWatchlist(toggle:String){
+        when(toggle){
+            "coin" -> _isCoinOrWatchlistSelected = true
+            "watchlist" -> _isCoinOrWatchlistSelected = false
+        }
+    }
+    fun filterCryptos(toggle:String){
+        when(toggle){
+            "market-cap" -> _filterChip = "market-cap"
+            "price" -> _filterChip = "price"
+            "24h-change" -> _filterChip = "24h-change"
+        }
+    }
+
+    fun formatCurrency(symbol:String = "KES", amount:Double = 0.0): String {
+        val formatter = NumberFormat.getCurrencyInstance()
+        val currency = Currency.getInstance(symbol)
+        formatter.currency = currency
+        formatter.maximumFractionDigits = currency.defaultFractionDigits
+        val amount = formatter.format(amount)
+        return amount.replace(currency.symbol, "${currency.symbol} ")
+
+    }
+
+  fun userBalance(symbol: String = "KES"):String{
+        val formatter = NumberFormat.getCurrencyInstance()
+        val currency = Currency.getInstance(symbol)
+        formatter.currency = currency
+        formatter.maximumFractionDigits = currency.defaultFractionDigits
+        val amount = formatter.format(userPortfolio.balance)
+        return amount.replace(currency.symbol, "${currency.symbol} ")
     }
 
 

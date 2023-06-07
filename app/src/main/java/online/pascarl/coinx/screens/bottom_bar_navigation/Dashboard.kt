@@ -21,7 +21,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush.Companion.linearGradient
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -38,8 +37,6 @@ import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.*
 import online.pascarl.coinx.R
-import online.pascarl.coinx.datasource.userPortfolio
-import online.pascarl.coinx.model.CryptoModel
 import online.pascarl.coinx.navigation.NavigationDrawer
 import online.pascarl.coinx.roomDB.RoomViewModel
 import online.pascarl.coinx.roomDB.UserDatabase
@@ -77,7 +74,6 @@ fun Preview1(){
         dashboardViewModel.cryptoPrices()
         dashboardViewModel.getUserData()
         dashboardViewModel.getUserPortfolio()
-
     }
     Scaffold(
         scaffoldState = scaffoldState,
@@ -145,7 +141,7 @@ fun TopBarComponents(navDrawer: ScaffoldState, dashboardViewModel: DashboardView
                 Icon(
                     painter = painterResource(id = R.drawable.qr_code_scanner),
                     contentDescription = "Profile Icon",
-                    tint = Color.Gray,
+                    tint = colorResource(id = R.color.background),
                     modifier = Modifier
                         .size(25.dp)
                         .clip(RoundedCornerShape(360.dp))
@@ -158,7 +154,7 @@ fun TopBarComponents(navDrawer: ScaffoldState, dashboardViewModel: DashboardView
                 Icon(
                     imageVector = Outlined.Notifications,
                     contentDescription = "Profile Icon",
-                    tint = Color.Gray,
+                    tint = colorResource(id = R.color.background),
                     modifier = Modifier
                         .size(25.dp)
                         .clip(RoundedCornerShape(360.dp))
@@ -203,37 +199,12 @@ fun Salutation(username:String = "Pasaka", dashboardViewModel: DashboardViewMode
 
 @Composable
 fun WalletCardComposable(currencySymbol: String = "KES", dashboardViewModel: DashboardViewModel){
-
-    val time by remember { mutableStateOf(getCurrentTime()) }
-    val totalAmount = formatCurrency(symbol = currencySymbol, value = dashboardViewModel.userPortfolio.balance)
-    var hideBalance by rememberSaveable{
-        mutableStateOf(true)
-    }
-    var hideBalanceAmount by remember{ mutableStateOf(0) }
-    var imageVictor:ImageVector by remember { mutableStateOf(Outlined.VisibilityOff) }
-
-    val color = when(time){
-        "Good morning" ->colorResource(id = R.color.grass_green)
-        "Good afternoon" -> colorResource(id = R.color.purple_200)
-        else -> {
-            colorResource(id = R.color.orange)
-        }
-    }
-
-
-
-    val gradient = linearGradient(
-        0.0f to colorResource(id = R.color.background),
-        500.0f to color ,
-        start = Offset.Zero,
-        end = Offset.Infinite
-    )
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(gradient)
+            .background(color = colorResource(id = R.color.background))
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -252,20 +223,12 @@ fun WalletCardComposable(currencySymbol: String = "KES", dashboardViewModel: Das
 
             IconButton(
                 onClick = {
-                    if (hideBalance){
-                        imageVictor = Outlined.Visibility
-                        hideBalance = false
-                        hideBalanceAmount = 25
-                    }else{
-                        imageVictor = Outlined.VisibilityOff
-                        hideBalance = true
-                        hideBalanceAmount = 0
-
-                    }
+                 dashboardViewModel.showBalance()
                 }
             ) {
                 Icon(
-                    imageVector = imageVictor,
+                    imageVector = if (dashboardViewModel.showBalance)
+                        Outlined.Visibility else Outlined.VisibilityOff,
                     contentDescription = "Profile Icon",
                     tint = colorResource(id = R.color.app_white) ,
                 )
@@ -273,7 +236,7 @@ fun WalletCardComposable(currencySymbol: String = "KES", dashboardViewModel: Das
         }
 
         Text(
-            text = if (hideBalance) totalAmount else "KES ****",
+            text = if (dashboardViewModel.showBalance) dashboardViewModel.userBalance() else "KES ****",
             style = MaterialTheme.typography.body1,
             fontWeight = FontWeight.W500,
             textAlign = TextAlign.Center,
@@ -377,16 +340,18 @@ fun ExpressCheckout(dashboardViewModel:DashboardViewModel){
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(start=12.dp, end=12.dp, top=5.dp, bottom = 5.dp)
+            .padding(start = 16.dp, end = 16.dp, top=5.dp, bottom = 5.dp)
     )
     {
-        Text(
-            text = "Express Checkout",
-            style = MaterialTheme.typography.body2,
-        )
-        //Spacer(modifier = Modifier.height(5.dp))
         val context = LocalContext.current
         val pagerState = rememberPagerState()
+        Text(
+            text = "Express Checkout",
+            color = Color.Gray,
+            style = MaterialTheme.typography.body2,
+            fontWeight = FontWeight.W400,
+
+        )
         if (dashboardViewModel.cryptoModel.isNullOrEmpty()) {
             // Display a loading indicator or placeholder UI until the data arrives
         } else {
@@ -404,9 +369,11 @@ fun ExpressCheckout(dashboardViewModel:DashboardViewModel){
                         imageIcon = imageLoader(cryptoItem.symbol),
                         price = cryptoItem.price,
                         percentageChangeIn24Hrs = cryptoItem.percentageChangeIn24Hrs,
+                        dashboardViewModel = dashboardViewModel,
                         modifier = Modifier.clickable {
                             showMessage(context, "Buying ${cryptoItem.name}")
-                        }
+                        },
+
                     )
                 } else {
                     // Handle index out of bounds error if necessary
@@ -428,8 +395,9 @@ fun ExpressCheckOutItems(
     price:Double =3948175.55,
     percentageChangeIn24Hrs:Double = -1.58,
     firstGradientColor:Color = colorResource(id = R.color.background),
-    secondGradientColor:Color = colorResource(id = R.color.black),
-    modifier:Modifier = Modifier
+    secondGradientColor:Color = colorResource(id = R.color.grass_green),
+    modifier:Modifier = Modifier,
+    dashboardViewModel: DashboardViewModel
 
 ){
     val gradient = linearGradient(
@@ -442,7 +410,7 @@ fun ExpressCheckOutItems(
 
     Column(
         modifier = modifier
-            .requiredWidth(360.dp)
+            .fillMaxWidth()
             .clip(RoundedCornerShape(10.dp))
             .background(brush = gradient)
     ) {
@@ -514,7 +482,7 @@ fun ExpressCheckOutItems(
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
-                    text = formatCurrency("KES", price),
+                    text = dashboardViewModel.formatCurrency(amount = price),
                     style = MaterialTheme.typography.body1,
                     //   fontSize = 14.sp,
                     color = colorResource(id = R.color.app_white),
@@ -539,28 +507,25 @@ fun ExpressCheckOutItems(
         }
     }
 }
-
 @Composable
-fun CoinsOrWatchList(dashboardViewModel: DashboardViewModel){
-    var isCoinSelected by rememberSaveable { mutableStateOf(true) }
-    var isWatchListSelected by rememberSaveable{ mutableStateOf(false) }
+fun CoinsOrWatchList(dashboardViewModel: DashboardViewModel) {
     Column {
         Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(){
+            Row(
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
                     text = "Coin",
                     style = MaterialTheme.typography.body1,
                     fontSize = 16.sp,
-                    color = if (isCoinSelected) colorResource(id = R.color.background) else Color.Gray,
+                    color = if (dashboardViewModel.isCoinOrWatchlistSelected) colorResource(id = R.color.background) else Color.Gray,
                     modifier = Modifier
                         .padding(start = 16.dp, top = 8.dp)
                         .clickable {
-                            isCoinSelected = true
-                            isWatchListSelected = false
-
+                            dashboardViewModel.isCoinOrWatchlist(toggle = "coin")
                         }
                 )
                 Spacer(modifier = Modifier.width(16.dp))
@@ -568,42 +533,37 @@ fun CoinsOrWatchList(dashboardViewModel: DashboardViewModel){
                     text = "Watchlist",
                     style = MaterialTheme.typography.body1,
                     fontSize = 16.sp,
-                    color = if (isWatchListSelected) colorResource(id = R.color.background) else Color.Gray,
+                    color = if (!dashboardViewModel.isCoinOrWatchlistSelected) colorResource(id = R.color.background) else Color.Gray,
                     modifier = Modifier
                         .padding(start = 16.dp, top = 8.dp)
                         .clickable {
-                            isWatchListSelected = true
-                            isCoinSelected = false
-                        }
-                )
-            }
-            Spacer(modifier = Modifier.width(105.dp))
-            Column {
-                Text(
-                    text = "See all",
-                    textAlign = TextAlign.End,
-                    style = MaterialTheme.typography.body1,
-                    fontSize = 14.sp,
-                    textDecoration = TextDecoration.Underline,
-                    color =  colorResource(id = R.color.background),
-                    modifier = Modifier
-                        .padding(top = 8.dp, end = 16.dp)
-                        .clickable {
+                            dashboardViewModel.isCoinOrWatchlist(toggle = "watchlist")
                         }
                 )
             }
 
+            Text(
+                text = "See all",
+                textAlign = TextAlign.End,
+                style = MaterialTheme.typography.body1,
+                fontSize = 14.sp,
+                textDecoration = TextDecoration.Underline,
+                color = colorResource(id = R.color.background),
+                modifier = Modifier
+                    .padding(top = 8.dp, end = 16.dp)
+                    .clickable {
+
+                    }
+                    .weight(1f)
+            )
         }
     }
-
-    CryptoListOrWatchlist(isCoinSelected, dashboardViewModel = dashboardViewModel)
+    CryptoListOrWatchlist(dashboardViewModel = dashboardViewModel)
 }
 
 @Composable
 fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardViewModel){
-    var isMarketCapSelected by rememberSaveable { mutableStateOf(true) }
-    var isPriceSelected by rememberSaveable{ mutableStateOf(false) }
-    var is24HrChangeSelected by rememberSaveable{ mutableStateOf(false) }
+
     val onSelectedBackgroundColor = colorResource(id = R.color.background)
     val onNotSelectedBackgroundColor = Color.Gray
 
@@ -620,12 +580,10 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
                 .padding(start = 16.dp, top = 8.dp)
                 .width(100.dp)
                 .clip(RoundedCornerShape(40))
-                .background(if (isMarketCapSelected) onSelectedBackgroundColor else onNotSelectedBackgroundColor)
+                .background(if (dashboardViewModel.filterChip == "market-cap") onSelectedBackgroundColor else onNotSelectedBackgroundColor)
                 .clickable {
-                    isMarketCapSelected = true
-                    isPriceSelected = false
-                    is24HrChangeSelected = false
-                    dashboardViewModel.sortCryptos("marketcap")
+                    dashboardViewModel.filterCryptos("market-cap")
+                    dashboardViewModel.sortCryptos("market-cap")
                 }
         )
         Spacer(modifier = Modifier.width(16.dp))
@@ -639,11 +597,9 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
                 .padding(start = 16.dp, top = 8.dp)
                 .width(100.dp)
                 .clip(RoundedCornerShape(40))
-                .background(if (isPriceSelected) onSelectedBackgroundColor else onNotSelectedBackgroundColor)
+                .background(if (dashboardViewModel.filterChip == "price") onSelectedBackgroundColor else onNotSelectedBackgroundColor)
                 .clickable {
-                    isPriceSelected = true
-                    isMarketCapSelected = false
-                    is24HrChangeSelected = false
+                    dashboardViewModel.filterCryptos("price")
                     dashboardViewModel.sortCryptos("price")
                 }
         )
@@ -658,11 +614,9 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
                 .padding(start = 16.dp, top = 8.dp)
                 .width(100.dp)
                 .clip(RoundedCornerShape(40))
-                .background(if (is24HrChangeSelected) onSelectedBackgroundColor else onNotSelectedBackgroundColor)
+                .background(if (dashboardViewModel.filterChip == "24h-change") onSelectedBackgroundColor else onNotSelectedBackgroundColor)
                 .clickable {
-                    is24HrChangeSelected = true
-                    isPriceSelected = false
-                    isMarketCapSelected = false
+                    dashboardViewModel.filterCryptos("24h-change")
                     dashboardViewModel.sortCryptos("24h-change")
                 }
         )
@@ -678,6 +632,7 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
                 imageIcon = imageLoader(symbol = dashboardViewModel.cryptoModel[it].symbol),
                 percentageChangeIn24Hrs = dashboardViewModel.cryptoModel[it].percentageChangeIn24Hrs,
                 price = dashboardViewModel.cryptoModel[it].price,
+                dashboardViewModel = dashboardViewModel,
                 modifier = Modifier.clickable {
                     showMessage(context, dashboardViewModel.cryptoModel[it].name)
                 }
@@ -693,8 +648,8 @@ fun CryptoCoinListItem(
     imageIcon: Painter = painterResource(id = R.drawable.bitcoin_icon),
     percentageChangeIn24Hrs: Double,
     price: Double,
-
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    dashboardViewModel: DashboardViewModel
 ){
 
     Row(
@@ -749,7 +704,7 @@ fun CryptoCoinListItem(
                     colorResource(id = R.color.red) else colorResource(id = R.color.grass_green)
             )
             Text(
-                text = formatCurrency("KES", price),
+                text = dashboardViewModel.formatCurrency(amount = price),
                 style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
@@ -762,15 +717,15 @@ fun CryptoCoinListItem(
 
 
 @Composable
-fun CryptoListOrWatchlist(isCoinlistSelected: Boolean, dashboardViewModel: DashboardViewModel){
+fun CryptoListOrWatchlist(dashboardViewModel: DashboardViewModel){
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
     ) {
-        if(isCoinlistSelected){
+        if(dashboardViewModel.isCoinOrWatchlistSelected){
             FilterChips(dashboardViewModel = dashboardViewModel)
-        }else{
+        }else if(!dashboardViewModel.isCoinOrWatchlistSelected){
             Column() {
             }
             }

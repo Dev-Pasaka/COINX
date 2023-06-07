@@ -22,6 +22,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import online.pascarl.coinx.FetchCryptoPrices
 import online.pascarl.coinx.R
@@ -29,9 +30,10 @@ import online.pascarl.coinx.imageLoader
 import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.screens.auth_screen.showMessage
 import online.pascarl.coinx.screens.bottom_bar_navigation.CryptoCoinListItem
+import online.pascarl.coinx.screens.bottom_bar_navigation.DashboardViewModel
 
 @Composable
-fun SeeAllCryptos(navController: NavHostController){
+fun SeeAllCryptos(navController: NavHostController, dashboardViewModel: DashboardViewModel = viewModel()){
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start,
@@ -59,7 +61,7 @@ fun SeeAllCryptos(navController: NavHostController){
 
         }
 
-        SeeAllCryptos()
+        SeeAllCryptos(dashboardViewModel = dashboardViewModel)
 
     }
 }
@@ -67,7 +69,8 @@ fun SeeAllCryptos(navController: NavHostController){
 
 @Composable
 fun SeeAllCryptos(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    dashboardViewModel: DashboardViewModel
 ){
     val list = FetchCryptoPrices.loadData.sortedBy { it.marketCap }.asReversed()
     var cryptoList by remember { mutableStateOf(list) }
@@ -163,6 +166,7 @@ fun SeeAllCryptos(
                 imageIcon = imageLoader(symbol = cryptoList[it].symbol),
                 percentageChangeIn24Hrs = cryptoList[it].percentageChangeIn24Hrs,
                 price = cryptoList[it].price,
+                dashboardViewModel = dashboardViewModel,
                 modifier = Modifier.clickable {
                     showMessage(context, cryptoList[it].name)
                 }
