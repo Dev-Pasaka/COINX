@@ -29,14 +29,7 @@ import online.pascarl.coinx.datasource.expressCheckOut
 import java.text.NumberFormat
 import java.util.*
 
-fun formatCurrency(symbol:String, value: Double): String {
-    val formatter = NumberFormat.getCurrencyInstance()
-    val currency = Currency.getInstance(symbol)
-    formatter.currency = currency
-    formatter.maximumFractionDigits = currency.defaultFractionDigits
-    val formatted = formatter.format(value)
-    return formatted.replace(currency.symbol, "${currency.symbol} ")
-}
+
 
 fun getCurrentTime(): String{
     val currentTime = Calendar.getInstance().time.hours
