@@ -11,10 +11,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import online.pascarl.coinx.model.CryptoModel
-import online.pascarl.coinx.navigation.BottomNavGraph
 import online.pascarl.coinx.navigation.NavGraph
-import online.pascarl.coinx.screens.AnimatedSplashScreen
 import online.pascarl.coinx.ui.theme.COINXTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,10 +27,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                     modifier = Modifier.fillMaxSize()
                 ){
-
                     navController = rememberNavController()
                     NavGraph(navController = navController)
-                 /*   BottomNavGraph(navController = navController)*/
 
                 }
             }
@@ -43,8 +38,4 @@ class MainActivity : ComponentActivity() {
 
 
 
-}
-
-object FetchCryptoPrices{
-    var loadData = listOf<CryptoModel>()
 }

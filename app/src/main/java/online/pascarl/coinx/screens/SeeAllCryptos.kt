@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import online.pascarl.coinx.FetchCryptoPrices
 import online.pascarl.coinx.R
 import online.pascarl.coinx.imageLoader
 import online.pascarl.coinx.navigation.Screen
@@ -72,8 +71,7 @@ fun SeeAllCryptos(
     modifier: Modifier = Modifier,
     dashboardViewModel: DashboardViewModel
 ){
-    val list = FetchCryptoPrices.loadData.sortedBy { it.marketCap }.asReversed()
-    var cryptoList by remember { mutableStateOf(list) }
+
     val context = LocalContext.current
 
     var isMarketCapSelected by rememberSaveable { mutableStateOf(true) }
@@ -101,11 +99,6 @@ fun SeeAllCryptos(
                     isPriceSelected = false
                     is24HrChangeSelected = false
 
-                    cryptoList = cryptoList
-                        .sortedBy {
-                            it.marketCap
-                        }
-                        .asReversed()
                 }
         )
         Spacer(modifier = Modifier.width(16.dp))
@@ -124,11 +117,7 @@ fun SeeAllCryptos(
                     isPriceSelected = true
                     isMarketCapSelected = false
                     is24HrChangeSelected = false
-                    cryptoList = cryptoList
-                        .sortedBy {
-                            it.price
-                        }
-                        .asReversed()
+
                 }
         )
 
@@ -148,30 +137,14 @@ fun SeeAllCryptos(
                     isPriceSelected = false
                     isMarketCapSelected = false
 
-                    cryptoList = cryptoList
-                        .sortedBy {
-                            it.percentageChangeIn24Hrs
-                        }
-                        .asReversed()
+
                 }
         )
     }
 
       LazyColumn(modifier = Modifier.fillMaxWidth()){
 
-        items(cryptoList.size){
-            CryptoCoinListItem(
-                name = cryptoList[it].name,
-                symbol = cryptoList[it].symbol,
-                imageIcon = imageLoader(symbol = cryptoList[it].symbol),
-                percentageChangeIn24Hrs = cryptoList[it].percentageChangeIn24Hrs,
-                price = cryptoList[it].price,
-                dashboardViewModel = dashboardViewModel,
-                modifier = Modifier.clickable {
-                    showMessage(context, cryptoList[it].name)
-                }
-            )
-        }
+
 
     }
 

@@ -31,6 +31,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -46,12 +52,12 @@ import online.pascarl.coinx.screens.auth_screen.showMessage
 
 
 
-@RequiresApi(Build.VERSION_CODES.O)
+/*@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true)
 @Composable
 fun Preview1(){
     Dashboard()
-}
+}*/
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
@@ -59,7 +65,8 @@ fun Preview1(){
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
  fun Dashboard(
-    dashboardViewModel: DashboardViewModel = viewModel()
+    dashboardViewModel: DashboardViewModel = viewModel(),
+    navController: NavController,
 
 ){
     val scaffoldState = rememberScaffoldState()
@@ -100,7 +107,7 @@ fun Preview1(){
                     ExpressCheckout(dashboardViewModel = dashboardViewModel)
                     CoinsOrWatchList(dashboardViewModel = dashboardViewModel)
                 }
-            } else if (!isInternetAvailable(context = context) || FetchCryptoPrices.loadData.isEmpty()) {
+            } else if (!isInternetAvailable(context = context)) {
                 NoInternet()
             }
         }
@@ -121,12 +128,12 @@ fun TopBarComponents(navDrawer: ScaffoldState, dashboardViewModel: DashboardView
             val scope = rememberCoroutineScope()
             Icon(
                 painter = painterResource(id = R.drawable.person_icon),
-                tint = Color.Gray,
+                tint = Color.White,
                 contentDescription = "Profile Icon",
                 modifier = Modifier
                     .size(25.dp)
                     .clip(RoundedCornerShape(360.dp))
-                    .background(color = Color.LightGray)
+                    .background(color = colorResource(id = R.color.background))
                     .clickable {
                         scope.launch {
                             navDrawer.drawerState.open()
@@ -353,7 +360,7 @@ fun ExpressCheckout(dashboardViewModel:DashboardViewModel){
 
         )
         if (dashboardViewModel.cryptoModel.isNullOrEmpty()) {
-            // Display a loading indicator or placeholder UI until the data arrives
+            ExpressCheckOutLoadingPreview()
         } else {
             HorizontalPager(
                 count = dashboardViewModel.expressCheckoutCryptoList.size,
@@ -561,6 +568,7 @@ fun CoinsOrWatchList(dashboardViewModel: DashboardViewModel) {
     CryptoListOrWatchlist(dashboardViewModel = dashboardViewModel)
 }
 
+
 @Composable
 fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardViewModel){
 
@@ -569,6 +577,9 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
 
     Row(
         horizontalArrangement = Arrangement.Start,
+        modifier = Modifier
+            .fillMaxWidth()
+
     ) {
         Text(
             text = "market cap",
@@ -623,20 +634,24 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
     }
 
     val context = LocalContext.current
-    LazyColumn(modifier = Modifier.fillMaxWidth()){
+    if (dashboardViewModel.cryptoModel.isNullOrEmpty()){
+        CryptoListPreview()
+    }else{
+        LazyColumn(modifier = Modifier.fillMaxWidth()){
 
-        items(dashboardViewModel.cryptoModel.size){
-            CryptoCoinListItem(
-                name = dashboardViewModel.cryptoModel[it].name,
-                symbol = dashboardViewModel.cryptoModel[it].symbol,
-                imageIcon = imageLoader(symbol = dashboardViewModel.cryptoModel[it].symbol),
-                percentageChangeIn24Hrs = dashboardViewModel.cryptoModel[it].percentageChangeIn24Hrs,
-                price = dashboardViewModel.cryptoModel[it].price,
-                dashboardViewModel = dashboardViewModel,
-                modifier = Modifier.clickable {
-                    showMessage(context, dashboardViewModel.cryptoModel[it].name)
-                }
-            )
+            items(dashboardViewModel.cryptoModel.size){
+                CryptoCoinListItem(
+                    name = dashboardViewModel.cryptoModel[it].name,
+                    symbol = dashboardViewModel.cryptoModel[it].symbol,
+                    imageIcon = imageLoader(symbol = dashboardViewModel.cryptoModel[it].symbol),
+                    percentageChangeIn24Hrs = dashboardViewModel.cryptoModel[it].percentageChangeIn24Hrs,
+                    price = dashboardViewModel.cryptoModel[it].price,
+                    dashboardViewModel = dashboardViewModel,
+                    modifier = Modifier.clickable {
+                        showMessage(context, dashboardViewModel.cryptoModel[it].name)
+                    }
+                )
+            }
         }
     }
 }
@@ -733,6 +748,66 @@ fun CryptoListOrWatchlist(dashboardViewModel: DashboardViewModel){
 
 }
 
+
+@Composable
+fun ExpressCheckOutLoadingPreview(){
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.fetching))
+
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.2f)
+            .clip(RoundedCornerShape(10.dp))
+            .background(color = Color.LightGray)
+            .padding(vertical = 16.dp)
+    ){
+
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+            modifier = Modifier
+                .height(500.dp)
+                .fillMaxWidth()
+        )
+
+    }
+}
+
+@Composable
+fun CryptoListPreview(){
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.fetching))
+
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .background(color = Color.LightGray)
+
+    ){
+
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+            modifier = Modifier
+                .height(500.dp)
+                .fillMaxWidth()
+        )
+
+    }
+}
 
 
 

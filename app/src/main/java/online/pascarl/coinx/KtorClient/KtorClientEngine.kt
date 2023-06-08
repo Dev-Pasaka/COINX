@@ -1,4 +1,4 @@
-package online.pascarl.coinx.apis
+package online.pascarl.coinx.KtorClient
 
 import io.ktor.client.*
 import io.ktor.client.features.*

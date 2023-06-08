@@ -21,11 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.airbnb.lottie.compose.*
 import kotlinx.coroutines.*
 import online.pascarl.coinx.R
-import online.pascarl.coinx.authentication.resetPassword
-import online.pascarl.coinx.datasource.UserEmail
 import online.pascarl.coinx.imageLoader
 import online.pascarl.coinx.navigation.Screen
 import kotlin.concurrent.timer
@@ -159,14 +156,7 @@ fun EmailResetConfirmation(navController: NavHostController) {
                     modifier = if (!isCounting){
                         Modifier.clickable {
                             scope.launch {
-                                val result = resetPassword(UserEmail.email)
-                                if (result) {
-                                    scaffoldState.snackbarHostState.showSnackbar("Password resent email has been sent")
-                                    isCounting = true
-                                }else{
-                                    scaffoldState.snackbarHostState.showSnackbar("Password resent email not sent")
-                                    isCounting = false
-                                }
+
 
                             }
                         }

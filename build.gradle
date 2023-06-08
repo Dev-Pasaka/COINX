@@ -13,9 +13,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url "https://maven.google.com"
-        }
+        maven {url "https://maven.google.com"}
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {

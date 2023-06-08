@@ -64,7 +64,6 @@ fun RegisterScreen(
 
     var showPassword by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
-    val internet = isInternetAvailable(context = context)
     val imeState = rememberImeState()
 
     LaunchedEffect(key1 = imeState.value) {
@@ -117,7 +116,7 @@ fun RegisterScreen(
                 modifier = Modifier.padding(top = 16.dp)
             )
             Spacer(modifier = Modifier.height(5.dp))
-          //  if (signInViewModel.showProgress) CircularProgressBar()
+            if (signInViewModel.circularProgressBar) CircularProgressBar()
             Spacer(modifier = Modifier.height(5.dp))
         }
 
@@ -272,6 +271,8 @@ fun RegisterScreen(
                     Button(
                         onClick = {
                             scope.launch {
+                                //Circular ProgressBard
+                                signInViewModel.circularProgressBar()
                                 //Firebase Auth
                                 signInViewModel.firebaseSignInResult = signInViewModel.firebaseSignIn(
                                     email = signInViewModel.email,
@@ -292,7 +293,7 @@ fun RegisterScreen(
                                                 token = signInViewModel.backendAuthToken!!
                                             )
                                         )
-                                        showMessage(context, "User was added successfully")
+                                        showMessage(context, "Signing in ...")
                                     }else{
                                         roomDB.updateUser(
                                             user = RoomUser(
@@ -300,17 +301,16 @@ fun RegisterScreen(
                                                 token = signInViewModel.backendAuthToken!!
                                             )
                                         )
-                                        showMessage(context, "user exists so we updated")
                                     }
 
 
                                 }
 
-                             /*   if (signInViewModel.isSignInSuccessful())navController.navigate(
+                                if (signInViewModel.isSignInSuccessful())navController.navigate(
                                     Screen.BottomBarNavigationContainer.route
                                 )else{
                                     showMessage(context, "Invalid email or password")
-                                }*/
+                                }
                             }
 
                         },
