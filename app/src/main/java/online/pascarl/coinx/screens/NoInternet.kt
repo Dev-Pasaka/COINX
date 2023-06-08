@@ -27,9 +27,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
-import online.pascarl.coinx.FetchCryptoPrices
 import online.pascarl.coinx.R
-import online.pascarl.coinx.datasource.expressCheckOut
 
 
 @Preview(showSystemUi = true)

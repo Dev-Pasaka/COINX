@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.url
-import online.pascarl.coinx.apis.KtorClient
+import online.pascarl.coinx.KtorClient.KtorClient
 import online.pascarl.coinx.model.Cryptocurrency
 import io.ktor.http.HttpHeaders.Authorization
 import online.pascarl.coinx.model.CryptoModel

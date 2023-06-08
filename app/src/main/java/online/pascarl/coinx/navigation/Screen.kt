@@ -8,6 +8,7 @@ sealed class Screen(val route:String){
     object NoInternet: Screen("no_internet")
     object SeeAllCryptos: Screen("see_all_cryptos")
     object ResetPassword: Screen("ResetPassword")
+    object OtpScreen: Screen("otp_screen")
     object EmailResetConfirmation: Screen("EmailResetConfirmation")
     object BottomBarNavigationContainer: Screen("bottom_bar_container")
 

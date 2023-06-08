@@ -4,18 +4,18 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -27,36 +27,60 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 import kotlinx.coroutines.launch
+import online.pascarl.coinx.Country
 import online.pascarl.coinx.R
-import online.pascarl.coinx.authentication.createAccount
-import online.pascarl.coinx.datasource.userData
-import online.pascarl.coinx.datasource.userPortfolio
-import online.pascarl.coinx.isInternetAvailable
-import online.pascarl.coinx.navigation.BottomBarScreen
+import online.pascarl.coinx.getFlagEmojiFor
 import online.pascarl.coinx.navigation.Screen
-import online.pascarl.coinx.networkcalls.getUserPortfolio
 import online.pascarl.coinx.screens.auth_screen.CircularProgressBar
+import online.pascarl.coinx.screens.auth_screen.CreateAccountViewModel
 
 @Composable
 fun CreateAccount(
-    image: Painter = painterResource(id = R.drawable.coinx),
+    createAccountViewModel: CreateAccountViewModel = viewModel(),
     navController: NavHostController
 ){
-    var fullName by remember { mutableStateOf("") }
-    var userName by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var registerPassword by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var showCircularProgressBar by remember{ mutableStateOf(false) }
-    val context = LocalContext.current
-    val internet = isInternetAvailable(context = context)
     val scrollState = rememberScrollState()
-    val scope = rememberCoroutineScope()
+    Column {
+        Header(navController = navController)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "Register",
+                fontSize = 16.sp,
+                style = MaterialTheme.typography.body2,
+                modifier = Modifier.padding(top = 5.dp),
+            )
+            if (createAccountViewModel.showCircularProcessBar) CircularProgressBar()
+            Spacer(modifier = Modifier.height(5.dp))
+        }
+       Column(modifier = Modifier.verticalScroll(state = scrollState)) {
+           FullName(createAccountViewModel = createAccountViewModel)
+           Username(createAccountViewModel = createAccountViewModel)
+           Email(createAccountViewModel = createAccountViewModel)
+           PhoneNumber(createAccountViewModel = createAccountViewModel)
+           Password(createAccountViewModel = createAccountViewModel)
+           ConfirmPassword(createAccountViewModel = createAccountViewModel)
+           RegisterAccount(createAccountViewModel = createAccountViewModel, navController = navController)
+       }
+
+    }
+
+
+
+
+}
+@Composable
+fun Header(navController: NavHostController) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .background(color = colorResource(id = R.color.gray))
 
     ) {
@@ -79,14 +103,12 @@ fun CreateAccount(
                 modifier = Modifier
                     .padding(top = 30.dp, start = 16.dp)
                     .clickable {
-
                         navController.popBackStack()
-
                     }
 
             )
             Image(
-                painter = image, contentDescription = "logo",
+                painter = painterResource(id = R.drawable.coinx), contentDescription = "logo",
                 modifier = Modifier
                     .height(600.dp)
                     .width(600.dp)
@@ -103,7 +125,7 @@ fun CreateAccount(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.h3,
-                            modifier = Modifier.padding(top = 190.dp),
+                    modifier = Modifier.padding(top = 170.dp),
                     textAlign = TextAlign.Center,
 
                     )
@@ -112,356 +134,316 @@ fun CreateAccount(
         }
 
 
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+    }
+}
+
+@Composable
+fun FullName(createAccountViewModel: CreateAccountViewModel){
+  Column(
+      modifier = Modifier
+          .padding(start = 16.dp, end = 16.dp, top = 10.dp)
+          .fillMaxWidth()
+  ){
+      TextField(
+          value = createAccountViewModel.fullName,
+          onValueChange = {
+              createAccountViewModel.fullName = it
+          },
+          label = {
+              Text(
+                  text = "Full Name",
+                  style = MaterialTheme.typography.body2,
+
+                  )
+          },
+          singleLine = true,
+          leadingIcon = { Icon(imageVector = Icons.Filled.AccountBox, contentDescription = "Email icon") },
+          keyboardOptions = KeyboardOptions(
+              keyboardType = KeyboardType.Email,
+              imeAction = ImeAction.Next
+          ),
+          colors =TextFieldDefaults.textFieldColors(
+              focusedIndicatorColor = Color.Transparent,
+              unfocusedIndicatorColor = Color.Transparent
+          ),
+          isError = createAccountViewModel.isFullNameValid,
+          shape = RoundedCornerShape(10.dp),
+          modifier = Modifier.fillMaxWidth(),
+      )
+  }
+}
+
+@Composable
+fun Username(createAccountViewModel: CreateAccountViewModel){
+    Column(
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp, top = 10.dp)
+            .fillMaxWidth()
+    ){
+        TextField(
+            value = createAccountViewModel.username,
+            onValueChange = {
+                createAccountViewModel.username = it
+            },
+            label = {
+                Text(
+                    text = "Username",
+                    style = MaterialTheme.typography.body2,
+
+                    )
+            },
+            singleLine = true,
+            leadingIcon = { Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "Create account") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            isError = createAccountViewModel.isUsernameValid,
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            shape = RoundedCornerShape(10.dp),
             modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "Register",
-                fontSize = 16.sp,
-                style = MaterialTheme.typography.h4,
-                modifier = Modifier.padding(top = 5.dp),
-            )
-            if (showCircularProgressBar) CircularProgressBar()
-            Spacer(modifier = Modifier.height(5.dp))
-        }
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-                .verticalScroll(state = scrollState)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .fillMaxWidth()
-                        .padding( bottom = 20.dp)
+        )
+    }
+}
 
+@Composable
+fun Email(createAccountViewModel: CreateAccountViewModel){
+   Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp)) {
+       TextField(
+           value = createAccountViewModel.email,
+           onValueChange = {
+               createAccountViewModel.email = it
+           },
+           label = {
+               Text(
+                   text = "Email",
+                   style = MaterialTheme.typography.body2
 
+               )
+           },
+           singleLine = true,
+           leadingIcon = { Icon(imageVector = Icons.Filled.Email, contentDescription = "Email icon") },
+           keyboardOptions = KeyboardOptions(
+               keyboardType = KeyboardType.Email,
+               imeAction = ImeAction.Next
+           ),
+           isError = createAccountViewModel.isEmailValid,
+           colors =TextFieldDefaults.textFieldColors(
+               focusedIndicatorColor = Color.Transparent,
+               unfocusedIndicatorColor = Color.Transparent
+           ),
+           shape = RoundedCornerShape(10.dp),
+           modifier = Modifier.fillMaxWidth(),
+       )
+   }
+}
 
-
-                    // .weight(weight =1f, fill = false)
-                ) {
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    /** Full Name text-field */
-                    TextField(
-                        value = fullName,
-                        onValueChange = { fullName = it },
-                        label = {
-                            Text(
-                                text = "Full Name",
-                                style = MaterialTheme.typography.body2
-
-                            )
-                        },
-                        singleLine = true,
-                        leadingIcon = {
-                            IconButton(onClick = { /*TODO*/ }) {
-                                Icon(
-                                    imageVector = Icons.Filled.AccountBox,
-                                    contentDescription = "Create account"
-                                )
-                            }
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next
-                        ),
-                        colors = TextFieldDefaults.textFieldColors(
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
-                        ),
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.fillMaxWidth()
+@OptIn(ExperimentalCoilApi::class)
+@Composable
+fun PhoneNumber(createAccountViewModel: CreateAccountViewModel){
+    Column(
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp, top = 10.dp)
+            .fillMaxWidth()
+    ){
+        TextField(
+            value = createAccountViewModel.phoneNumber,
+            onValueChange = {
+                createAccountViewModel.phoneNumber = it
+            },
+            label = {
+                Text(
+                    text = "+(254)",
+                    style = MaterialTheme.typography.body2,
 
                     )
+            },
+            singleLine = true,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Phone,
+                    contentDescription = "Phone Icon"
+                )
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Phone,
+                imeAction = ImeAction.Next
+            ),
+            isError = createAccountViewModel.isPhoneValid,
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.fillMaxWidth()
+        )
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    /** Username text-field */
+    }
+}
+@Composable
+fun Password(createAccountViewModel: CreateAccountViewModel){
+    Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp)) {
+        TextField(
+            value = createAccountViewModel.password,
+            onValueChange = {
+                createAccountViewModel.password = it
+            },
+            label = {
+                Text(
+                    text = "Password",
+                    style = MaterialTheme.typography.body2
 
-                    TextField(
-                        value = userName,
-                        onValueChange = { userName = it },
-                        label = {
-                            Text(
-                                text = "Username",
-                                style = MaterialTheme.typography.body2
+                )
+            },
 
-                            )
-                        },
-                        singleLine = true,
-                        leadingIcon = {
-                            IconButton(onClick = { /*TODO*/ }) {
-                                Icon(
-                                    imageVector = Icons.Filled.AccountCircle,
-                                    contentDescription = "Create account"
-                                )
-                            }
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Next
-                        ),
-                        colors = TextFieldDefaults.textFieldColors(
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
-                        ),
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.fillMaxWidth()
+            visualTransformation = if (createAccountViewModel.showPassword)
+                VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Next
 
+            ),
+            leadingIcon ={ Icon(imageVector = Icons.Filled.Lock, contentDescription = "Password icon") },
+            trailingIcon = {
+                IconButton(onClick = { createAccountViewModel.hidePassword()}) {
+                    Icon(
+                        imageVector = if(createAccountViewModel.showPassword)
+                            Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                        contentDescription = "Password icon"
                     )
-                    
-                    if (userName.length in 2..2){
-                        //ErrorComposable(message = "Username must be more than 3 charters")
-                    }
-
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    /** Email text-field */
-
-                    Column {
-                        TextField(
-                            value = email,
-                            onValueChange = {
-                                email = it
-                            },
-                            label = {
-                                Text(
-                                    text = "Email",
-                                    style = MaterialTheme.typography.body2
-
-                                )
-                            },
-                            singleLine = true,
-                            leadingIcon = {
-                                IconButton(onClick = { /*TODO*/ }){
-                                    Icon(imageVector = Icons.Filled.Email, contentDescription = "Email icon")
-                                }
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Email,
-                                imeAction = ImeAction.Next
-                            ),
-                            colors =TextFieldDefaults.textFieldColors(
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            shape = RoundedCornerShape(10.dp),
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    }
-                    if (!email.contains("@")){
-                        //ErrorComposable(message = "Use a valid email address")
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    /** Password text-field */
-
-                    // Register password
-                    var showPassword by rememberSaveable { mutableStateOf(false) }
-                    Column {
-                        TextField(
-                            value = registerPassword,
-                            onValueChange = {
-                                registerPassword = it
-                            },
-                            label = {
-                                Text(
-                                    text = "Password",
-                                    style = MaterialTheme.typography.body2
-
-                                )
-                            },
-
-                            visualTransformation = if (showPassword) VisualTransformation.None else
-                                PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Password,
-                                imeAction = ImeAction.Next
-
-                            ),
-
-                            leadingIcon ={
-                                IconButton(onClick = { /*TODO*/ }) {
-                                    Icon(imageVector = Icons.Filled.Lock, contentDescription = "Password icon")
-
-                                }
-                            },
-                            trailingIcon = {
-                                if (showPassword){
-                                    IconButton(onClick = {showPassword = false}) {
-                                        Icon(
-                                            imageVector = Icons.Filled.Visibility,
-                                            contentDescription = "Hide password"
-                                        )
-
-                                    }
-                                }else{
-                                    IconButton(onClick = {showPassword = true}) {
-                                         Icon(
-                                              imageVector = Icons.Filled.VisibilityOff,
-                                              contentDescription = "Hide password"
-                                          )
-
-
-                                    }
-                                }
-                            },
-                            colors =TextFieldDefaults.textFieldColors(
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            shape = RoundedCornerShape(10.dp),
-                            modifier = Modifier.fillMaxWidth()
-
-
-                        )
-                    }
-
-                    if (registerPassword.length in 1..6){
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Confirm Password
-                    var confirmPasswordState by rememberSaveable { mutableStateOf(false) }
-                    Column {
-                        TextField(
-                            value = confirmPassword,
-                            onValueChange = {
-                                confirmPassword = it
-                            },
-                            label = {
-                                Text(
-                                    text = "Confirm Password",
-                                    style = MaterialTheme.typography.body2
-
-                                )
-                            },
-
-                            visualTransformation = if (confirmPasswordState) VisualTransformation.None else
-                                PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Password,
-                                imeAction = ImeAction.Next
-
-                            ),
-
-                            leadingIcon ={
-                                IconButton(onClick = { /*TODO*/ }) {
-                                    Icon(imageVector = Icons.Filled.Lock, contentDescription = "Password icon")
-
-                                }
-                            },
-                            trailingIcon = {
-                                if (confirmPasswordState){
-                                    IconButton(onClick = {confirmPasswordState = false}) {
-
-                                   Icon(
-                                       imageVector = Icons.Filled.Visibility,
-                                       contentDescription = "Hide password"
-                                   )
-
-                                    }
-                                }else{
-                                    IconButton(onClick = {confirmPasswordState = true}) {
-
-                                   Icon(
-                                       imageVector = Icons.Filled.VisibilityOff,
-                                       contentDescription = "Hide password"
-                                   )
-
-
-                                    }
-                                }
-                            },
-                            colors =TextFieldDefaults.textFieldColors(
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            shape = RoundedCornerShape(10.dp),
-                            modifier = Modifier.fillMaxWidth()
-
-
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Column {
-
-
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp)
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(color = colorResource(id = R.color.background))
-                                .clickable {
-
-
-                                    if (fullName.length < 6) {
-
-                                        showMessage(
-                                            context,
-                                            message = "Full name must be more than 6 characters"
-                                        )
-                                    }
-                                    if (userName.length < 3) {
-
-                                        showMessage(
-                                            context,
-                                            message = "Username must be more than 3 characters"
-                                        )
-
-                                    }
-                                    if (!email.contains("@")) {
-
-                                        showMessage(context, message = "Invalid email address")
-                                    }
-                                    if (
-                                        registerPassword != confirmPassword || registerPassword.length < 6
-                                    ) {
-                                        showMessage(context, message = "passwords don't much")
-
-                                    }
-                                    if (
-                                        fullName.length >= 6 && userName.length >= 3
-                                        && email.contains("@") && (registerPassword == confirmPassword
-                                                && registerPassword.length >= 6)
-
-                                    ) {
-
-                                        scope.launch {
-
-                                        }
-                                    }
-                                }
-
-                        ) {
-                            Text(
-                                text = "Create Account",
-                                color = colorResource(id = R.color.app_white),
-                                style = MaterialTheme.typography.body2,
-                                fontWeight = FontWeight.Normal
-
-                            )
-                        }
-
-                    }
                 }
-        }
+            },
+            isError = createAccountViewModel.isPasswordValid,
+            colors =TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.fillMaxWidth()
+
+
+        )
+
     }
 
 }
 
+@Composable
+fun ConfirmPassword(createAccountViewModel: CreateAccountViewModel){
+    Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp)) {
+        TextField(
+            value = createAccountViewModel.confirmPassword,
+            onValueChange = {
+                createAccountViewModel.confirmPassword = it
+            },
+            label = {
+                Text(
+                    text = "Confirm Password",
+                    style = MaterialTheme.typography.body2
+
+                )
+            },
+
+           visualTransformation = if (createAccountViewModel.showConfirmPassword)
+               VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Next
+
+            ),
+            leadingIcon ={Icon(imageVector = Icons.Filled.Lock, contentDescription = "Password icon")},
+            trailingIcon = {IconButton(onClick = { createAccountViewModel.hideConfirmPassword()}) {
+                Icon(
+                    imageVector = if(createAccountViewModel.showConfirmPassword)
+                        Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                    contentDescription = "Password icon"
+                )
+            }},
+            isError = createAccountViewModel.isPasswordValid,
+            colors =TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.fillMaxWidth()
+
+
+        )
+    }
+}
+
+@Composable
+fun RegisterAccount(createAccountViewModel: CreateAccountViewModel, navController: NavHostController){
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp)) {
+        if (createAccountViewModel.isFullNameValid) showMessage(context, message = "Full name must be more than 6 characters")
+        if (createAccountViewModel.isUsernameValid)  showMessage(context, message = "Username must be more than 3 characters")
+        if (createAccountViewModel.isEmailValid)  showMessage(context, message = "Invalid email address")
+        if (createAccountViewModel.isPhoneValid) showMessage(context, message = "Invalid phone number")
+        if (createAccountViewModel.isPasswordValid) showMessage(context, message = "Passwords don't much or less than six characters")
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(color = colorResource(id = R.color.background))
+                .clickable {
+                    createAccountViewModel.formValidation()
+                    scope.launch {
+                        when (createAccountViewModel.createAccount()) {
+                            "user created" -> {
+                                navController.navigate(Screen.Register.route)
+                                showMessage(context, "Registration Successful")
+
+                            }
+
+                            "user exists" -> showMessage(context, "User already exists")
+                            null -> showMessage(context, "Registration failed")
+                        }
+                    }
+                }
+
+        ) {
+            Text(
+                text = "Create Account",
+                color = colorResource(id = R.color.app_white),
+                style = MaterialTheme.typography.body2,
+                fontWeight = FontWeight.Normal
+
+            )
+        }
+    }
+}
+
+
+/*@Composable
+fun DialogContent(
+    countries: List<Country>,
+    onCountrySelected: (Country) -> Unit
+) {
+    // Replace with your own dialog content implementation
+    // Here's a simple example using a LazyColumn to display the country list
+    LazyColumn {
+        items(countries) { country ->
+            Text(
+                text = "${getFlagEmojiFor(country.code)} ${country.fullName}",
+                modifier = Modifier
+                    .clickable { onCountrySelected(country) }
+                    .padding(16.dp)
+            )
+        }
+    }
+}*/
 fun showMessage(context: Context, message:String){
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
+
+
 
 
 

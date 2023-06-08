@@ -3,14 +3,15 @@ package online.pascarl.coinx.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import online.pascarl.coinx.BottomUpAnimation
 import online.pascarl.coinx.SlideInAnimation
 import online.pascarl.coinx.screens.*
 import online.pascarl.coinx.screens.auth_screen.EmailResetConfirmation
+import online.pascarl.coinx.screens.auth_screen.OtpScreen
 import online.pascarl.coinx.screens.auth_screen.RegisterScreen
 import online.pascarl.coinx.screens.auth_screen.ResetPassword
 import online.pascarl.coinx.screens.bottom_bar_navigation.*
@@ -47,6 +48,11 @@ fun NavGraph(navController: NavHostController){
        composable(route = Screen.EmailResetConfirmation.route){
            SlideInAnimation {
                EmailResetConfirmation(navController = navController)
+           }
+       }
+       composable(route = Screen.OtpScreen.route){
+           SlideInAnimation {
+               OtpScreen(navController = NavController)
            }
        }
        composable(route = Screen.BottomBarNavigationContainer.route){

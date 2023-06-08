@@ -12,11 +12,13 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -25,23 +27,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.*
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
-import online.pascarl.coinx.authentication.resetPassword
-import online.pascarl.coinx.datasource.UserEmail
 import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.rememberImeState
 
 
-@Composable
-fun ResetPassword(navController: NavHostController){
 
-    var email by remember{ mutableStateOf("") }
+
+@Composable
+fun ResetPassword(navController:NavHostController, resetPasswordViewModel: ResetPasswordViewModel = viewModel()){
     val scope  = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val imeState = rememberImeState()
+    val context =  LocalContext.current
     LaunchedEffect(key1 = imeState.value) {
         if (imeState.value){
             scrollState.animateScrollTo(scrollState.maxValue, tween(500))
@@ -63,8 +65,6 @@ fun ResetPassword(navController: NavHostController){
             IconButton(
                 onClick = {
                     navController.popBackStack()
-                    navController.navigate(Screen.Register.route)
-
                 }
             ) {
                 Icon(
@@ -79,7 +79,8 @@ fun ResetPassword(navController: NavHostController){
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
             Text(
@@ -102,7 +103,8 @@ fun ResetPassword(navController: NavHostController){
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ){
             val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.reset_password_animation))
@@ -126,25 +128,20 @@ fun ResetPassword(navController: NavHostController){
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = email,
+            value = resetPasswordViewModel.email,
             onValueChange = {
-                email = it
+                resetPasswordViewModel.email = it
             },
             label = {
                 Text(
-                    text = "Email",
+                    text = "Phone",
                     style = MaterialTheme.typography.body2,
-
                     )
             },
             singleLine = true,
-            leadingIcon = {
-                IconButton(onClick = { /*TODO*/ }){
-                    Icon(imageVector = Icons.Filled.Email, contentDescription = "Email icon")
-                }
-            },
+            leadingIcon = { Icon(imageVector = Icons.Filled.Phone, contentDescription = "Email icon") },
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
+                keyboardType = KeyboardType.Phone,
                 imeAction = ImeAction.Next
             ),
             colors = TextFieldDefaults.textFieldColors(
@@ -152,7 +149,8 @@ fun ResetPassword(navController: NavHostController){
                 unfocusedIndicatorColor = colorResource(id = R.color.background)
             ),
             shape = RoundedCornerShape(10.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         )
 
@@ -161,7 +159,8 @@ fun ResetPassword(navController: NavHostController){
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ){
             Text(
@@ -180,7 +179,6 @@ fun ResetPassword(navController: NavHostController){
                 fontWeight = FontWeight.W500,
                 modifier = Modifier.clickable {
                     navController.popBackStack()
-                    navController.navigate(Screen.Register.route)
                 }
             )
         }
@@ -200,9 +198,7 @@ fun ResetPassword(navController: NavHostController){
                 )
                 .clickable {
                     scope.launch {
-                        val result = resetPassword(email)
-                        if (result) navController.navigate(Screen.EmailResetConfirmation.route)
-                        UserEmail.email = email
+                        navController.navigate(Screen.OtpScreen.route)
                     }
                 }
 

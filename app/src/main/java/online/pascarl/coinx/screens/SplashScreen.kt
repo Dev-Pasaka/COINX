@@ -1,6 +1,7 @@
 package online.pascarl.coinx.screens
 
 import android.annotation.SuppressLint
+import android.app.Application
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -18,16 +19,29 @@ import androidx.compose.ui.res.painterResource
 import online.pascarl.coinx.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
-import online.pascarl.coinx.FetchCryptoPrices
-import online.pascarl.coinx.datasource.expressCheckOut
 import online.pascarl.coinx.navigation.Screen
-
+import online.pascarl.coinx.roomDB.RoomUser
+import online.pascarl.coinx.roomDB.RoomViewModel
+import online.pascarl.coinx.roomDB.UserDatabase
+import online.pascarl.coinx.roomDB.UserRepository
 
 
 @Composable
-fun AnimatedSplashScreen(navController: NavHostController){
+fun AnimatedSplashScreen(navController: NavHostController, splashScreenViewModel: SplashScreenViewModel = viewModel()){
+    val roomDB = RoomViewModel(
+        application = Application(),
+        userRepository = UserRepository(UserDatabase.getInstance(LocalContext.current.applicationContext).userDao())
+    )
+    LaunchedEffect(Unit){
+        val roomResult = roomDB.getUser("12345678")
+        if (roomResult != null) splashScreenViewModel.roomUser = roomResult
+        else splashScreenViewModel.roomUser = RoomUser()
+        splashScreenViewModel.getUserData()
+    }
 
 
     var startAnimation by remember {
@@ -43,15 +57,12 @@ fun AnimatedSplashScreen(navController: NavHostController){
 
     LaunchedEffect(key1 = true){
         startAnimation = true
-        val result = try {
-            FetchCryptoPrices.loadData = expressCheckOut()
-        } catch (e: Exception) {
-            FetchCryptoPrices.loadData = emptyList()
-        }
-        delay(2000)
+        delay(3000)
         navController.popBackStack()
         navController.clearBackStack(Screen.SplashScreen.route)
-        navController.navigate(Screen.Register.route)
+        if (splashScreenViewModel.isUserSignedIn)
+            navController.navigate(Screen.BottomBarNavigationContainer.route)
+        else navController.navigate(Screen.Register.route)
     }
 
     SplashScreen(alpha = alphaAnim.value)
