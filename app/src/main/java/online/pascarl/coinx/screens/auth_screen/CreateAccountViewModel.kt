@@ -71,24 +71,17 @@ class CreateAccountViewModel : ViewModel() {
     /** Create Account */
     suspend fun createAccount(): String? {
         _showCircularProgressBar = true
-        val auth = Firebase.auth
         if (_formValidationPassed){
             return try {
-                auth.createUserWithEmailAndPassword(email, password)
-                    .await()
                 val registerUser = registerUser()
                 println("$registerUser")
-
                 if (validateAccountCreationResponse(response = registerUser) == true){
                     return  "user created"
-                } else {
-                    _showCircularProgressBar = false
-                    return  null
                 }
-            }
-            catch (_: FirebaseAuthUserCollisionException){
-                _showCircularProgressBar = false
-                "user exists"
+                else if(validateAccountCreationResponse(response = registerUser) == false) {
+                    _showCircularProgressBar = false
+                    return  "user exists"
+                }else return null
             }
             catch (_: Exception) {
                 _showCircularProgressBar = false

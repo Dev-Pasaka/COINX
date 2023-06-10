@@ -11,7 +11,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -90,7 +88,7 @@ fun ResetPassword(navController:NavHostController, resetPasswordViewModel: Reset
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Enter your registered email below \n to receive password reset instructions",
+                text = "Enter your registered phone number below \n to receive password reset instructions",
                 style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 color = Color.Gray,
@@ -128,9 +126,9 @@ fun ResetPassword(navController:NavHostController, resetPasswordViewModel: Reset
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = resetPasswordViewModel.email,
+            value = resetPasswordViewModel.phoneNumber,
             onValueChange = {
-                resetPasswordViewModel.email = it
+                resetPasswordViewModel.phoneNumber = it
             },
             label = {
                 Text(
@@ -144,6 +142,7 @@ fun ResetPassword(navController:NavHostController, resetPasswordViewModel: Reset
                 keyboardType = KeyboardType.Phone,
                 imeAction = ImeAction.Next
             ),
+            isError = resetPasswordViewModel.phoneInputError,
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = colorResource(id = R.color.background)
@@ -179,6 +178,7 @@ fun ResetPassword(navController:NavHostController, resetPasswordViewModel: Reset
                 fontWeight = FontWeight.W500,
                 modifier = Modifier.clickable {
                     navController.popBackStack()
+                    navController.navigate(Screen.Register.route)
                 }
             )
         }
@@ -198,7 +198,14 @@ fun ResetPassword(navController:NavHostController, resetPasswordViewModel: Reset
                 )
                 .clickable {
                     scope.launch {
-                        navController.navigate(Screen.OtpScreen.route)
+                        resetPasswordViewModel.sendOtp()
+                        if (resetPasswordViewModel.otpCode !=null){
+                            showMessage(context, "otpcode ${resetPasswordViewModel.otpCode}")
+                            navController.navigate(Screen.OtpScreen.route)
+                        }else{
+                            showMessage(context, "Invalid phone number")
+                        }
+
                     }
                 }
 

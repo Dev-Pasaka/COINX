@@ -52,7 +52,7 @@ fun NavGraph(navController: NavHostController){
        }
        composable(route = Screen.OtpScreen.route){
            SlideInAnimation {
-               OtpScreen(navController = NavController)
+               OtpScreen(navController = navController)
            }
        }
        composable(route = Screen.BottomBarNavigationContainer.route){

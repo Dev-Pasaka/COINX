@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
@@ -24,35 +25,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import online.pascarl.coinx.R
-
+import online.pascarl.coinx.navigation.Screen
 
 
 @Composable
 fun OtpScreen(
-    navController: NavController.Companion,
-    otpInputViewModel:OtpInputViewModel = viewModel()
+    navController: NavHostController,
+    otpInputViewModel:OtpInputViewModel = viewModel(),
+    resetPasswordViewModel: ResetPasswordViewModel = viewModel()
 ){
+    otpInputViewModel.otpResponse = resetPasswordViewModel.otpCode
     Column(
         modifier = Modifier
             .fillMaxWidth()
 
     ) {
-        OtpHeader()
+        OtpHeader(navController = navController)
         Spacer(modifier = Modifier.height(20.dp))
         OtpTextField(
             otpText = otpInputViewModel.otp,
             onOtpTextChange ={ value, _ ->
             otpInputViewModel.otp = value}
         )
-        VerifyButton()
+        VerifyButton(otpInputViewModel = otpInputViewModel, navController = navController)
     }
 }
 
 
 @Composable
-fun OtpHeader(){
+fun OtpHeader(navController: NavHostController){
     Column(
         modifier = Modifier
             .background(color = colorResource(id = R.color.gray))
@@ -77,6 +80,7 @@ fun OtpHeader(){
                 modifier = Modifier
                     .padding(top = 30.dp, start = 16.dp)
                     .clickable {
+                        navController.popBackStack()
                     }
 
             )
@@ -111,7 +115,8 @@ fun OtpHeader(){
 }
 
 @Composable
-fun VerifyButton(){
+fun VerifyButton(otpInputViewModel: OtpInputViewModel, navController: NavHostController){
+    val context = LocalContext.current
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -124,7 +129,10 @@ fun VerifyButton(){
                 color = colorResource(id = R.color.background)
             )
             .clickable {
-
+                otpInputViewModel.verifyOtp()
+               if ( otpInputViewModel.isOtpVerified)
+                   navController.navigate(Screen.EmailResetConfirmation.route)
+                else showMessage(context, "Wrong otp code")
             }
 
     ){
@@ -169,7 +177,10 @@ fun OtpTextField(
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
             decorationBox = {
-                Row(horizontalArrangement = Arrangement.Center) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
                     repeat(otpCount) { index ->
                         CharView(
                             index = index,
