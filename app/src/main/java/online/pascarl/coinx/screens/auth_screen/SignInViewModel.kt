@@ -22,7 +22,6 @@ class SignInViewModel: ViewModel() {
     var email by mutableStateOf("")
     var password by mutableStateOf("")
 
-    var firebaseSignInResult:Boolean? by mutableStateOf(null)
     var backendAuthToken:String? by mutableStateOf("")
 
     var roomUser:RoomUser? by mutableStateOf(RoomUser(email = "", token = ""))
@@ -34,6 +33,7 @@ class SignInViewModel: ViewModel() {
         val response = result
         return if (response != null) {
             backendAuthToken = response.token
+            println(backendAuthToken)
             true
         } else false
     }

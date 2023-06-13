@@ -95,7 +95,7 @@ fun Header(navController: NavHostController) {
 
         ) {
             Text(
-                text = "cancel",
+                text = "login",
                 color = colorResource(id = R.color.gray),
                 fontSize = 14.sp,
                 textAlign = TextAlign.Start,
@@ -144,7 +144,7 @@ fun FullName(createAccountViewModel: CreateAccountViewModel){
           .padding(start = 16.dp, end = 16.dp, top = 10.dp)
           .fillMaxWidth()
   ){
-      TextField(
+     OutlinedTextField(
           value = createAccountViewModel.fullName,
           onValueChange = {
               createAccountViewModel.fullName = it
@@ -159,11 +159,11 @@ fun FullName(createAccountViewModel: CreateAccountViewModel){
           singleLine = true,
           leadingIcon = { Icon(imageVector = Icons.Filled.AccountBox, contentDescription = "Email icon") },
           keyboardOptions = KeyboardOptions(
-              keyboardType = KeyboardType.Email,
+              keyboardType = KeyboardType.Text,
               imeAction = ImeAction.Next
           ),
           colors =TextFieldDefaults.textFieldColors(
-              focusedIndicatorColor = Color.Transparent,
+              focusedIndicatorColor = colorResource(id = R.color.background),
               unfocusedIndicatorColor = Color.Transparent
           ),
           isError = createAccountViewModel.isFullNameValid,
@@ -180,7 +180,7 @@ fun Username(createAccountViewModel: CreateAccountViewModel){
             .padding(start = 16.dp, end = 16.dp, top = 10.dp)
             .fillMaxWidth()
     ){
-        TextField(
+        OutlinedTextField(
             value = createAccountViewModel.username,
             onValueChange = {
                 createAccountViewModel.username = it
@@ -200,7 +200,7 @@ fun Username(createAccountViewModel: CreateAccountViewModel){
             ),
             isError = createAccountViewModel.isUsernameValid,
             colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = Color.Transparent
             ),
             shape = RoundedCornerShape(10.dp),
@@ -212,7 +212,7 @@ fun Username(createAccountViewModel: CreateAccountViewModel){
 @Composable
 fun Email(createAccountViewModel: CreateAccountViewModel){
    Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp)) {
-       TextField(
+       OutlinedTextField(
            value = createAccountViewModel.email,
            onValueChange = {
                createAccountViewModel.email = it
@@ -232,7 +232,7 @@ fun Email(createAccountViewModel: CreateAccountViewModel){
            ),
            isError = createAccountViewModel.isEmailValid,
            colors =TextFieldDefaults.textFieldColors(
-               focusedIndicatorColor = Color.Transparent,
+               focusedIndicatorColor = colorResource(id = R.color.background),
                unfocusedIndicatorColor = Color.Transparent
            ),
            shape = RoundedCornerShape(10.dp),
@@ -249,18 +249,18 @@ fun PhoneNumber(createAccountViewModel: CreateAccountViewModel){
             .padding(start = 16.dp, end = 16.dp, top = 10.dp)
             .fillMaxWidth()
     ){
-        TextField(
-            value = createAccountViewModel.phoneNumber,
+        OutlinedTextField(
+            value = createAccountViewModel.formatedPhoneNumber,
             onValueChange = {
-                createAccountViewModel.phoneNumber = it
+                createAccountViewModel.formatedPhoneNumber = it
             },
             label = {
                 Text(
-                    text = "+(254)",
+                    text = "Phone",
                     style = MaterialTheme.typography.body2,
-
                     )
             },
+            textStyle =  LocalTextStyle.current.copy(color = Color.Gray),
             singleLine = true,
             leadingIcon = {
                 Icon(
@@ -274,7 +274,7 @@ fun PhoneNumber(createAccountViewModel: CreateAccountViewModel){
             ),
             isError = createAccountViewModel.isPhoneValid,
             colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = Color.Transparent
             ),
             shape = RoundedCornerShape(10.dp),
@@ -286,7 +286,7 @@ fun PhoneNumber(createAccountViewModel: CreateAccountViewModel){
 @Composable
 fun Password(createAccountViewModel: CreateAccountViewModel){
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp)) {
-        TextField(
+        OutlinedTextField(
             value = createAccountViewModel.password,
             onValueChange = {
                 createAccountViewModel.password = it
@@ -318,7 +318,7 @@ fun Password(createAccountViewModel: CreateAccountViewModel){
             },
             isError = createAccountViewModel.isPasswordValid,
             colors =TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = Color.Transparent
             ),
             shape = RoundedCornerShape(10.dp),
@@ -334,7 +334,7 @@ fun Password(createAccountViewModel: CreateAccountViewModel){
 @Composable
 fun ConfirmPassword(createAccountViewModel: CreateAccountViewModel){
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp)) {
-        TextField(
+        OutlinedTextField(
             value = createAccountViewModel.confirmPassword,
             onValueChange = {
                 createAccountViewModel.confirmPassword = it
@@ -364,7 +364,7 @@ fun ConfirmPassword(createAccountViewModel: CreateAccountViewModel){
             }},
             isError = createAccountViewModel.isPasswordValid,
             colors =TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = Color.Transparent
             ),
             shape = RoundedCornerShape(10.dp),
@@ -399,9 +399,7 @@ fun RegisterAccount(createAccountViewModel: CreateAccountViewModel, navControlle
                             "user created" -> {
                                 navController.navigate(Screen.Register.route)
                                 showMessage(context, "Registration Successful")
-
                             }
-
                             "user exists" -> showMessage(context, "User already exists")
                             null -> showMessage(context, "Registration failed")
                         }

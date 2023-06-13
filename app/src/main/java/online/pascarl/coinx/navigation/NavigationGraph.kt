@@ -14,6 +14,7 @@ import online.pascarl.coinx.screens.auth_screen.EmailResetConfirmation
 import online.pascarl.coinx.screens.auth_screen.OtpScreen
 import online.pascarl.coinx.screens.auth_screen.RegisterScreen
 import online.pascarl.coinx.screens.auth_screen.ResetPassword
+import online.pascarl.coinx.screens.auth_screen.UpdatePassword
 import online.pascarl.coinx.screens.bottom_bar_navigation.*
 import online.pascarl.spx.screens.CreateAccount
 
@@ -53,6 +54,11 @@ fun NavGraph(navController: NavHostController){
        composable(route = Screen.OtpScreen.route){
            SlideInAnimation {
                OtpScreen(navController = navController)
+           }
+       }
+       composable(route = Screen.UpdatePasswordScreen.route){
+           SlideInAnimation {
+               UpdatePassword(navController = navController)
            }
        }
        composable(route = Screen.BottomBarNavigationContainer.route){

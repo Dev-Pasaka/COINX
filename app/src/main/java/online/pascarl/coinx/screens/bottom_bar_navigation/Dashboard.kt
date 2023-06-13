@@ -12,6 +12,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -69,6 +71,10 @@ fun Preview1(){
     navController: NavController,
 
 ){
+    val pullRefreshState = rememberPullRefreshState(
+        dashboardViewModel.isRefreshing,
+        { dashboardViewModel.refresh() }
+    )
     val scaffoldState = rememberScaffoldState()
     val roomDB = RoomViewModel(
         application = Application(),
@@ -84,7 +90,9 @@ fun Preview1(){
     }
     Scaffold(
         scaffoldState = scaffoldState,
-        drawerContent = { NavigationDrawer()}
+        drawerContent = { NavigationDrawer()},
+        modifier = Modifier
+                .pullRefresh(pullRefreshState)
     ) {
 
         val context = LocalContext.current

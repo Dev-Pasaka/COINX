@@ -5,12 +5,18 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.headers
+import io.ktor.client.request.parameter
 import io.ktor.client.request.url
 import online.pascarl.coinx.KtorClient.KtorClient
 import online.pascarl.coinx.model.Cryptocurrency
 import io.ktor.http.HttpHeaders.Authorization
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 import online.pascarl.coinx.model.CryptoModel
 import online.pascarl.coinx.model.UserData
 import online.pascarl.coinx.model.UserPortfolio
@@ -46,6 +52,16 @@ class DashboardViewModel: ViewModel() {
     private var _filterChip by mutableStateOf("market-cap")
     val filterChip get() = _filterChip
 
+    //PUll to refresh
+    private  var _isRefreshing by mutableStateOf(false)
+    val isRefreshing get() = _isRefreshing
+
+    fun  refresh(){
+        viewModelScope.launch {
+
+            _isRefreshing = false
+        }
+    }
     fun sortCryptos(sortMethod: String) {
         println("Here is the token : ${roomUser.token}")
         val sortedList = when (sortMethod) {
@@ -74,20 +90,52 @@ class DashboardViewModel: ViewModel() {
         println("Here is user information $result")
         if (result != null) _userInformation = result
     }
-
-    suspend fun getCryptoPrices() {
-        val data = try {
-            KtorClient.httpClient.get<List<Cryptocurrency>>{
-                url("https://coinx.herokuapp.com/cryptoPrices")
-                headers {
-                    append(Authorization, "Bearer ${roomUser.token}")
-                }
+    suspend fun getCryptoPrices(){
+        val client = KtorClient.httpClient
+        val request = client.get<String>("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest"){
+            header("X-CMC_PRO_API_KEY", "0f42271f-74af-4b7d-b946-fa9933b9a1f6")
+            //contentType(ContentType.Application.Json)
+            url {
+                parameter("start", "1")
+                parameter("limit","10")
+                //parameter("coins", "Bitcoin")
+                parameter("convert","KES")
             }
-        }catch (_: Exception){
-            null
         }
-        if (data != null) _cryptocurrencies.addAll(data)
+        val jsonResponseString:String = request
+        var cryptoData:List<*>
+        val jsonResponseObj = Json.parseToJsonElement(jsonResponseString) as JsonObject
+        cryptoData = jsonResponseObj["data"] as List<*>
 
+        val cryptoList = mutableListOf<Cryptocurrency>()
+        for (data in cryptoData){
+            val dataObj = data as Map<*,*>
+            val id = dataObj["id"]
+            val name = dataObj["name"]
+            val symbol = dataObj["symbol"]
+            val priceQuote = dataObj["quote"]
+            val currencyObj = Json.parseToJsonElement(priceQuote.toString()) as JsonObject
+            val currency = currencyObj["KES"] as Map<String,Double>
+            cryptoList.add(
+                Cryptocurrency(
+                    id = id.toString().toInt(),
+                    name = name.toString(),
+                    symbol = symbol.toString(),
+                    price = currency["price"].toString(),
+                    volume24h =currency["volume_24h"].toString(),
+                    volumeChange24h = currency["volume_change_24h"].toString(),
+                    percentageChange1h = currency["percent_change_1h"].toString(),
+                    percentageChange24h =  (Math.round((currency["percent_change_24h"].toString()).toDouble()) * 100/ 1000.0).toString(),
+                    percentageChange7d = currency["percent_change_7d"].toString(),
+                    percentageChange30d = currency["percent_change_30d"].toString(),
+                    percentageChange60d = currency["percent_change_60d"].toString(),
+                    percentageChange90d = currency["percent_change_90d"].toString(),
+                    marketCap = currency["market_cap"].toString() ,
+                    fullyDilutedMarketCap = currency["fully_diluted_market_cap"].toString()
+                )
+            )
+        }
+        _cryptocurrencies.addAll(cryptoList)
 
 
     }
@@ -114,7 +162,7 @@ class DashboardViewModel: ViewModel() {
         _expressCheckoutCryptoList.addAll(newData)
     }
 
-    suspend fun getUserPortfolio(){
+   suspend fun getUserPortfolio(){
         val result = try {
             KtorClient.httpClient.get<UserPortfolio>{
                 url("https://coinx.herokuapp.com/getUserPortfolio?email=${roomUser.email}")
@@ -126,7 +174,7 @@ class DashboardViewModel: ViewModel() {
             println("An exception was called")
             null
         }
-        println("Here is user information $result")
+        println("Here is user portfolio $result")
         if (result != null) _userPortfolio = result
     }
 
@@ -140,7 +188,7 @@ class DashboardViewModel: ViewModel() {
             "watchlist" -> _isCoinOrWatchlistSelected = false
         }
     }
-    fun filterCryptos(toggle:String){
+   fun filterCryptos(toggle:String){
         when(toggle){
             "market-cap" -> _filterChip = "market-cap"
             "price" -> _filterChip = "price"

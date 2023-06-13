@@ -3,7 +3,7 @@ package online.pascarl.coinx.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UpdatePassword(
-    val newPassword:String,
-    val phoneNumber:String?
+data class VerifyPhoneResponse(
+    val status:Boolean,
+    val message:String
 )

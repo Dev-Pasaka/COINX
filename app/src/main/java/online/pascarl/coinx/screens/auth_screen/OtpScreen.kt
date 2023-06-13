@@ -1,4 +1,5 @@
 package online.pascarl.coinx.screens.auth_screen
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,39 +24,46 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
 import online.pascarl.coinx.navigation.Screen
 
-
+/*@Preview(showSystemUi = true)
+@Composable
+fun OtpPreview(){
+    OtpScreen()
+}*/
 @Composable
 fun OtpScreen(
     navController: NavHostController,
-    otpInputViewModel:OtpInputViewModel = viewModel(),
-    resetPasswordViewModel: ResetPasswordViewModel = viewModel()
+    resetPasswordViewModel: ResetPasswordViewModel = viewModel(),
 ){
-    otpInputViewModel.otpResponse = resetPasswordViewModel.otpCode
     Column(
         modifier = Modifier
             .fillMaxWidth()
 
     ) {
-        OtpHeader(navController = navController)
+        OtpHeader()
         Spacer(modifier = Modifier.height(20.dp))
         OtpTextField(
-            otpText = otpInputViewModel.otp,
+            otpText = resetPasswordViewModel.otpCode,
             onOtpTextChange ={ value, _ ->
-            otpInputViewModel.otp = value}
+            resetPasswordViewModel.otpCode = value}
         )
-        VerifyButton(otpInputViewModel = otpInputViewModel, navController = navController)
+        VerifyButton(navController = navController, resetPasswordViewModel = resetPasswordViewModel)
+        Spacer(modifier = Modifier.height(10.dp))
+      //  ResendOTP(resetPasswordViewModel = resetPasswordViewModel)
     }
 }
 
 
 @Composable
-fun OtpHeader(navController: NavHostController){
+fun OtpHeader(){
     Column(
         modifier = Modifier
             .background(color = colorResource(id = R.color.gray))
@@ -71,19 +79,6 @@ fun OtpHeader(navController: NavHostController){
 
 
         ) {
-            Text(
-                text = "back",
-                color = colorResource(id = R.color.gray),
-                fontSize = 14.sp,
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier
-                    .padding(top = 30.dp, start = 16.dp)
-                    .clickable {
-                        navController.popBackStack()
-                    }
-
-            )
             Image(
                 painter = painterResource(id = R.drawable.coinx), contentDescription = "logo",
                 modifier = Modifier
@@ -115,8 +110,9 @@ fun OtpHeader(navController: NavHostController){
 }
 
 @Composable
-fun VerifyButton(otpInputViewModel: OtpInputViewModel, navController: NavHostController){
+fun VerifyButton(navController: NavHostController, resetPasswordViewModel: ResetPasswordViewModel){
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -126,13 +122,19 @@ fun VerifyButton(otpInputViewModel: OtpInputViewModel, navController: NavHostCon
             .height(50.dp)
             .clip(RoundedCornerShape(50))
             .background(
-                color = colorResource(id = R.color.background)
+                if (resetPasswordViewModel.otpCode.length == 6)
+                     colorResource(id = R.color.background)
+                else Color.LightGray
             )
-            .clickable {
-                otpInputViewModel.verifyOtp()
-               if ( otpInputViewModel.isOtpVerified)
-                   navController.navigate(Screen.EmailResetConfirmation.route)
-                else showMessage(context, "Wrong otp code")
+            .clickable(enabled = resetPasswordViewModel.otpCode.length == 6) {
+                scope.launch {
+                    if(resetPasswordViewModel.verifyOtp() != null){
+                        navController.popBackStack()
+                        navController.navigate(Screen.UpdatePasswordScreen.route)
+                        showMessage(context, "Verification successful")
+                    }
+                    else showMessage(context, "Wrong otp code")
+                }
             }
 
     ){
@@ -163,6 +165,7 @@ fun OtpTextField(
         modifier = Modifier
             .padding(horizontal = 24.dp, vertical = 24.dp)
             .fillMaxWidth()
+            .wrapContentHeight()
     ) {
         BasicTextField(
             modifier = modifier
@@ -179,7 +182,10 @@ fun OtpTextField(
             decorationBox = {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
                 ) {
                     repeat(otpCount) { index ->
                         CharView(
@@ -193,7 +199,6 @@ fun OtpTextField(
         )
     }
 }
-
 @Composable
 private fun CharView(
     index: Int,
@@ -205,24 +210,73 @@ private fun CharView(
         index > text.length -> ""
         else -> text[index].toString()
     }
-    Text(
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .width(40.dp)
+            .height(40.dp)
+            .fillMaxSize()
             .border(
                 1.dp, when {
                     isFocused -> colorResource(id = R.color.background)
                     else -> Color.LightGray
                 }, RoundedCornerShape(8.dp)
             )
-            .padding(2.dp),
-        text = char,
-        style = MaterialTheme.typography.h4,
-        color = if (isFocused) {
-            Color.LightGray
-        } else {
-            Color.DarkGray
-        },
-        textAlign = TextAlign.Center
-    )
+
+    ) {
+        Text(
+            text = char,
+            style = MaterialTheme.typography.h4,
+            color = if (isFocused) {
+                Color.LightGray
+            } else {
+                Color.Gray
+            },
+        )
+    }
 }
 
+@Composable
+fun ResendOTP(resetPasswordViewModel: ResetPasswordViewModel){
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val activity = LocalContext.current as? Activity
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth(),
+    ) {
+
+        if (resetPasswordViewModel.seconds <= 0){
+            Text(
+                text = "Resend Code",
+                style = MaterialTheme.typography.body1,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.W500,
+                color = colorResource(id = R.color.cream),
+                fontSize = 14.sp,
+                modifier = Modifier.clickable {
+                    scope.launch {
+                        resetPasswordViewModel.sendOtp(
+                            activity = activity!!,
+                            phoneNumber = PHONENUMBER
+                        )
+                        resetPasswordViewModel.startTimer()
+                    }
+                }
+            )
+        }else{
+            Text(
+                text = " Resend in ${resetPasswordViewModel.seconds}",
+                style = MaterialTheme.typography.body1,
+                textAlign = TextAlign.Center,
+                color = colorResource(id = R.color.cream),
+                fontSize = 14.sp,
+
+            )
+        }
+
+    }
+}
