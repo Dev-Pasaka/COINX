@@ -273,19 +273,10 @@ fun RegisterScreen(
                             scope.launch {
                                 //Circular ProgressBard
                                 signInViewModel.circularProgressBar()
-                                //Firebase Auth
-                                signInViewModel.firebaseSignInResult = signInViewModel.firebaseSignIn(
-                                    email = signInViewModel.email,
-                                    password = signInViewModel.password
-                                )
-                                //Backend Auth
-                                signInViewModel.backendAuthToken = signInViewModel.getSignInToken(
-                                    email = signInViewModel.email,
-                                    password = signInViewModel.password
-                                )
+                                //Backend SignIn Auth
+                                signInViewModel.getSignInToken()
                                 if (signInViewModel.isSignInSuccessful()){
                                     signInViewModel.roomUser = roomDB.getUser(id="12345678")
-
                                     if (signInViewModel.roomUser == null){
                                         roomDB.addUser(
                                             user = RoomUser(
@@ -294,6 +285,7 @@ fun RegisterScreen(
                                             )
                                         )
                                         showMessage(context, "Signing in ...")
+                                        navController.navigate(Screen.BottomBarNavigationContainer.route)
                                     }else{
                                         roomDB.updateUser(
                                             user = RoomUser(
@@ -302,13 +294,8 @@ fun RegisterScreen(
                                             )
                                         )
                                     }
-
-
                                 }
-
-                                if (signInViewModel.isSignInSuccessful())navController.navigate(
-                                    Screen.BottomBarNavigationContainer.route
-                                )else{
+                                else{
                                     showMessage(context, "Invalid email or password")
                                 }
                             }

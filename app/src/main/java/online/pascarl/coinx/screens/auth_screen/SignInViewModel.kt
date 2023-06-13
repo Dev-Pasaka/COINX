@@ -22,51 +22,43 @@ class SignInViewModel: ViewModel() {
     var email by mutableStateOf("")
     var password by mutableStateOf("")
 
-    var firebaseSignInResult:Boolean? by mutableStateOf(null)
     var backendAuthToken:String? by mutableStateOf("")
 
     var roomUser:RoomUser? by mutableStateOf(RoomUser(email = "", token = ""))
 
     private var _circularProgressBar by mutableStateOf(false)
     val circularProgressBar get() = _circularProgressBar
+    private var result:Token? by mutableStateOf(Token(""))
     fun isSignInSuccessful(): Boolean {
-        return  (firebaseSignInResult == true || firebaseSignInResult == null
-                && backendAuthToken.isNullOrBlank() || (backendAuthToken?.length ?: 0) > 1)
-
+        val response = result
+        return if (response != null) {
+            backendAuthToken = response.token
+            println(backendAuthToken)
+            true
+        } else false
     }
 
     fun circularProgressBar(){
         _circularProgressBar = true
     }
-    suspend fun firebaseSignIn(email: String, password: String): Boolean{
-
-        val result = try {
-            val auth = Firebase.auth
-            auth.signInWithEmailAndPassword(email, password)
-                .await()
-            true
-        }catch (e: Exception) {
-            false
-        }
-        _circularProgressBar =  false
-        return result
-    }
 
 
-    suspend fun getSignInToken(email: String, password: String): String?{
-        val result = try {
-            KtorClient.httpClient.post<Token>("https://coinx.herokuapp.com/signIn"){
+
+    suspend fun getSignInToken(){
+        try {
+            val response = KtorClient.httpClient.post<Token>("https://coinx.herokuapp.com/signIn"){
                 contentType(ContentType.Application.Json)
                 body = SignIn(
                     email = email,
                     password = password
                 )
             }
-        }catch (_: Exception){
-            null
-        }
 
-        return  result?.token
+            result = response
+        }catch (_: Exception){
+            result = null
+        }
+        _circularProgressBar = false
 
     }
 

@@ -22,7 +22,8 @@ class CreateAccountViewModel : ViewModel() {
     var fullName by mutableStateOf("")
     var username by mutableStateOf("")
     var email by mutableStateOf("")
-    var phoneNumber by mutableStateOf("")
+    var formatedPhoneNumber by mutableStateOf("+(254) ")
+    private val phoneNumber get() = formatedPhoneNumber.replace("[()\\s]".toRegex(), "")
     var password by mutableStateOf("")
     var confirmPassword by mutableStateOf("")
 
@@ -45,12 +46,16 @@ class CreateAccountViewModel : ViewModel() {
     /** FormValidation */
     private var _isFullNameValid by mutableStateOf(false)
     val isFullNameValid get() =  _isFullNameValid
+
     private var _isUsernameValid by mutableStateOf(false)
     val isUsernameValid get() = _isUsernameValid
+
     private var _isEmailValid by mutableStateOf(false)
     val isEmailValid get() = _isEmailValid
+
     private var _isPasswordValid by mutableStateOf(false)
     val isPasswordValid get() = _isPasswordValid
+
     private var _isPhoneValid by mutableStateOf(false)
     val isPhoneValid get() = _isPhoneValid
 
@@ -71,24 +76,17 @@ class CreateAccountViewModel : ViewModel() {
     /** Create Account */
     suspend fun createAccount(): String? {
         _showCircularProgressBar = true
-        val auth = Firebase.auth
         if (_formValidationPassed){
             return try {
-                auth.createUserWithEmailAndPassword(email, password)
-                    .await()
                 val registerUser = registerUser()
                 println("$registerUser")
-
                 if (validateAccountCreationResponse(response = registerUser) == true){
                     return  "user created"
-                } else {
-                    _showCircularProgressBar = false
-                    return  null
                 }
-            }
-            catch (_: FirebaseAuthUserCollisionException){
-                _showCircularProgressBar = false
-                "user exists"
+                else if(validateAccountCreationResponse(response = registerUser) == false) {
+                    _showCircularProgressBar = false
+                    return  "user exists"
+                }else return null
             }
             catch (_: Exception) {
                 _showCircularProgressBar = false

@@ -1,5 +1,6 @@
 package online.pascarl.coinx.screens
 
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,17 +18,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
+import online.pascarl.coinx.roomDB.RoomViewModel
+import online.pascarl.coinx.roomDB.UserDatabase
+import online.pascarl.coinx.roomDB.UserRepository
+import online.pascarl.coinx.screens.bottom_bar_navigation.DashboardViewModel
 
 
 @Preview(showSystemUi = true)
@@ -37,7 +45,13 @@ fun Preview(){
 }
 
 @Composable
-fun NoInternet(){
+fun NoInternet(dashboardViewModel: DashboardViewModel = viewModel()){
+
+    val roomDB = RoomViewModel(
+        application = Application(),
+        userRepository = UserRepository(UserDatabase.getInstance(LocalContext.current.applicationContext).userDao())
+    )
+    val scope = rememberCoroutineScope()
 
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.internet))
     var isPlaying by remember {
@@ -48,6 +62,7 @@ fun NoInternet(){
         isPlaying = isPlaying
     )
     LaunchedEffect(key1 = progress){
+
         if (progress == 0f){
            isPlaying = true
         }
@@ -88,7 +103,16 @@ fun NoInternet(){
                         isPlaying = true
                     }
             ) {
-                Row {
+                Row(
+                    modifier = Modifier.clickable {
+                        scope.launch {
+                            dashboardViewModel.roomUser = roomDB.getUser("12345678")!!
+                            dashboardViewModel.getCryptoPrices()
+                            dashboardViewModel.cryptoPrices()
+
+                        }
+                    }
+                ) {
                     Icon(
                         imageVector = Icons.Filled.Refresh,
                         contentDescription = "Refresh button",

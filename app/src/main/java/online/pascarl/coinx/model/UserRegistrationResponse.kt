@@ -1,7 +1,7 @@
 package online.pascarl.coinx.model
 
 @kotlinx.serialization.Serializable
-data class Response(
+data class UserRegistrationResponse(
     val message:String,
     val isRegistered: Boolean
 )

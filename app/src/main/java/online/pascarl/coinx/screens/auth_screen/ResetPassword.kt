@@ -1,5 +1,7 @@
 package online.pascarl.coinx.screens.auth_screen
 
+import android.app.Activity
+import android.app.Application
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,7 +13,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,20 +32,27 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.*
+import io.ktor.http.ContentType
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
 import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.rememberImeState
 
-
-
+/*@Preview(showSystemUi = true)
+@Composable
+fun ResetPasswordPreview(){
+    ResetPassword()
+}*/
 
 @Composable
-fun ResetPassword(navController:NavHostController, resetPasswordViewModel: ResetPasswordViewModel = viewModel()){
+fun ResetPassword(
+    navController:NavHostController,
+    resetPasswordViewModel: ResetPasswordViewModel = viewModel()){
     val scope  = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val imeState = rememberImeState()
     val context =  LocalContext.current
+    val activity = LocalContext.current as? Activity
     LaunchedEffect(key1 = imeState.value) {
         if (imeState.value){
             scrollState.animateScrollTo(scrollState.maxValue, tween(500))
@@ -56,25 +65,6 @@ fun ResetPassword(navController:NavHostController, resetPasswordViewModel: Reset
             .verticalScroll(state = scrollState)
 
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 16.dp)
-
-        ){
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Go Back",
-                    tint = colorResource(id = R.color.black)
-                )
-            }
-
-        }
         Spacer(modifier = Modifier.height(16.dp))
         Column(
             verticalArrangement = Arrangement.Center,
@@ -90,7 +80,7 @@ fun ResetPassword(navController:NavHostController, resetPasswordViewModel: Reset
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Enter your registered email below \n to receive password reset instructions",
+                text = "Enter your registered phone number below \n to receive password reset instructions",
                 style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 color = Color.Gray,
@@ -128,9 +118,9 @@ fun ResetPassword(navController:NavHostController, resetPasswordViewModel: Reset
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = resetPasswordViewModel.email,
+            value = resetPasswordViewModel.formatedPhoneNumber,
             onValueChange = {
-                resetPasswordViewModel.email = it
+                resetPasswordViewModel.formatedPhoneNumber = it
             },
             label = {
                 Text(
@@ -138,12 +128,15 @@ fun ResetPassword(navController:NavHostController, resetPasswordViewModel: Reset
                     style = MaterialTheme.typography.body2,
                     )
             },
+            textStyle =  LocalTextStyle.current.copy(color = Color.Gray),
             singleLine = true,
             leadingIcon = { Icon(imageVector = Icons.Filled.Phone, contentDescription = "Email icon") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Phone,
                 imeAction = ImeAction.Next
             ),
+            isError = !(resetPasswordViewModel.isPhoneVerificationSuccessful == null ||
+                    resetPasswordViewModel.isPhoneVerificationSuccessful == true),
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = colorResource(id = R.color.background)
@@ -152,6 +145,7 @@ fun ResetPassword(navController:NavHostController, resetPasswordViewModel: Reset
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
+
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -194,11 +188,25 @@ fun ResetPassword(navController:NavHostController, resetPasswordViewModel: Reset
                 .height(50.dp)
                 .clip(RoundedCornerShape(50))
                 .background(
-                    color = colorResource(id = R.color.background)
+                    color = if (resetPasswordViewModel.phoneNumber.isBlank())
+                        Color.LightGray else colorResource(id = R.color.background)
                 )
-                .clickable {
+                .clickable(
+                    enabled = resetPasswordViewModel.phoneNumber.isNotBlank()
+                ) {
                     scope.launch {
-                        navController.navigate(Screen.OtpScreen.route)
+                        if (resetPasswordViewModel.verifyPhoneNumber()?.status == true) {
+                            showMessage(context, "Launching recaptcha ...")
+                            resetPasswordViewModel.sendOtp(
+                                activity = activity!!,
+                                phoneNumber = resetPasswordViewModel.phoneNumber
+                            )
+                            navController.popBackStack()
+                            navController.navigate(Screen.OtpScreen.route)
+                            resetPasswordViewModel.startTimer()
+                        } else {
+                            showMessage(context, "Invalid phone number")
+                        }
                     }
                 }
 
