@@ -11,6 +11,9 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import online.pascarl.coinx.navigation.NavGraph
 import online.pascarl.coinx.ui.theme.COINXTheme
 
@@ -21,6 +24,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+       // initializeFirebaseAndPlayIntegrity()
         setContent {
             COINXTheme {
                 Surface(
@@ -35,6 +39,14 @@ class MainActivity : ComponentActivity() {
         }
 
     }
+
+  /*  private fun initializeFirebaseAndPlayIntegrity() {
+        FirebaseApp.initializeApp(this)
+        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+        firebaseAppCheck.installAppCheckProviderFactory(
+            PlayIntegrityAppCheckProviderFactory.getInstance()
+        )
+    }*/
 
 
 

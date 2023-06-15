@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -68,9 +69,9 @@ fun Preview1(){
 @Composable
  fun Dashboard(
     dashboardViewModel: DashboardViewModel = viewModel(),
-    navController: NavController,
+    navController: NavHostController,
 
-){
+    ){
     val pullRefreshState = rememberPullRefreshState(
         dashboardViewModel.isRefreshing,
         { dashboardViewModel.refresh() }
@@ -90,7 +91,7 @@ fun Preview1(){
     }
     Scaffold(
         scaffoldState = scaffoldState,
-        drawerContent = { NavigationDrawer()},
+        drawerContent = { NavigationDrawer(navController = navController)},
         modifier = Modifier
                 .pullRefresh(pullRefreshState)
     ) {

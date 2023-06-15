@@ -45,4 +45,15 @@ class RoomViewModel(
             false // user not updated
         }
     }
+
+    fun deleteUser(id: String): Int {
+        return try {
+            runBlocking {
+                userRepository.deleteUser(id)
+            }
+            1
+        }catch (_:Exception){
+            0
+        }
+    }
 }

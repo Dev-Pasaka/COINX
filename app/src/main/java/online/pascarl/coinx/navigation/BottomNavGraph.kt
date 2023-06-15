@@ -7,7 +7,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import online.pascarl.coinx.BottomUpAnimation
+import online.pascarl.coinx.SlideInAnimation
 import online.pascarl.coinx.screens.SeeAllCryptos
+import online.pascarl.coinx.screens.auth_screen.RegisterScreen
 import online.pascarl.coinx.screens.bottom_bar_navigation.*
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -34,6 +36,12 @@ fun BottomNavGraph(navController: NavHostController){
             BottomUpAnimation {
                 SeeAllCryptos(navController = navController)
             }
+        }
+        composable(route = Screen.Register.route){
+            SlideInAnimation {
+                RegisterScreen(navController = navController)
+            }
+
         }
     }
 }

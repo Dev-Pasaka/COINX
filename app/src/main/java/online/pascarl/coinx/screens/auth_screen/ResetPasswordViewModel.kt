@@ -6,7 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -68,13 +71,16 @@ class ResetPasswordViewModel: ViewModel() {
     }
     private val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+            println("Verification completed ")
         }
         override fun onVerificationFailed(exception: FirebaseException) {
+            println("Verification failed ")
+
         }
         override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-
+            println("Code sent")
             VERIFICATIONID = verificationId
-            println(VERIFICATIONID)
+            println("Here is your id $VERIFICATIONID")
         }
     }
     suspend fun verifyOtp(): AuthResult? {
