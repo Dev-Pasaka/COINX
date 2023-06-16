@@ -23,4 +23,7 @@ class UserRepository(private val userDao: UserDao) {
             userDao.updateUser(user)
         }
     }
+    suspend fun deleteUser(id: String): Int{
+        return userDao.delete(id)
+    }
 }

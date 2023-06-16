@@ -1,6 +1,8 @@
 package online.pascarl.coinx.roomDB
 
 import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -16,4 +18,7 @@ interface UserDao{
 
     @Update
     suspend fun updateUser(user: RoomUser)
+
+    @Query("DELETE FROM user WHERE id = :id")
+    suspend fun delete(id: String): Int
 }
