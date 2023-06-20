@@ -1,7 +1,6 @@
 package online.pascarl.coinx.screens.auth_screen
 
 import android.app.Activity
-import android.app.Application
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,7 +11,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,18 +19,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.*
-import io.ktor.http.ContentType
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
 import online.pascarl.coinx.navigation.Screen
@@ -130,7 +125,7 @@ fun ResetPassword(
             },
             textStyle =  LocalTextStyle.current.copy(color = Color.Gray),
             singleLine = true,
-            leadingIcon = { Icon(imageVector = Icons.Filled.Phone, contentDescription = "Email icon") },
+            leadingIcon = { Icon(imageVector = Icons.Filled.Phone, contentDescription = "Phone icon") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Phone,
                 imeAction = ImeAction.Next
@@ -139,7 +134,8 @@ fun ResetPassword(
                     resetPasswordViewModel.isPhoneVerificationSuccessful == true),
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = colorResource(id = R.color.background),
-                unfocusedIndicatorColor = colorResource(id = R.color.background)
+                unfocusedIndicatorColor = colorResource(id = R.color.background),
+                backgroundColor = colorResource(id = R.color.light_gray)
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
@@ -188,11 +184,11 @@ fun ResetPassword(
                 .height(50.dp)
                 .clip(RoundedCornerShape(50))
                 .background(
-                    color = if (resetPasswordViewModel.phoneNumber.isBlank())
-                        Color.LightGray else colorResource(id = R.color.background)
+                    color = if (resetPasswordViewModel.phoneNumber.length >= 11)
+                        colorResource(id = R.color.background) else colorResource(id = R.color.light_gray)
                 )
                 .clickable(
-                    enabled = resetPasswordViewModel.phoneNumber.isNotBlank()
+                    enabled = resetPasswordViewModel.phoneNumber.length >= 11
                 ) {
                     scope.launch {
                         if (resetPasswordViewModel.verifyPhoneNumber()?.status == true) {

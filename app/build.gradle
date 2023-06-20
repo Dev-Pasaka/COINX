@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId "online.pascarl.coinx"
-        minSdk 21
+        minSdk 24
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -138,6 +138,8 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
 
+    //Bottom nagigation
+    implementation("com.exyte:animated-navigation-bar:1.0.0")
 
 
 

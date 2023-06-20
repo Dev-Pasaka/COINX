@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Settings
@@ -28,17 +27,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import online.pascarl.coinx.R
-import online.pascarl.coinx.roomDB.RoomUser
 import online.pascarl.coinx.roomDB.RoomViewModel
 import online.pascarl.coinx.roomDB.UserDatabase
 import online.pascarl.coinx.roomDB.UserRepository
@@ -49,58 +44,30 @@ import online.pascarl.coinx.screens.bottom_bar_navigation.*
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun BottomBarNavigationContainer(navController: NavHostController) {
+fun NavDrawer(
+    navController: NavHostController, 
+    bottomBarViewModel: BottomBarViewModel = viewModel()
+) {
+    val navController1 = rememberNavController()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom,
         modifier = Modifier.fillMaxHeight()
     ) {
         Scaffold(
-            bottomBar = { BottomBarNavigation(navController = navController) },
+            drawerContent = { NavigationDrawer(navController = navController)},
         ) {
-            BottomNavGraph(navController = navController)
 
         }
     }
 
-}
-
-
-@Composable
-fun BottomBarNavigation(navController: NavHostController) {
-    val bottomBarScreenItems = bottomNavigationItems
-    BottomNavigation(
-        backgroundColor = colorResource(id = R.color.background)
-    ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-        bottomBarScreenItems.forEach { item ->
-            BottomNavigationItem(
-                icon = { Icon(imageVector = item.icon, contentDescription = "Icon") },
-                label = {
-                    Text(
-                        text = item.title,
-                        style = MaterialTheme.typography.h6,
-                        textAlign = TextAlign.Center,
-                        fontSize = 12.sp,
-                    )
-                },
-                selectedContentColor = Color.White,
-                unselectedContentColor = Color.White.copy(alpha = 0.3f),
-                selected = currentRoute == item.route,
-                onClick = { navController.navigate(item.route) }
-            )
-
-        }
-
-    }
 }
 
 @Composable
 fun NavigationDrawer(
     navController: NavHostController,
-    username: String = "",
-    bottomNavigationContainerViewModel: BottomNavigationContainerViewModel = viewModel()
+    bottomNavigationContainerViewModel: NavDrawerViewModel = viewModel()
 ) {
     Column(
         horizontalAlignment = Alignment.Start,
@@ -143,8 +110,7 @@ fun NavigationDrawer(
             }
         }
         Body(
-            navController = navController,
-            bottomNavigationContainerViewModel = bottomNavigationContainerViewModel
+            navController = navController, bottomNavigationContainerViewModel
         )
     }
 }
@@ -154,7 +120,7 @@ fun NavigationDrawer(
 @Composable
 fun Body(
     navController: NavHostController,
-    bottomNavigationContainerViewModel: BottomNavigationContainerViewModel
+    bottomNavigationContainerViewModel: NavDrawerViewModel
 ){
     val drawerItems = listOf(
         DrawerItems(icon = Icons.Default.VerifiedUser, title = "Kyc Verification"),
@@ -168,7 +134,7 @@ fun Body(
         items(count = drawerItems.size){
             BodyItems(
                 bottomNavigationContainerViewModel = bottomNavigationContainerViewModel,
-                icon = drawerItems[it].icon, title = drawerItems[it].title
+                icon = drawerItems[it].icon, title = drawerItems[it].title,
             )
             drawerItems[it]
         }
@@ -187,7 +153,7 @@ fun Body(
 @Composable
 fun BodyItems(
     icon:ImageVector, title: String,
-    bottomNavigationContainerViewModel: BottomNavigationContainerViewModel
+    bottomNavigationContainerViewModel: NavDrawerViewModel,
 ){
 
     Column(
@@ -234,16 +200,11 @@ fun BodyItems(
         Spacer(modifier = Modifier.height(16.dp))
     }
 }
-/*@Preview(showSystemUi = true)
-@Composable
-fun showDialogPreview(){
-    DialogBoxDemo()
-}*/
 
 @Composable
 fun LogOutDialog(
     navController:NavHostController,
-    bottomNavigationContainerViewModel: BottomNavigationContainerViewModel
+    bottomNavigationContainerViewModel: NavDrawerViewModel
 ) {
     val context = LocalContext.current
     val roomDB = RoomViewModel(
@@ -255,7 +216,7 @@ fun LogOutDialog(
             elevation = 5.dp,
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.45f)
+                .fillMaxHeight(0.48f)
                 .clip(RoundedCornerShape(20.dp))
         ) {
             Column(
@@ -322,8 +283,12 @@ fun LogOutDialog(
                                 val result = roomDB.deleteUser(id = "12345678")
                                 if (result > 0) {
                                     showMessage(context, "Logging you out")
-                                    navController.popBackStack()
-                                    navController.navigate(Screen.Register.route)
+                                    navController.navigate(Screen.Register.route) {
+                                        popUpTo(Screen.SplashScreen.route) {
+                                            inclusive = true
+                                        }
+                                    }
+
                                 }
                             }
 
