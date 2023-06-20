@@ -56,38 +56,36 @@ fun NavGraph(navController: NavHostController) {
                 UpdatePassword(navController = navController)
             }
         }
-        composable(route = Screen.NavigationDrawer.route,) {
+        composable(route = Screen.NavigationDrawer.route) {
             SlideInAnimation {
                 NavDrawer(navController = navController)
             }
         }
 
 
+
         composable(route = Screen.Dashboard.route) {
-            SlideInAnimation {
-                Dashboard(navController = navController)
-            }
+            Dashboard(navController = navController)
 
         }
         composable(route = Screen.Orders.route) {
-            SlideInAnimation {
-                Orders(navController = navController)
-            }
+            Orders(navController = navController)
+
         }
         composable(route = Screen.Feed.route) {
-            SlideInAnimation {
-                NewsFeed(navController = navController)
-            }
+            NewsFeed(navController = navController)
         }
         composable(route = Screen.Wallet.route) {
-            SlideInAnimation {
-                Wallet(navController = navController)
-            }
+            Wallet(navController = navController)
+
         }
         composable(route = Screen.Swap.route) {
-            SlideInAnimation {
-                Swap(navController = navController)
-            }
+            Swap(navController = navController)
+
+        }
+
+        composable(route = Screen.SeeAllCryptos.route) {
+            SeeAllCryptos(navController = navController)
         }
 
 

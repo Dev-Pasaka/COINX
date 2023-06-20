@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +18,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush.Companion.linearGradient
@@ -39,12 +42,14 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.*
 import online.pascarl.coinx.R
 import online.pascarl.coinx.navigation.BottomBarViewModel
 import online.pascarl.coinx.navigation.CustomBottomNavigation
 import online.pascarl.coinx.navigation.NavigationDrawer
+import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.roomDB.RoomUser
 import online.pascarl.coinx.roomDB.RoomViewModel
 import online.pascarl.coinx.roomDB.UserDatabase
@@ -71,10 +76,20 @@ fun Dashboard(
     navController: NavHostController
 
     ) {
-    val pullRefreshState = rememberPullRefreshState(
-        dashboardViewModel.isRefreshing,
-        { dashboardViewModel.refresh() }
+    var startAnimation by remember {
+        mutableStateOf(false)
+    }
+    val alphaAnim = animateFloatAsState(
+        targetValue = if (startAnimation) 1f else 0f,
+        animationSpec = tween(
+            durationMillis = 1000
+        )
     )
+    LaunchedEffect(key1 = true){
+        startAnimation = true
+        delay(1000)
+    }
+
     val scaffoldState = rememberScaffoldState()
     val roomDB = RoomViewModel(
         application = Application(),
@@ -97,8 +112,7 @@ fun Dashboard(
             navController = navController,
             bottomBarViewModel = bottomBarViewModel
         )},
-        modifier = Modifier
-            .pullRefresh(pullRefreshState)
+
     ) {
 
         val context = LocalContext.current
@@ -107,6 +121,7 @@ fun Dashboard(
             modifier = Modifier
                 .background(color = colorResource(id = R.color.app_white))
                 .fillMaxSize()
+                .alpha(alphaAnim.value)
         ) {
 
             TopBarComponents(
@@ -117,7 +132,10 @@ fun Dashboard(
                 Salutation(dashboardViewModel = dashboardViewModel)
                 WalletCardComposable(dashboardViewModel = dashboardViewModel)
                 ExpressCheckout(dashboardViewModel = dashboardViewModel)
-                CoinsOrWatchList(dashboardViewModel = dashboardViewModel)
+                CoinsOrWatchList(
+                    navController = navController,
+                    dashboardViewModel = dashboardViewModel
+                )
             }
 
 
@@ -531,7 +549,10 @@ fun ExpressCheckOutItems(
 }
 
 @Composable
-fun CoinsOrWatchList(dashboardViewModel: DashboardViewModel) {
+fun CoinsOrWatchList(
+    navController: NavHostController,
+    dashboardViewModel: DashboardViewModel
+) {
     Column {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -575,7 +596,7 @@ fun CoinsOrWatchList(dashboardViewModel: DashboardViewModel) {
                 modifier = Modifier
                     .padding(top = 8.dp, end = 16.dp)
                     .clickable {
-
+                        navController.navigate(Screen.SeeAllCryptos.route)
                     }
                     .weight(1f)
             )
