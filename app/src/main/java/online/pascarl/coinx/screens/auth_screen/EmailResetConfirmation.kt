@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import online.pascarl.coinx.R
 import online.pascarl.coinx.imageLoader
-import online.pascarl.coinx.navigation.Screen
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
 fun EmailResetConfirmation(navController: NavHostController) {

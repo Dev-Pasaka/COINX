@@ -61,7 +61,7 @@ fun AnimatedSplashScreen(navController: NavHostController, splashScreenViewModel
         navController.popBackStack()
         navController.clearBackStack(Screen.SplashScreen.route)
         if (splashScreenViewModel.isUserSignedIn)
-            navController.navigate(Screen.BottomBarNavigationContainer.route)
+            navController.navigate(Screen.Dashboard.route)
         else navController.navigate(Screen.Register.route)
     }
 

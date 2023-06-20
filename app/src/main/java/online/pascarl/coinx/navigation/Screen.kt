@@ -5,13 +5,17 @@ sealed class Screen(val route:String){
     object Register: Screen("registerAndSign_screen")
     object CreateAccount: Screen("create_account")
     object Dashboard: Screen("dashboard")
+    object Feed: Screen("feed")
+    object Swap: Screen("swap")
+    object Orders: Screen("orders")
+    object Wallet: Screen("wallet")
     object NoInternet: Screen("no_internet")
     object SeeAllCryptos: Screen("see_all_cryptos")
     object ResetPassword: Screen("ResetPassword")
     object OtpScreen: Screen("otp_screen")
     object UpdatePasswordScreen: Screen("update_password")
     object EmailResetConfirmation: Screen("EmailResetConfirmation")
-    object BottomBarNavigationContainer: Screen("bottom_bar_container")
+    object NavigationDrawer: Screen("nav_drawer")
 
 
 }

@@ -23,7 +23,7 @@ class CreateAccountViewModel : ViewModel() {
     var username by mutableStateOf("")
     var email by mutableStateOf("")
     var formatedPhoneNumber by mutableStateOf("+(254) ")
-    private val phoneNumber get() = formatedPhoneNumber.replace("[()\\s]".toRegex(), "")
+    val phoneNumber get() = formatedPhoneNumber.replace("[()\\s]".toRegex(), "")
     var password by mutableStateOf("")
     var confirmPassword by mutableStateOf("")
 
@@ -36,6 +36,15 @@ class CreateAccountViewModel : ViewModel() {
     private var _showCircularProgressBar by mutableStateOf(false)
     val showCircularProcessBar get() = _showCircularProgressBar
 
+    var registerScreenIndex by mutableStateOf(0)
+        private set
+
+    fun next(){
+        registerScreenIndex++
+    }
+    fun back(){
+        registerScreenIndex--
+    }
     fun hidePassword(){
         _showPassword = !_showPassword
     }
@@ -43,40 +52,11 @@ class CreateAccountViewModel : ViewModel() {
         _showConfirmPassword = !_showConfirmPassword
     }
 
-    /** FormValidation */
-    private var _isFullNameValid by mutableStateOf(false)
-    val isFullNameValid get() =  _isFullNameValid
 
-    private var _isUsernameValid by mutableStateOf(false)
-    val isUsernameValid get() = _isUsernameValid
-
-    private var _isEmailValid by mutableStateOf(false)
-    val isEmailValid get() = _isEmailValid
-
-    private var _isPasswordValid by mutableStateOf(false)
-    val isPasswordValid get() = _isPasswordValid
-
-    private var _isPhoneValid by mutableStateOf(false)
-    val isPhoneValid get() = _isPhoneValid
-
-    private var _formValidationPassed by mutableStateOf(false)
-
-    fun formValidation(){
-        _isFullNameValid = fullName.length < 6
-        _isUsernameValid = username.length < 3
-        _isEmailValid = !email.contains("@")
-        _isPasswordValid = (password != confirmPassword || password.length < 6)
-        _isPhoneValid = !phoneNumber.contains("+254")
-
-        _formValidationPassed = !(_isPasswordValid || isUsernameValid || isEmailValid || isFullNameValid || _isPhoneValid)
-
-
-    }
 
     /** Create Account */
     suspend fun createAccount(): String? {
         _showCircularProgressBar = true
-        if (_formValidationPassed){
             return try {
                 val registerUser = registerUser()
                 println("$registerUser")
@@ -92,10 +72,8 @@ class CreateAccountViewModel : ViewModel() {
                 _showCircularProgressBar = false
                 null
             }
-        }else{
-            _showCircularProgressBar = false
-            return null
-        }
+
+
     }
 
     private fun validateAccountCreationResponse(response: AccountCreationResponse?):Boolean?{
@@ -119,3 +97,4 @@ class CreateAccountViewModel : ViewModel() {
         }
     }
 }
+

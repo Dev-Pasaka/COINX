@@ -25,10 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import online.pascarl.coinx.R
-import online.pascarl.coinx.imageLoader
 import online.pascarl.coinx.navigation.Screen
-import online.pascarl.coinx.screens.auth_screen.showMessage
-import online.pascarl.coinx.screens.bottom_bar_navigation.CryptoCoinListItem
 import online.pascarl.coinx.screens.bottom_bar_navigation.DashboardViewModel
 
 @Composable

@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
-class BottomNavigationContainerViewModel: ViewModel() {
+class NavDrawerViewModel: ViewModel() {
 
     private var _isLogOutDialogVisible by mutableStateOf(false)
     val isLogOutDialogVisible get() =  _isLogOutDialogVisible

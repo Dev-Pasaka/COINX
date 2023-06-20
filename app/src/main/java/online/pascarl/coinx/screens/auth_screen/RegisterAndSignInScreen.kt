@@ -38,7 +38,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
-import online.pascarl.coinx.isInternetAvailable
 import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.rememberImeState
 import online.pascarl.coinx.roomDB.RoomUser
@@ -76,6 +75,8 @@ fun RegisterScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(color = colorResource(id = R.color.gray))
+
+
     ) {
         Box(
             contentAlignment = Alignment.Center,
@@ -109,14 +110,14 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth())
         {
 
-            Text(
-                text = "Sign In",
-                fontSize = 16.sp,
-                style = MaterialTheme.typography.h5,
-                modifier = Modifier.padding(top = 16.dp)
-            )
             Spacer(modifier = Modifier.height(5.dp))
             if (signInViewModel.circularProgressBar) CircularProgressBar()
+            else Text(
+                    text = "Sign In",
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.h5,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
             Spacer(modifier = Modifier.height(5.dp))
         }
 
@@ -285,7 +286,7 @@ fun RegisterScreen(
                                             )
                                         )
                                         showMessage(context, "Signing in ...")
-                                        navController.navigate(Screen.BottomBarNavigationContainer.route)
+                                        navController.navigate(Screen.Dashboard.route)
                                     }else{
                                         roomDB.updateUser(
                                             user = RoomUser(

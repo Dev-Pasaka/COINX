@@ -1,4 +1,3 @@
-
 package online.pascarl.coinx.screens.bottom_bar_navigation
 
 import android.annotation.SuppressLint
@@ -15,7 +14,6 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,11 +27,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -46,13 +42,15 @@ import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.*
 import online.pascarl.coinx.R
+import online.pascarl.coinx.navigation.BottomBarViewModel
+import online.pascarl.coinx.navigation.CustomBottomNavigation
 import online.pascarl.coinx.navigation.NavigationDrawer
+import online.pascarl.coinx.roomDB.RoomUser
 import online.pascarl.coinx.roomDB.RoomViewModel
 import online.pascarl.coinx.roomDB.UserDatabase
 import online.pascarl.coinx.roomDB.UserRepository
 import online.pascarl.coinx.screens.NoInternet
 import online.pascarl.coinx.screens.auth_screen.showMessage
-
 
 
 /*@RequiresApi(Build.VERSION_CODES.O)
@@ -67,11 +65,12 @@ fun Preview1(){
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
- fun Dashboard(
+fun Dashboard(
+    bottomBarViewModel: BottomBarViewModel = viewModel(),
     dashboardViewModel: DashboardViewModel = viewModel(),
-    navController: NavHostController,
+    navController: NavHostController
 
-    ){
+    ) {
     val pullRefreshState = rememberPullRefreshState(
         dashboardViewModel.isRefreshing,
         { dashboardViewModel.refresh() }
@@ -79,11 +78,13 @@ fun Preview1(){
     val scaffoldState = rememberScaffoldState()
     val roomDB = RoomViewModel(
         application = Application(),
-        userRepository = UserRepository(UserDatabase.getInstance(LocalContext.current.applicationContext).userDao())
+        userRepository = UserRepository(
+            UserDatabase.getInstance(LocalContext.current.applicationContext).userDao()
+        )
     )
 
-    LaunchedEffect(Unit){
-        dashboardViewModel.roomUser = roomDB.getUser("12345678")!!
+    LaunchedEffect(Unit) {
+        dashboardViewModel.roomUser = roomDB.getUser("12345678") ?: RoomUser()
         dashboardViewModel.getCryptoPrices()
         dashboardViewModel.cryptoPrices()
         dashboardViewModel.getUserData()
@@ -91,9 +92,13 @@ fun Preview1(){
     }
     Scaffold(
         scaffoldState = scaffoldState,
-        drawerContent = { NavigationDrawer(navController = navController)},
+        drawerContent = { NavigationDrawer(navController = navController) },
+        bottomBar = { CustomBottomNavigation(
+            navController = navController,
+            bottomBarViewModel = bottomBarViewModel
+        )},
         modifier = Modifier
-                .pullRefresh(pullRefreshState)
+            .pullRefresh(pullRefreshState)
     ) {
 
         val context = LocalContext.current
@@ -108,17 +113,14 @@ fun Preview1(){
                 navDrawer = scaffoldState,
                 dashboardViewModel = dashboardViewModel
             )
-            if (isInternetAvailable(context = context)) {
-
-                Column {
-                    Salutation(dashboardViewModel = dashboardViewModel)
-                    WalletCardComposable(dashboardViewModel = dashboardViewModel)
-                    ExpressCheckout(dashboardViewModel = dashboardViewModel)
-                    CoinsOrWatchList(dashboardViewModel = dashboardViewModel)
-                }
-            } else if (!isInternetAvailable(context = context)) {
-                NoInternet()
+            Column(verticalArrangement = Arrangement.SpaceBetween) {
+                Salutation(dashboardViewModel = dashboardViewModel)
+                WalletCardComposable(dashboardViewModel = dashboardViewModel)
+                ExpressCheckout(dashboardViewModel = dashboardViewModel)
+                CoinsOrWatchList(dashboardViewModel = dashboardViewModel)
             }
+
+
         }
 
     }
@@ -126,66 +128,67 @@ fun Preview1(){
 
 
 @Composable
-fun TopBarComponents(navDrawer: ScaffoldState, dashboardViewModel: DashboardViewModel){
+fun TopBarComponents(navDrawer: ScaffoldState, dashboardViewModel: DashboardViewModel) {
 
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
+    ) {
+        val scope = rememberCoroutineScope()
+        Icon(
+            painter = painterResource(id = R.drawable.person_icon),
+            tint = Color.White,
+            contentDescription = "Profile Icon",
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
-        ) {
-            val scope = rememberCoroutineScope()
+                .size(25.dp)
+                .clip(RoundedCornerShape(360.dp))
+                .background(color = colorResource(id = R.color.background))
+                .clickable {
+                    scope.launch {
+                        navDrawer.drawerState.open()
+                    }
+                }
+        )
+
+        Spacer(modifier = Modifier.width(50.dp))
+
+        Row {
+
             Icon(
-                painter = painterResource(id = R.drawable.person_icon),
-                tint = Color.White,
+                painter = painterResource(id = R.drawable.qr_code_scanner),
                 contentDescription = "Profile Icon",
+                tint = colorResource(id = R.color.background),
                 modifier = Modifier
                     .size(25.dp)
                     .clip(RoundedCornerShape(360.dp))
-                    .background(color = colorResource(id = R.color.background))
                     .clickable {
-                        scope.launch {
-                            navDrawer.drawerState.open()
-                        }
+
                     }
             )
+            Spacer(modifier = Modifier.width(16.dp))
 
-            Spacer(modifier = Modifier.width(50.dp))
+            Icon(
+                imageVector = Outlined.Notifications,
+                contentDescription = "Profile Icon",
+                tint = colorResource(id = R.color.background),
+                modifier = Modifier
+                    .size(25.dp)
+                    .clip(RoundedCornerShape(360.dp))
+                    .clickable {
 
-            Row {
+                    },
 
-                Icon(
-                    painter = painterResource(id = R.drawable.qr_code_scanner),
-                    contentDescription = "Profile Icon",
-                    tint = colorResource(id = R.color.background),
-                    modifier = Modifier
-                        .size(25.dp)
-                        .clip(RoundedCornerShape(360.dp))
-                        .clickable {
-
-                        }
                 )
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Icon(
-                    imageVector = Outlined.Notifications,
-                    contentDescription = "Profile Icon",
-                    tint = colorResource(id = R.color.background),
-                    modifier = Modifier
-                        .size(25.dp)
-                        .clip(RoundedCornerShape(360.dp))
-                        .clickable {
-
-                        },
-
-                    )
-            }
-
-
         }
+
+
+    }
 }
+
 @Composable
-fun Salutation(username:String = "Pasaka", dashboardViewModel: DashboardViewModel){
+fun Salutation(username: String = "Pasaka", dashboardViewModel: DashboardViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -193,9 +196,9 @@ fun Salutation(username:String = "Pasaka", dashboardViewModel: DashboardViewMode
     ) {
 
         Column(
-        ){
+        ) {
 
-            val salutation by remember { mutableStateOf(getCurrentTime())}
+            val salutation by remember { mutableStateOf(getCurrentTime()) }
             Text(
                 text = "$salutation,",
                 color = colorResource(id = R.color.background),
@@ -214,7 +217,10 @@ fun Salutation(username:String = "Pasaka", dashboardViewModel: DashboardViewMode
 }
 
 @Composable
-fun WalletCardComposable(currencySymbol: String = "KES", dashboardViewModel: DashboardViewModel){
+fun WalletCardComposable(
+    currencySymbol: String = "KES",
+    dashboardViewModel: DashboardViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -239,14 +245,14 @@ fun WalletCardComposable(currencySymbol: String = "KES", dashboardViewModel: Das
 
             IconButton(
                 onClick = {
-                 dashboardViewModel.showBalance()
+                    dashboardViewModel.showBalance()
                 }
             ) {
                 Icon(
                     imageVector = if (dashboardViewModel.showBalance)
                         Outlined.Visibility else Outlined.VisibilityOff,
                     contentDescription = "Profile Icon",
-                    tint = colorResource(id = R.color.app_white) ,
+                    tint = colorResource(id = R.color.app_white),
                 )
             }
         }
@@ -271,7 +277,7 @@ fun WalletCardComposable(currencySymbol: String = "KES", dashboardViewModel: Das
                 .padding(8.dp)
         ) {
             /**Buy Icon*/
-            IconButton(onClick = { /*TODO*/ }){
+            IconButton(onClick = { /*TODO*/ }) {
                 Column {
                     Icon(
                         imageVector = Outlined.CurrencyBitcoin,
@@ -304,11 +310,11 @@ fun WalletCardComposable(currencySymbol: String = "KES", dashboardViewModel: Das
                         color = colorResource(id = R.color.app_white),
                     )
                 }
-                }
+            }
 
             /**Send Icon*/
 
-            IconButton(onClick = { /*TODO*/ }){
+            IconButton(onClick = { /*TODO*/ }) {
                 Column() {
                     Icon(
                         imageVector = Outlined.Send,
@@ -323,11 +329,11 @@ fun WalletCardComposable(currencySymbol: String = "KES", dashboardViewModel: Das
                         color = colorResource(id = R.color.app_white),
                     )
                 }
-                }
+            }
 
             /**Sell Icon*/
 
-            IconButton(onClick = { /*TODO*/ }){
+            IconButton(onClick = { /*TODO*/ }) {
                 Column() {
 
                     Icon(
@@ -343,20 +349,20 @@ fun WalletCardComposable(currencySymbol: String = "KES", dashboardViewModel: Das
                         color = colorResource(id = R.color.app_white),
                     )
                 }
-                }
+            }
 
         }
     }
 }
 
 
-@OptIn( ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ExpressCheckout(dashboardViewModel:DashboardViewModel){
+fun ExpressCheckout(dashboardViewModel: DashboardViewModel) {
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top=5.dp, bottom = 5.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 5.dp, bottom = 5.dp)
     )
     {
         val context = LocalContext.current
@@ -367,7 +373,7 @@ fun ExpressCheckout(dashboardViewModel:DashboardViewModel){
             style = MaterialTheme.typography.body2,
             fontWeight = FontWeight.W400,
 
-        )
+            )
         if (dashboardViewModel.cryptoModel.isNullOrEmpty()) {
             ExpressCheckOutLoadingPreview()
         } else {
@@ -390,7 +396,7 @@ fun ExpressCheckout(dashboardViewModel:DashboardViewModel){
                             showMessage(context, "Buying ${cryptoItem.name}")
                         },
 
-                    )
+                        )
                 } else {
                     // Handle index out of bounds error if necessary
                 }
@@ -407,15 +413,15 @@ fun ExpressCheckOutItems(
 
     name: String = "Bitcoin",
     symbol: String = "BTC",
-    imageIcon:Painter = painterResource(id = R.drawable.bitcoin_icon),
-    price:Double =3948175.55,
-    percentageChangeIn24Hrs:Double = -1.58,
-    firstGradientColor:Color = colorResource(id = R.color.background),
-    secondGradientColor:Color = colorResource(id = R.color.grass_green),
-    modifier:Modifier = Modifier,
+    imageIcon: Painter = painterResource(id = R.drawable.bitcoin_icon),
+    price: Double = 3948175.55,
+    percentageChangeIn24Hrs: Double = -1.58,
+    firstGradientColor: Color = colorResource(id = R.color.background),
+    secondGradientColor: Color = colorResource(id = R.color.grass_green),
+    modifier: Modifier = Modifier,
     dashboardViewModel: DashboardViewModel
 
-){
+) {
     val gradient = linearGradient(
         0.01f to secondGradientColor,
         50.0f to firstGradientColor,
@@ -439,7 +445,7 @@ fun ExpressCheckOutItems(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-            ){
+            ) {
                 Image(
                     painter = imageIcon,
                     contentDescription = "Bitcoin",
@@ -523,6 +529,7 @@ fun ExpressCheckOutItems(
         }
     }
 }
+
 @Composable
 fun CoinsOrWatchList(dashboardViewModel: DashboardViewModel) {
     Column {
@@ -579,7 +586,7 @@ fun CoinsOrWatchList(dashboardViewModel: DashboardViewModel) {
 
 
 @Composable
-fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardViewModel){
+fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardViewModel) {
 
     val onSelectedBackgroundColor = colorResource(id = R.color.background)
     val onNotSelectedBackgroundColor = Color.Gray
@@ -643,12 +650,12 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
     }
 
     val context = LocalContext.current
-    if (dashboardViewModel.cryptoModel.isNullOrEmpty()){
+    if (dashboardViewModel.cryptoModel.isNullOrEmpty()) {
         CryptoListPreview()
-    }else{
-        LazyColumn(modifier = Modifier.fillMaxWidth()){
+    } else {
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
 
-            items(dashboardViewModel.cryptoModel.size){
+            items(dashboardViewModel.cryptoModel.size) {
                 CryptoCoinListItem(
                     name = dashboardViewModel.cryptoModel[it].name,
                     symbol = dashboardViewModel.cryptoModel[it].symbol,
@@ -667,14 +674,14 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
 
 @Composable
 fun CryptoCoinListItem(
-    name:String = "Bitcoin",
+    name: String = "Bitcoin",
     symbol: String = "BTC",
     imageIcon: Painter = painterResource(id = R.drawable.bitcoin_icon),
     percentageChangeIn24Hrs: Double,
     price: Double,
     modifier: Modifier = Modifier,
     dashboardViewModel: DashboardViewModel
-){
+) {
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -683,7 +690,7 @@ fun CryptoCoinListItem(
             .padding(start = 18.dp, end = 18.dp, top = 8.dp, bottom = 5.dp)
             .fillMaxWidth()
 
-    ){
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -724,7 +731,7 @@ fun CryptoCoinListItem(
                 style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 fontSize = 14.sp,
-                color =  if (percentageChangeIn24Hrs < 0.0)
+                color = if (percentageChangeIn24Hrs < 0.0)
                     colorResource(id = R.color.red) else colorResource(id = R.color.grass_green)
             )
             Text(
@@ -741,25 +748,25 @@ fun CryptoCoinListItem(
 
 
 @Composable
-fun CryptoListOrWatchlist(dashboardViewModel: DashboardViewModel){
+fun CryptoListOrWatchlist(dashboardViewModel: DashboardViewModel) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
-        if(dashboardViewModel.isCoinOrWatchlistSelected){
+        ) {
+        if (dashboardViewModel.isCoinOrWatchlistSelected) {
             FilterChips(dashboardViewModel = dashboardViewModel)
-        }else if(!dashboardViewModel.isCoinOrWatchlistSelected){
+        } else if (!dashboardViewModel.isCoinOrWatchlistSelected) {
             Column() {
             }
-            }
         }
+    }
 
 }
 
 
 @Composable
-fun ExpressCheckOutLoadingPreview(){
+fun ExpressCheckOutLoadingPreview() {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.fetching))
 
     val progress by animateLottieCompositionAsState(
@@ -775,7 +782,7 @@ fun ExpressCheckOutLoadingPreview(){
             .clip(RoundedCornerShape(10.dp))
             .background(color = Color.LightGray)
             .padding(vertical = 16.dp)
-    ){
+    ) {
 
         LottieAnimation(
             composition = composition,
@@ -789,7 +796,7 @@ fun ExpressCheckOutLoadingPreview(){
 }
 
 @Composable
-fun CryptoListPreview(){
+fun CryptoListPreview() {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.fetching))
 
     val progress by animateLottieCompositionAsState(
@@ -805,7 +812,7 @@ fun CryptoListPreview(){
             .clip(RoundedCornerShape(10.dp))
             .background(color = Color.LightGray)
 
-    ){
+    ) {
 
         LottieAnimation(
             composition = composition,

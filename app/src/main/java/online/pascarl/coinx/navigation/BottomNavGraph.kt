@@ -2,46 +2,26 @@ package online.pascarl.coinx.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import online.pascarl.coinx.BottomUpAnimation
+import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.composable
 import online.pascarl.coinx.SlideInAnimation
-import online.pascarl.coinx.screens.SeeAllCryptos
-import online.pascarl.coinx.screens.auth_screen.RegisterScreen
-import online.pascarl.coinx.screens.bottom_bar_navigation.*
+import online.pascarl.coinx.screens.bottom_bar_navigation.Dashboard
+import online.pascarl.coinx.screens.bottom_bar_navigation.NewsFeed
+import online.pascarl.coinx.screens.bottom_bar_navigation.Orders
+import online.pascarl.coinx.screens.bottom_bar_navigation.Swap
+import online.pascarl.coinx.screens.bottom_bar_navigation.Wallet
 
 @RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun BottomNavGraph(navController: NavHostController){
-    NavHost(navController = navController, startDestination = Screen.Dashboard.route ) {
-        composable(route = Screen.Dashboard.route) {
-            Dashboard(navController = navController)
-        }
-        composable(route = BottomBarScreen.Profile.route) {
-            Profile(navController = navController)
-        }
-        composable(route = BottomBarScreen.Feed.route) {
-            NewsFeed(navController = navController)
-        }
-        composable(route = BottomBarScreen.Wallet.route) {
-            Wallet(navController = navController)
-        }
-        composable(route = BottomBarScreen.Swap.route) {
-            Swap(navController = navController)
-        }
+    NavHost(navController = navController, startDestination = Screen.Dashboard.route) {
 
-        composable(route = Screen.SeeAllCryptos.route){
-            BottomUpAnimation {
-                SeeAllCryptos(navController = navController)
-            }
-        }
-        composable(route = Screen.Register.route){
-            SlideInAnimation {
-                RegisterScreen(navController = navController)
-            }
 
-        }
     }
 }
