@@ -100,7 +100,7 @@ fun BottomNavigationItems(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .clip(RoundedCornerShape(100))
+                .clip(RoundedCornerShape(360.dp))
                 .clickable {
                 bottomBarViewModel.navigateTo(index = index)
                 navController.popBackStack()

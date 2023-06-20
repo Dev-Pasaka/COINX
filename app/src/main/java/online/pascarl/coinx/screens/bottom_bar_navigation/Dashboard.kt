@@ -595,10 +595,11 @@ fun CoinsOrWatchList(
                 color = colorResource(id = R.color.background),
                 modifier = Modifier
                     .padding(top = 8.dp, end = 16.dp)
+                    .clip(RoundedCornerShape(360.dp))
                     .clickable {
                         navController.navigate(Screen.SeeAllCryptos.route)
                     }
-                    .weight(1f)
+
             )
         }
     }
