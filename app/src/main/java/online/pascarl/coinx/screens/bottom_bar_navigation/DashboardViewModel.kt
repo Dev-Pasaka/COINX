@@ -135,6 +135,7 @@ class DashboardViewModel: ViewModel() {
                 )
             )
         }
+        _cryptocurrencies.clear()
         _cryptocurrencies.addAll(cryptoList)
 
 

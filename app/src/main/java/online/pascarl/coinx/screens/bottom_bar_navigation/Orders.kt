@@ -263,7 +263,7 @@ fun OrderItemBody(order: Order){
                     textAlign = TextAlign.Center,
                     color = when(order.orderStatus){
                         "Expired" -> Color.Red
-                        "Pending" -> colorResource(id = R.color.bamboo)
+                        "Pending" -> colorResource(id = R.color.orange)
                         "Completed" -> colorResource(id = R.color.grass_green)
                         else -> Color.Gray},
                     fontSize = 14.sp,
