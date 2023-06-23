@@ -56,32 +56,34 @@ class NewsFeedViewModel(): ViewModel() {
         }catch (_:Exception){
             null
         }
-        val jsonResponseString: String = response?: ""
-        val jsonResponseObj = Json.parseToJsonElement(jsonResponseString) as JsonObject
-        articleList = jsonResponseObj["articles"] as List<*>
-        for (article in articleList){
-            val articleObj= article as Map<*, *>
-            val published_date = articleObj["publishedAt"]
-            val link = articleObj["url"]
-            val title = articleObj["title"]
-            val summary = articleObj["description"]
-            val media = articleObj["image"]
+        if (response != null){
+            val jsonResponseString: String = response?: ""
+            val jsonResponseObj = Json.parseToJsonElement(jsonResponseString) as JsonObject
+            articleList = jsonResponseObj["articles"] as List<*>
+            for (article in articleList){
+                val articleObj= article as Map<*, *>
+                val published_date = articleObj["publishedAt"]
+                val link = articleObj["url"]
+                val title = articleObj["title"]
+                val summary = articleObj["description"]
+                val media = articleObj["image"]
 
-            val authorObj = articleObj["source"] as Map<*,*>
-            val author = authorObj["name"]
+                val authorObj = articleObj["source"] as Map<*,*>
+                val author = authorObj["name"]
 
-            finalArticleList.add(
-                FormattedArticleList(
-                    title = title.toString().replace("\"", ""),
-                    externalLink = link.toString().replace("\"", ""),
-                    description = summary.toString().replace("\"", ""),
-                    publishedDate = published_date.toString().replace("\"", ""),
-                    byAuthor = author.toString().replace("\"", ""),
-                    imageUrl = media.toString().replace("\"", "")
+                finalArticleList.add(
+                    FormattedArticleList(
+                        title = title.toString().replace("\"", ""),
+                        externalLink = link.toString().replace("\"", ""),
+                        description = summary.toString().replace("\"", ""),
+                        publishedDate = published_date.toString().replace("\"", ""),
+                        byAuthor = author.toString().replace("\"", ""),
+                        imageUrl = media.toString().replace("\"", "")
 
+                    )
                 )
-            )
 
+            }
         }
         formattedArticleList.clear()
         formattedArticleList.addAll(finalArticleList)

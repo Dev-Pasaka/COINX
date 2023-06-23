@@ -170,7 +170,7 @@ fun NewsHeader() {
             style = MaterialTheme.typography.body1,
             color = colorResource(id = R.color.background)
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = "Full disclaimer. This platform includes third party opinions. We do " +
                     "not endorse their accuracy. Digital asset prices can be volatile.For more " +
@@ -215,25 +215,24 @@ fun NewsListBody(
             .alpha(alphaAnim.value),
         contentAlignment = Alignment.TopCenter
     ) {
-        LazyColumn {
-            items(newsFeedViewModel.formattedArticleList.size) {
-                NewsListItem(
-                    title = newsFeedViewModel.formattedArticleList[it].title,
-                    imageUrl = newsFeedViewModel.formattedArticleList[it].imageUrl,
-                    byAuthor = newsFeedViewModel.formattedArticleList[it].byAuthor,
-                    publishedDate = newsFeedViewModel.formattedArticleList[it].publishedDate,
-                    externalLink = newsFeedViewModel.formattedArticleList[it].externalLink,
-                    description = newsFeedViewModel.formattedArticleList[it].description,
-                    newsFeedViewModel = newsFeedViewModel
-                )
-                Divider(
-                    color = Color.LightGray,
-                    thickness = 1.dp
-                )
+        if (newsFeedViewModel.formattedArticleList.isNotEmpty())
+            LazyColumn {
+                items(newsFeedViewModel.formattedArticleList.size) {
+                    NewsListItem(
+                        title = newsFeedViewModel.formattedArticleList[it].title,
+                        imageUrl = newsFeedViewModel.formattedArticleList[it].imageUrl,
+                        byAuthor = newsFeedViewModel.formattedArticleList[it].byAuthor,
+                        publishedDate = newsFeedViewModel.formattedArticleList[it].publishedDate,
+                        externalLink = newsFeedViewModel.formattedArticleList[it].externalLink,
+                        description = newsFeedViewModel.formattedArticleList[it].description,
+                        newsFeedViewModel = newsFeedViewModel
+                    )
+                    Divider(
+                        color = Color.LightGray,
+                        thickness = 1.dp
+                    )
+                }
             }
-        }
-
-
     }
 }
 
@@ -307,6 +306,7 @@ fun NewsListItem(
                     style = MaterialTheme.typography.body2,
                     color = Color.Gray
                 )
+                Spacer(modifier = Modifier.width(8.dp))
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.End,
@@ -322,7 +322,7 @@ fun NewsListItem(
                         style = MaterialTheme.typography.body1,
                         textAlign = TextAlign.Center,
                         color = Color.White,
-                        fontSize = 14.sp,
+                        fontSize = 12.sp,
                         modifier = Modifier
                             .padding(horizontal = 6.dp, vertical = 4.dp)
                     )
