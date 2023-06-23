@@ -36,12 +36,6 @@ fun AnimatedSplashScreen(navController: NavHostController, splashScreenViewModel
         application = Application(),
         userRepository = UserRepository(UserDatabase.getInstance(LocalContext.current.applicationContext).userDao())
     )
-    LaunchedEffect(Unit){
-        val roomResult = roomDB.getUser("12345678")
-        if (roomResult != null) splashScreenViewModel.roomUser = roomResult
-        else splashScreenViewModel.roomUser = RoomUser()
-        splashScreenViewModel.getUserData()
-    }
 
 
     var startAnimation by remember {
@@ -59,7 +53,11 @@ fun AnimatedSplashScreen(navController: NavHostController, splashScreenViewModel
         startAnimation = true
         delay(3000)
         navController.popBackStack()
-        navController.clearBackStack(Screen.SplashScreen.route)
+
+        val roomResult = roomDB.getUser("12345678")
+        if (roomResult != null) splashScreenViewModel.roomUser = roomResult
+        else splashScreenViewModel.roomUser = RoomUser()
+        splashScreenViewModel.getUserData()
         if (splashScreenViewModel.isUserSignedIn)
             navController.navigate(Screen.Dashboard.route)
         else navController.navigate(Screen.Register.route)

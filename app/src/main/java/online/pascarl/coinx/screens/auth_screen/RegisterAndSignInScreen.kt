@@ -299,6 +299,8 @@ fun RegisterScreen(
                                                     token = signInViewModel.backendAuthToken!!
                                                 )
                                             )
+                                            showMessage(context, "Signing in ...")
+                                            navController.navigate(Screen.Dashboard.route)
                                         }
                                     } else {
                                         showMessage(context, "Invalid email or password")

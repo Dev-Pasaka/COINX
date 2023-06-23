@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -48,10 +49,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import online.pascarl.coinx.R
+import online.pascarl.coinx.isInternetAvailable
 import online.pascarl.coinx.model.Order
 import online.pascarl.coinx.navigation.BottomBarViewModel
 import online.pascarl.coinx.navigation.CustomBottomNavigation
 import online.pascarl.coinx.navigation.NavigationDrawer
+import online.pascarl.coinx.screens.NoInternet
 
 /*@Preview(showSystemUi = true)
 @Composable
@@ -65,6 +68,7 @@ fun Orders(
     bottomBarViewModel: BottomBarViewModel = viewModel(),
     ordersViewModel: OrdersViewModel  = viewModel()
 ){
+    val context = LocalContext.current
     var startAnimation by remember {
         mutableStateOf(false)
     }
@@ -90,13 +94,17 @@ fun Orders(
         )
         }
     ){
-        Column(
-            modifier = Modifier.alpha(alphaAnim.value)
-        ) {
-            OrdersHeader()
-            FilterOrders(ordersViewModel = ordersViewModel)
-            Body(ordersViewModel = ordersViewModel)
-        }
+       if (isInternetAvailable(context = context))
+           Column(
+               modifier = Modifier.alpha(alphaAnim.value)
+           ) {
+               OrdersHeader()
+               FilterOrders(ordersViewModel = ordersViewModel)
+               Body(ordersViewModel = ordersViewModel)
+           }
+        else{
+            NoInternet()
+       }
     }
 
 }

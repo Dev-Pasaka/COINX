@@ -52,7 +52,8 @@ fun imageLoader(
     imageUri:String = "https://coinicons-api.vercel.app/api/icon/${symbol.lowercase()}"
 ): ImagePainter{
     
-    return rememberImagePainter(data = imageUri)
+    val painter = rememberImagePainter(data = imageUri)
+    return painter
     
 }
 

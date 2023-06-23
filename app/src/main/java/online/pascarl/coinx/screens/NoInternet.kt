@@ -32,6 +32,8 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
+import online.pascarl.coinx.isInternetAvailable
+import online.pascarl.coinx.roomDB.RoomUser
 import online.pascarl.coinx.roomDB.RoomViewModel
 import online.pascarl.coinx.roomDB.UserDatabase
 import online.pascarl.coinx.roomDB.UserRepository
@@ -46,7 +48,8 @@ fun Preview(){
 
 @Composable
 fun NoInternet(dashboardViewModel: DashboardViewModel = viewModel()){
-
+    val context = LocalContext.current
+    val isNetworkAvailable = isInternetAvailable(context = context)
     val roomDB = RoomViewModel(
         application = Application(),
         userRepository = UserRepository(UserDatabase.getInstance(LocalContext.current.applicationContext).userDao())
@@ -102,13 +105,16 @@ fun NoInternet(dashboardViewModel: DashboardViewModel = viewModel()){
                     .clickable {
                         isPlaying = true
                     }
-            ) {
+            ) {/*
                 Row(
                     modifier = Modifier.clickable {
                         scope.launch {
-                            dashboardViewModel.roomUser = roomDB.getUser("12345678")!!
-                            dashboardViewModel.getCryptoPrices()
-                            dashboardViewModel.cryptoPrices()
+                            if (isNetworkAvailable)
+                                dashboardViewModel.roomUser = roomDB.getUser("12345678") ?: RoomUser()
+                                dashboardViewModel.getCryptoPrices()
+                                dashboardViewModel.cryptoPrices()
+                                dashboardViewModel.getUserData()
+                                dashboardViewModel.getUserPortfolio()
 
                         }
                     }
@@ -124,7 +130,7 @@ fun NoInternet(dashboardViewModel: DashboardViewModel = viewModel()){
                         fontWeight = FontWeight.W300,
                         color = colorResource(id = R.color.background),
                     )
-                }
+                }*/
             }
         }
 

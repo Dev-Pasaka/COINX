@@ -552,7 +552,7 @@ fun SecondRegistrationScreen(
             )
             Icon(
                 imageVector = Icons.Default.Cancel,
-                contentDescription = "Cance",
+                contentDescription = "Cancel",
                 tint = Color.LightGray,
                 modifier = Modifier
                     .size(20.dp)
@@ -775,11 +775,6 @@ fun ThirdRegistrationScreen(
 
     }
 }
-
-
-
-
-
 
 
 

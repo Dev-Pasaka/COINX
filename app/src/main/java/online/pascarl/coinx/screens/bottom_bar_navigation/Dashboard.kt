@@ -76,6 +76,8 @@ fun Dashboard(
     navController: NavHostController
 
     ) {
+    val context = LocalContext.current
+    val isNetworkAvailable  = isInternetAvailable(context = context)
     var startAnimation by remember {
         mutableStateOf(false)
     }
@@ -99,11 +101,12 @@ fun Dashboard(
     )
 
     LaunchedEffect(Unit) {
-        dashboardViewModel.roomUser = roomDB.getUser("12345678") ?: RoomUser()
-        dashboardViewModel.getCryptoPrices()
-        dashboardViewModel.cryptoPrices()
-        dashboardViewModel.getUserData()
-        dashboardViewModel.getUserPortfolio()
+        if(isNetworkAvailable)
+            dashboardViewModel.roomUser = roomDB.getUser("12345678") ?: RoomUser()
+            dashboardViewModel.getCryptoPrices()
+            dashboardViewModel.cryptoPrices()
+            dashboardViewModel.getUserData()
+            dashboardViewModel.getUserPortfolio()
     }
     Scaffold(
         scaffoldState = scaffoldState,
@@ -128,16 +131,19 @@ fun Dashboard(
                 navDrawer = scaffoldState,
                 dashboardViewModel = dashboardViewModel
             )
-            Column(verticalArrangement = Arrangement.SpaceBetween) {
-                Salutation(dashboardViewModel = dashboardViewModel)
-                WalletCardComposable(dashboardViewModel = dashboardViewModel)
-                ExpressCheckout(dashboardViewModel = dashboardViewModel)
-                CoinsOrWatchList(
-                    navController = navController,
-                    dashboardViewModel = dashboardViewModel
-                )
+            if(isInternetAvailable(context = context)){
+                Column(verticalArrangement = Arrangement.SpaceBetween) {
+                    Salutation(dashboardViewModel = dashboardViewModel)
+                    WalletCardComposable(dashboardViewModel = dashboardViewModel)
+                    ExpressCheckout(dashboardViewModel = dashboardViewModel)
+                    CoinsOrWatchList(
+                        navController = navController,
+                        dashboardViewModel = dashboardViewModel
+                    )
+                }
+            }else{
+                NoInternet()
             }
-
 
         }
 
@@ -392,7 +398,7 @@ fun ExpressCheckout(dashboardViewModel: DashboardViewModel) {
             fontWeight = FontWeight.W400,
 
             )
-        if (dashboardViewModel.cryptoModel.isNullOrEmpty()) {
+        if (dashboardViewModel.cryptoModel.isEmpty()) {
             ExpressCheckOutLoadingPreview()
         } else {
             HorizontalPager(
@@ -415,6 +421,7 @@ fun ExpressCheckout(dashboardViewModel: DashboardViewModel) {
                         },
 
                         )
+                    Spacer(modifier = Modifier.height(16.dp))
                 } else {
                     // Handle index out of bounds error if necessary
                 }
@@ -672,7 +679,7 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
     }
 
     val context = LocalContext.current
-    if (dashboardViewModel.cryptoModel.isNullOrEmpty()) {
+    if (dashboardViewModel.cryptoModel.isEmpty()) {
         CryptoListPreview()
     } else {
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
