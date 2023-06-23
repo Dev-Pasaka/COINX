@@ -76,6 +76,7 @@ fun Dashboard(
     navController: NavHostController
 
     ) {
+    val context = LocalContext.current
     var startAnimation by remember {
         mutableStateOf(false)
     }
@@ -128,16 +129,19 @@ fun Dashboard(
                 navDrawer = scaffoldState,
                 dashboardViewModel = dashboardViewModel
             )
-            Column(verticalArrangement = Arrangement.SpaceBetween) {
-                Salutation(dashboardViewModel = dashboardViewModel)
-                WalletCardComposable(dashboardViewModel = dashboardViewModel)
-                ExpressCheckout(dashboardViewModel = dashboardViewModel)
-                CoinsOrWatchList(
-                    navController = navController,
-                    dashboardViewModel = dashboardViewModel
-                )
+            if(isInternetAvailable(context = context)){
+                Column(verticalArrangement = Arrangement.SpaceBetween) {
+                    Salutation(dashboardViewModel = dashboardViewModel)
+                    WalletCardComposable(dashboardViewModel = dashboardViewModel)
+                    ExpressCheckout(dashboardViewModel = dashboardViewModel)
+                    CoinsOrWatchList(
+                        navController = navController,
+                        dashboardViewModel = dashboardViewModel
+                    )
+                }
+            }else{
+                NoInternet()
             }
-
 
         }
 

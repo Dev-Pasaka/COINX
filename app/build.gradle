@@ -138,8 +138,14 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
 
-    //Bottom nagigation
+    //Bottom navigation
     implementation("com.exyte:animated-navigation-bar:1.0.0")
+    //Glide
+    implementation("com.github.bumptech.glide:compose:1.0.0-alpha.1")
+
+
+
+
 
 
 

@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import online.pascarl.coinx.navigation.NavGraph
+import online.pascarl.coinx.screens.bottom_bar_navigation.NewsListBody
 import online.pascarl.coinx.ui.theme.COINXTheme
 
 class MainActivity : ComponentActivity() {
