@@ -322,8 +322,8 @@ fun WalletCardComposable(
             }
             /**Sell Icon*/
             IconButton(onClick = {
+                buyOrSellCryptosViewModel.isBuySelected = "Sell"
                 navController.navigate(Screen.BuyOrSellCryptos.route)
-                buyOrSellCryptosViewModel.toggle(toggleOption = "Sell")
             }) {
                 Column() {
 

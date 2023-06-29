@@ -5,12 +5,18 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import online.pascarl.coinx.model.Ads
+import java.util.Timer
+import java.util.TimerTask
 import kotlin.random.Random
 
 class BuyOrSellCryptosViewModel:ViewModel() {
     var isBuySelected by mutableStateOf("Buy")
-        private set
+
     // State to keep track of the selected item
     var selectedItem by mutableStateOf("USDT")
     var cryptoBuyAmount by mutableStateOf("")
@@ -32,6 +38,11 @@ class BuyOrSellCryptosViewModel:ViewModel() {
     var enterAmountScreenCryptoName by mutableStateOf("")
     var enterAmountScreenCryptoPrice by mutableStateOf(0.0)
     var enterAmountScreenCryptoSymbol by mutableStateOf("")
+    var enterAmountScreenPaymentMethod by mutableStateOf("")
+    var enterAmountScreenCryptoBuyMinLimit by mutableStateOf(0.0)
+    var enterAmountScreenCryptoBuyMaxLimit by mutableStateOf(0.0)
+    var enterAmountScreenCryptoSellMinLimit by mutableStateOf(0.0)
+    var enterAmountScreenCryptoSellMaxLimit by mutableStateOf(0.0)
 
 
     val listOfCryptoNamesAndSymbols = mutableStateListOf(
@@ -108,6 +119,7 @@ class BuyOrSellCryptosViewModel:ViewModel() {
     }
     fun openOrCloseEnterAmountScreen(){
         isEnterAmountScreenOpen = !isEnterAmountScreenOpen
+
     }
     private fun createDummyAdsList() {
         val adsTypeList = listOf("Buy", "Sell")
@@ -147,6 +159,7 @@ class BuyOrSellCryptosViewModel:ViewModel() {
             else -> input.substring(0, input.length - 1)
         }
     }
+
     init {
         createDummyAdsList()
         toggle(toggleOption = isBuySelected)

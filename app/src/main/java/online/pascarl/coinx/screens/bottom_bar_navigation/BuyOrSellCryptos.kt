@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -52,17 +53,20 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import online.pascarl.coinx.R
 import online.pascarl.coinx.imageLoader
 import online.pascarl.coinx.model.Ads
 
-/*@Preview(showSystemUi = true)
+@Preview(showSystemUi = true)
 @Composable
 fun BuyCryptosSectionPreview(buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel = viewModel()) {
+    val navController = rememberNavController()
+    BuyOrSellCryptos(navController = navController, buyOrSellCryptosViewModel = buyOrSellCryptosViewModel)
     //EnterAmountToBuyOrSell(buyOrSellCryptosViewModel)
 
-}*/
+}
 
 @Composable
 fun BuyOrSellCryptos(
@@ -210,6 +214,7 @@ fun OrderAdsItem(cryptoAd: Ads, buyOrSellCryptosViewModel: BuyOrSellCryptosViewM
                 }
 
             }
+
             Column(
                 horizontalAlignment = Alignment.Start,
             ) {
@@ -223,44 +228,6 @@ fun OrderAdsItem(cryptoAd: Ads, buyOrSellCryptosViewModel: BuyOrSellCryptosViewM
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(
                     text = "Ksh ${cryptoAd.cryptoPrice}",
-                    style = MaterialTheme.typography.body2,
-                    textAlign = TextAlign.Center,
-                    color = Color.Gray,
-                    fontSize = 12.sp,
-                )
-                Column(
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    Text(
-                        text = "Payment Method",
-                        style = MaterialTheme.typography.body2,
-                        textAlign = TextAlign.Center,
-                        color = Color.Gray,
-                        fontSize = 12.sp,
-                    )
-                    Spacer(modifier = Modifier.width(3.dp))
-                    Text(
-                        text = cryptoAd.paymentMethod,
-                        style = MaterialTheme.typography.body2,
-                        textAlign = TextAlign.Center,
-                        color = colorResource(id = R.color.background),
-                        fontSize = 12.sp,
-                    )
-                }
-            }
-            Column(
-                horizontalAlignment = Alignment.Start,
-            ) {
-                Text(
-                    text = "Limit (KES)",
-                    style = MaterialTheme.typography.body2,
-                    textAlign = TextAlign.Center,
-                    color = Color.Gray,
-                    fontSize = 12.sp,
-                )
-                Spacer(modifier = Modifier.width(3.dp))
-                Text(
-                    text = "${cryptoAd.minOrder} - ${cryptoAd.maxOrder}",
                     style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.Gray,
@@ -285,7 +252,27 @@ fun OrderAdsItem(cryptoAd: Ads, buyOrSellCryptosViewModel: BuyOrSellCryptosViewM
                                 cryptoAd.cryptoSymbol
                             buyOrSellCryptosViewModel.enterAmountScreenCryptoPrice =
                                 cryptoAd.cryptoPrice
+
+                            buyOrSellCryptosViewModel.enterAmountScreenPaymentMethod =
+                                cryptoAd.paymentMethod
+                            when(buyOrSellCryptosViewModel.isBuySelected){
+                                "Buy" ->{
+                                    buyOrSellCryptosViewModel.enterAmountScreenCryptoBuyMaxLimit =
+                                        cryptoAd.maxOrder
+                                    buyOrSellCryptosViewModel.enterAmountScreenCryptoBuyMinLimit =
+                                        cryptoAd.minOrder
+
+                                }
+                                "Sell" ->{
+                                    buyOrSellCryptosViewModel.enterAmountScreenCryptoSellMaxLimit =
+                                        cryptoAd.maxOrder
+                                    buyOrSellCryptosViewModel.enterAmountScreenCryptoSellMinLimit =
+                                        cryptoAd.minOrder
+                                }
+                            }
+
                             buyOrSellCryptosViewModel.openOrCloseEnterAmountScreen()
+
                         }
 
                 ) {
@@ -297,7 +284,6 @@ fun OrderAdsItem(cryptoAd: Ads, buyOrSellCryptosViewModel: BuyOrSellCryptosViewM
                         color = colorResource(id = R.color.app_white),
                         modifier = Modifier
                             .padding(10.dp)
-
                     )
 
                 }
@@ -485,7 +471,7 @@ fun EnterAmountToBuyOrSell(buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel)
     }
     val alphaAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
-        animationSpec = spring(dampingRatio = 0.3f)
+        animationSpec = spring(dampingRatio = 0.1f)
     )
     LaunchedEffect(key1 = true){
         startAnimation = true
@@ -502,30 +488,87 @@ fun EnterAmountToBuyOrSell(buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel)
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBackIos,
-                contentDescription = "Go Back",
-                tint = Color.Gray,
-                modifier = Modifier
-                    .size(15.dp)
-                    .clip(RoundedCornerShape(360.dp))
-                    .clickable {
-                        buyOrSellCryptosViewModel.openOrCloseEnterAmountScreen()
-                    }
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = "${buyOrSellCryptosViewModel.enterAmountScreenAdType} " +
-                        buyOrSellCryptosViewModel.enterAmountScreenCryptoName,
-                style = MaterialTheme.typography.body2,
-                textAlign = TextAlign.Center,
-                color = Color.Black,
-                fontSize = 12.sp,
-            )
+            Column {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
 
+                    Icon(
+                        imageVector = Icons.Default.ArrowBackIos,
+                        contentDescription = "Go Back",
+                        tint = Color.Gray,
+                        modifier = Modifier
+                            .size(15.dp)
+                            .clip(RoundedCornerShape(360.dp))
+                            .clickable {
+                                buyOrSellCryptosViewModel.openOrCloseEnterAmountScreen()
+                            }
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = "${buyOrSellCryptosViewModel.enterAmountScreenAdType} " +
+                                buyOrSellCryptosViewModel.enterAmountScreenCryptoName,
+                        style = MaterialTheme.typography.body2,
+                        textAlign = TextAlign.Center,
+                        color = Color.Black,
+                        fontSize = 12.sp,
+                    )
+                }
+                Spacer(modifier = Modifier.height(3.dp))
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                ){
+                    Text(
+                        text = when(buyOrSellCryptosViewModel.isBuySelected) {
+                            "Buy" -> {
+                                "Limit ${buyOrSellCryptosViewModel.enterAmountScreenCryptoBuyMinLimit}" +
+                                        " - ${buyOrSellCryptosViewModel.enterAmountScreenCryptoBuyMaxLimit}"
+
+                            }
+                            "Sell" -> {
+                                "Limit ${buyOrSellCryptosViewModel.enterAmountScreenCryptoSellMinLimit}" +
+                                        " - ${buyOrSellCryptosViewModel.enterAmountScreenCryptoSellMaxLimit}"
+                            }
+                            else ->""
+                        },
+                        style = MaterialTheme.typography.body2,
+                        textAlign = TextAlign.Center,
+                        color = colorResource(id = R.color.background),
+                        fontSize = 12.sp,
+                    )
+                }
+            }
+            when(buyOrSellCryptosViewModel.isBuySelected){
+                "Buy" ->{
+                    Column(
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            text = "Payment Method",
+                            style = MaterialTheme.typography.body2,
+                            textAlign = TextAlign.Center,
+                            color = Color.Gray,
+                            fontSize = 12.sp,
+                        )
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Text(
+                            text = buyOrSellCryptosViewModel.enterAmountScreenPaymentMethod,
+                            style = MaterialTheme.typography.body2,
+                            textAlign = TextAlign.Center,
+                            color = colorResource(id = R.color.background),
+                            fontSize = 12.sp,
+                        )
+                    }
+                }
+            }
         }
+
         AmountInput(buyOrSellCryptosViewModel = buyOrSellCryptosViewModel)
         NumberPad(buyOrSellCryptosViewModel = buyOrSellCryptosViewModel)
         BuyOrSellButton(buyOrSellCryptosViewModel = buyOrSellCryptosViewModel)
@@ -647,8 +690,7 @@ fun AmountInput(buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel){
             text = when(buyOrSellCryptosViewModel.isBuySelected){
                 "Buy" -> "KSH ${buyOrSellCryptosViewModel.cryptoBuyAmount}"
                 else -> "AMT ${buyOrSellCryptosViewModel.cryptoSellAmount}"
-            }
-            ,
+            },
             style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Normal,
@@ -676,6 +718,7 @@ fun AmountInput(buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel){
             fontSize = 16.sp,
         )
 
+
     }
 }
 @Composable
@@ -688,9 +731,16 @@ fun BuyOrSellButton(buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel){
             .padding(bottom = 40.dp)
     ) {
         FloatingActionButton(
-            backgroundColor = when(buyOrSellCryptosViewModel.isBuySelected){
-                "Buy" -> colorResource(id = R.color.grass_green)
-                else -> Color.Red },
+            backgroundColor = if(
+                buyOrSellCryptosViewModel.isBuySelected == "Buy"
+                    ){
+                colorResource(id = R.color.grass_green)
+            }else if(
+                buyOrSellCryptosViewModel.isBuySelected == "Sell"
+            ){
+                Color.Red
+            }
+            else Color.Gray,
             elevation = FloatingActionButtonDefaults.elevation(
                 defaultElevation = 16.dp,
                 pressedElevation = 8.dp,
