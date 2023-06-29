@@ -56,6 +56,7 @@ import online.pascarl.coinx.roomDB.UserDatabase
 import online.pascarl.coinx.roomDB.UserRepository
 import online.pascarl.coinx.screens.NoInternet
 import online.pascarl.coinx.screens.auth_screen.showMessage
+import kotlin.system.measureTimeMillis
 
 
 /*@RequiresApi(Build.VERSION_CODES.O)
@@ -76,6 +77,7 @@ fun Dashboard(
     navController: NavHostController
 
     ) {
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val isNetworkAvailable  = isInternetAvailable(context = context)
     var startAnimation by remember {
@@ -99,7 +101,6 @@ fun Dashboard(
             UserDatabase.getInstance(LocalContext.current.applicationContext).userDao()
         )
     )
-
     LaunchedEffect(Unit) {
         if(isNetworkAvailable)
             dashboardViewModel.roomUser = roomDB.getUser("12345678") ?: RoomUser()
@@ -134,7 +135,7 @@ fun Dashboard(
             if(isInternetAvailable(context = context)){
                 Column(verticalArrangement = Arrangement.SpaceBetween) {
                     Salutation(dashboardViewModel = dashboardViewModel)
-                    WalletCardComposable(dashboardViewModel = dashboardViewModel)
+                    WalletCardComposable(dashboardViewModel = dashboardViewModel, navController = navController)
                     ExpressCheckout(dashboardViewModel = dashboardViewModel)
                     CoinsOrWatchList(
                         navController = navController,
@@ -243,7 +244,9 @@ fun Salutation(username: String = "Pasaka", dashboardViewModel: DashboardViewMod
 @Composable
 fun WalletCardComposable(
     currencySymbol: String = "KES",
-    dashboardViewModel: DashboardViewModel
+    navController: NavHostController,
+    dashboardViewModel: DashboardViewModel,
+    buyOrSellCryptosViewModel:BuyOrSellCryptosViewModel = viewModel()
 ) {
     Column(
         modifier = Modifier
@@ -301,7 +304,7 @@ fun WalletCardComposable(
                 .padding(8.dp)
         ) {
             /**Buy Icon*/
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { navController.navigate(Screen.BuyOrSellCryptos.route) }) {
                 Column {
                     Icon(
                         imageVector = Outlined.CurrencyBitcoin,
@@ -317,7 +320,27 @@ fun WalletCardComposable(
                     )
                 }
             }
+            /**Sell Icon*/
+            IconButton(onClick = {
+                navController.navigate(Screen.BuyOrSellCryptos.route)
+                buyOrSellCryptosViewModel.toggle(toggleOption = "Sell")
+            }) {
+                Column() {
 
+                    Icon(
+                        imageVector = Outlined.Payments,
+                        contentDescription = "Profile Icon",
+                        tint = colorResource(id = R.color.app_white),
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Sell",
+                        style = MaterialTheme.typography.body1,
+                        fontWeight = FontWeight.W300,
+                        color = colorResource(id = R.color.app_white),
+                    )
+                }
+            }
             /**Pay Icon*/
             IconButton(onClick = { /*TODO*/ }) {
                 Column() {
@@ -355,25 +378,7 @@ fun WalletCardComposable(
                 }
             }
 
-            /**Sell Icon*/
 
-            IconButton(onClick = { /*TODO*/ }) {
-                Column() {
-
-                    Icon(
-                        imageVector = Outlined.Payments,
-                        contentDescription = "Profile Icon",
-                        tint = colorResource(id = R.color.app_white),
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Text(
-                        text = "Sell",
-                        style = MaterialTheme.typography.body1,
-                        fontWeight = FontWeight.W300,
-                        color = colorResource(id = R.color.app_white),
-                    )
-                }
-            }
 
         }
     }
@@ -405,6 +410,7 @@ fun ExpressCheckout(dashboardViewModel: DashboardViewModel) {
                 count = dashboardViewModel.expressCheckoutCryptoList.size,
                 state = pagerState,
             ) {
+
                 println("number of cryptos ${dashboardViewModel.expressCheckoutCryptoList}")
                 val index = it
                 if (index >= 0 && index < dashboardViewModel.expressCheckoutCryptoList.size) {
@@ -421,7 +427,8 @@ fun ExpressCheckout(dashboardViewModel: DashboardViewModel) {
                         },
 
                         )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
+
                 } else {
                     // Handle index out of bounds error if necessary
                 }
@@ -552,6 +559,7 @@ fun ExpressCheckOutItems(
                 )
             }
         }
+        Spacer(modifier = Modifier.width(16.dp))
     }
 }
 

@@ -88,7 +88,9 @@ class DashboardViewModel: ViewModel() {
             null
         }
         println("Here is user information $result")
-        if (result != null) _userInformation = result
+        result?.let {
+            _userInformation = result
+        }
     }
     suspend fun getCryptoPrices(){
         val client = KtorClient.httpClient
@@ -107,7 +109,7 @@ class DashboardViewModel: ViewModel() {
         catch (_:Exception){
             null
         }
-        if (request != null){
+        request?.let{
             val jsonResponseString:String = request
             var cryptoData:List<*>
             val jsonResponseObj = Json.parseToJsonElement(jsonResponseString) as JsonObject
@@ -184,7 +186,9 @@ class DashboardViewModel: ViewModel() {
             null
         }
         println("Here is user portfolio $result")
-        if (result != null) _userPortfolio = result
+       result?.let {
+           _userPortfolio = result
+       }
     }
 
     fun showBalance(){

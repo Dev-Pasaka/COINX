@@ -23,13 +23,15 @@ class OrdersViewModel: ViewModel() {
     }
     private fun dummyOrders(){
         val orderStatuses = listOf("Completed", "Pending", "Cancelled", "Expired")
-
+        val cryptSymbols = listOf(
+            "USDT", "BTC", "ETH","BNB","USDC",""
+        )
         for (i in 1..10) {
             val order = Order(
                 orderType = if (Random.nextBoolean()) "Sell" else "Buy",
-                coinSymbol = "USDT",
-                price = Random.nextDouble(100.0, 1000.0),
-                amount = Random.nextDouble(1.0, 20.0),
+                coinSymbol = cryptSymbols.random(),
+                price = String.format("%.2f",Random.nextDouble(100.0, 1000.0)).toDouble(),
+                amount = String.format("%.2f",Random.nextDouble(1.0, 20.0)).toDouble(),
                 orderId = Random.nextLong(100000000000, 999999999999).toString(),
                 orderStatus = orderStatuses.random(),
                 orderValue = formatCurrency(amount = Random.nextDouble(100000.0, 10000000.0)),

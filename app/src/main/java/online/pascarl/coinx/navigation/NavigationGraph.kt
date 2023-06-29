@@ -89,6 +89,10 @@ fun NavGraph(navController: NavHostController) {
         }
 
 
+        composable(route = Screen.BuyOrSellCryptos.route){
+            BuyOrSellCryptos(navController = navController)
+        }
+
     }
 
 }
