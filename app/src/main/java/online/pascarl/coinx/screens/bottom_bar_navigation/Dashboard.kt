@@ -405,7 +405,8 @@ fun WalletCardComposable(
 fun ExpressCheckout(dashboardViewModel: DashboardViewModel) {
     val configuration = LocalConfiguration.current
     val heightInDp = configuration.screenHeightDp.toFloat()
-    if(heightInDp >= 796.0){
+    println(heightInDp)
+    if(heightInDp >= 700.0 ){
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
@@ -523,8 +524,7 @@ fun ExpressCheckOutItems(
                     text = "$percentageChangeIn24Hrs %",
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.W300,
-                    color = if (percentageChangeIn24Hrs < 0.0)
-                        colorResource(id = R.color.red) else colorResource(id = R.color.yellow_green)
+                    color = Color.White
                 )
                 Spacer(modifier = Modifier.height(3.dp))
                 Text(
