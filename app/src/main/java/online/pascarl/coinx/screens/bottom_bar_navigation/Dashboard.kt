@@ -7,14 +7,14 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +24,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush.Companion.linearGradient
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -56,7 +57,8 @@ import online.pascarl.coinx.roomDB.UserDatabase
 import online.pascarl.coinx.roomDB.UserRepository
 import online.pascarl.coinx.screens.NoInternet
 import online.pascarl.coinx.screens.auth_screen.showMessage
-import kotlin.system.measureTimeMillis
+import online.pascarl.coinx.screens.buyOrSell.BuyOrSellCryptosViewModel
+import online.pascarl.coinx.screens.buyOrSell.ISBUYSELECTED
 
 
 /*@RequiresApi(Build.VERSION_CODES.O)
@@ -76,10 +78,10 @@ fun Dashboard(
     dashboardViewModel: DashboardViewModel = viewModel(),
     navController: NavHostController
 
-    ) {
+) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val isNetworkAvailable  = isInternetAvailable(context = context)
+    val isNetworkAvailable = isInternetAvailable(context = context)
     var startAnimation by remember {
         mutableStateOf(false)
     }
@@ -89,7 +91,7 @@ fun Dashboard(
             durationMillis = 1000
         )
     )
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         startAnimation = true
         delay(1000)
     }
@@ -102,22 +104,24 @@ fun Dashboard(
         )
     )
     LaunchedEffect(Unit) {
-        if(isNetworkAvailable)
+        if (isNetworkAvailable)
             dashboardViewModel.roomUser = roomDB.getUser("12345678") ?: RoomUser()
-            dashboardViewModel.getCryptoPrices()
-            dashboardViewModel.cryptoPrices()
-            dashboardViewModel.getUserData()
-            dashboardViewModel.getUserPortfolio()
+        dashboardViewModel.getCryptoPrices()
+        dashboardViewModel.cryptoPrices()
+        dashboardViewModel.getUserData()
+        dashboardViewModel.getUserPortfolio()
     }
     Scaffold(
         scaffoldState = scaffoldState,
         drawerContent = { NavigationDrawer(navController = navController) },
-        bottomBar = { CustomBottomNavigation(
-            navController = navController,
-            bottomBarViewModel = bottomBarViewModel
-        )},
+        bottomBar = {
+            CustomBottomNavigation(
+                navController = navController,
+                bottomBarViewModel = bottomBarViewModel
+            )
+        },
 
-    ) {
+        ) {
 
         val context = LocalContext.current
 
@@ -132,17 +136,20 @@ fun Dashboard(
                 navDrawer = scaffoldState,
                 dashboardViewModel = dashboardViewModel
             )
-            if(isInternetAvailable(context = context)){
+            if (isInternetAvailable(context = context)) {
                 Column(verticalArrangement = Arrangement.SpaceBetween) {
                     Salutation(dashboardViewModel = dashboardViewModel)
-                    WalletCardComposable(dashboardViewModel = dashboardViewModel, navController = navController)
+                    WalletCardComposable(
+                        dashboardViewModel = dashboardViewModel,
+                        navController = navController
+                    )
                     ExpressCheckout(dashboardViewModel = dashboardViewModel)
                     CoinsOrWatchList(
                         navController = navController,
                         dashboardViewModel = dashboardViewModel
                     )
                 }
-            }else{
+            } else {
                 NoInternet()
             }
 
@@ -170,7 +177,10 @@ fun TopBarComponents(navDrawer: ScaffoldState, dashboardViewModel: DashboardView
                 .size(25.dp)
                 .clip(RoundedCornerShape(360.dp))
                 .background(color = colorResource(id = R.color.background))
-                .clickable {
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(bounded = true),
+                ){
                     scope.launch {
                         navDrawer.drawerState.open()
                     }
@@ -201,7 +211,10 @@ fun TopBarComponents(navDrawer: ScaffoldState, dashboardViewModel: DashboardView
                 modifier = Modifier
                     .size(25.dp)
                     .clip(RoundedCornerShape(360.dp))
-                    .clickable {
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = true),
+                    ){
 
                     },
 
@@ -246,7 +259,7 @@ fun WalletCardComposable(
     currencySymbol: String = "KES",
     navController: NavHostController,
     dashboardViewModel: DashboardViewModel,
-    buyOrSellCryptosViewModel:BuyOrSellCryptosViewModel = viewModel()
+    buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel = viewModel()
 ) {
     Column(
         modifier = Modifier
@@ -304,7 +317,10 @@ fun WalletCardComposable(
                 .padding(8.dp)
         ) {
             /**Buy Icon*/
-            IconButton(onClick = { navController.navigate(Screen.BuyOrSellCryptos.route) }) {
+            IconButton(onClick = {
+                ISBUYSELECTED = "Buy"
+                navController.navigate("buy_or_sell")
+            }) {
                 Column {
                     Icon(
                         imageVector = Outlined.CurrencyBitcoin,
@@ -322,7 +338,7 @@ fun WalletCardComposable(
             }
             /**Sell Icon*/
             IconButton(onClick = {
-                buyOrSellCryptosViewModel.isBuySelected = "Sell"
+                ISBUYSELECTED = "Sell"
                 navController.navigate(Screen.BuyOrSellCryptos.route)
             }) {
                 Column() {
@@ -379,7 +395,6 @@ fun WalletCardComposable(
             }
 
 
-
         }
     }
 }
@@ -388,55 +403,60 @@ fun WalletCardComposable(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ExpressCheckout(dashboardViewModel: DashboardViewModel) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 5.dp, bottom = 5.dp)
-    )
-    {
-        val context = LocalContext.current
-        val pagerState = rememberPagerState()
-        Text(
-            text = "Express Checkout",
-            color = Color.Gray,
-            style = MaterialTheme.typography.body2,
-            fontWeight = FontWeight.W400,
+    val configuration = LocalConfiguration.current
+    val heightInDp = configuration.screenHeightDp.toFloat()
+    if(heightInDp >= 796.0){
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, top = 5.dp, bottom = 5.dp)
+        )
+        {
+            val context = LocalContext.current
+            val pagerState = rememberPagerState()
+            Text(
+                text = "Express Checkout",
+                color = Color.Gray,
+                style = MaterialTheme.typography.body2,
+                fontWeight = FontWeight.W400,
 
-            )
-        if (dashboardViewModel.cryptoModel.isEmpty()) {
-            ExpressCheckOutLoadingPreview()
-        } else {
-            HorizontalPager(
-                count = dashboardViewModel.expressCheckoutCryptoList.size,
-                state = pagerState,
-            ) {
+                )
+            if (dashboardViewModel.cryptoModel.isEmpty()) {
+                ExpressCheckOutLoadingPreview()
+            } else {
+                HorizontalPager(
+                    count = dashboardViewModel.expressCheckoutCryptoList.size,
+                    state = pagerState,
+                ) {
 
-                println("number of cryptos ${dashboardViewModel.expressCheckoutCryptoList}")
-                val index = it
-                if (index >= 0 && index < dashboardViewModel.expressCheckoutCryptoList.size) {
-                    val cryptoItem = dashboardViewModel.expressCheckoutCryptoList[index]
-                    ExpressCheckOutItems(
-                        name = cryptoItem.name,
-                        symbol = cryptoItem.symbol,
-                        imageIcon = imageLoader(cryptoItem.symbol),
-                        price = cryptoItem.price,
-                        percentageChangeIn24Hrs = cryptoItem.percentageChangeIn24Hrs,
-                        dashboardViewModel = dashboardViewModel,
-                        modifier = Modifier.clickable {
-                            showMessage(context, "Buying ${cryptoItem.name}")
-                        },
+                    println("number of cryptos ${dashboardViewModel.expressCheckoutCryptoList}")
+                    val index = it
+                    if (index >= 0 && index < dashboardViewModel.expressCheckoutCryptoList.size) {
+                        val cryptoItem = dashboardViewModel.expressCheckoutCryptoList[index]
+                        ExpressCheckOutItems(
+                            name = cryptoItem.name,
+                            symbol = cryptoItem.symbol,
+                            imageIcon = imageLoader(cryptoItem.symbol),
+                            price = cryptoItem.price,
+                            percentageChangeIn24Hrs = cryptoItem.percentageChangeIn24Hrs,
+                            dashboardViewModel = dashboardViewModel,
+                            modifier = Modifier.clickable {
+                                showMessage(context, "Buying ${cryptoItem.name}")
+                            },
 
-                        )
-                    Spacer(modifier = Modifier.width(16.dp))
+                            )
+                        Spacer(modifier = Modifier.width(16.dp))
 
-                } else {
-                    // Handle index out of bounds error if necessary
+                    } else {
+                        // Handle index out of bounds error if necessary
+                    }
                 }
             }
+
+
         }
-
-
     }
+
 }
 
 
@@ -583,7 +603,10 @@ fun CoinsOrWatchList(
                     color = if (dashboardViewModel.isCoinOrWatchlistSelected) colorResource(id = R.color.background) else Color.Gray,
                     modifier = Modifier
                         .padding(start = 16.dp, top = 8.dp)
-                        .clickable {
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(bounded = true),
+                        ){
                             dashboardViewModel.isCoinOrWatchlist(toggle = "coin")
                         }
                 )
@@ -595,7 +618,10 @@ fun CoinsOrWatchList(
                     color = if (!dashboardViewModel.isCoinOrWatchlistSelected) colorResource(id = R.color.background) else Color.Gray,
                     modifier = Modifier
                         .padding(start = 16.dp, top = 8.dp)
-                        .clickable {
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(bounded = true),
+                        ){
                             dashboardViewModel.isCoinOrWatchlist(toggle = "watchlist")
                         }
                 )
@@ -611,7 +637,10 @@ fun CoinsOrWatchList(
                 modifier = Modifier
                     .padding(top = 8.dp, end = 16.dp)
                     .clip(RoundedCornerShape(360.dp))
-                    .clickable {
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = true),
+                    ){
                         navController.navigate(Screen.SeeAllCryptos.route)
                     }
 
@@ -629,7 +658,7 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
     val onNotSelectedBackgroundColor = Color.Gray
 
     Row(
-        horizontalArrangement = Arrangement.Start,
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
 
@@ -643,14 +672,17 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
             modifier = modifier
                 .padding(start = 16.dp, top = 8.dp)
                 .width(100.dp)
-                .clip(RoundedCornerShape(40))
+                .clip(RoundedCornerShape(30))
                 .background(if (dashboardViewModel.filterChip == "market-cap") onSelectedBackgroundColor else onNotSelectedBackgroundColor)
-                .clickable {
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(bounded = true),
+                ){
                     dashboardViewModel.filterCryptos("market-cap")
                     dashboardViewModel.sortCryptos("market-cap")
                 }
         )
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(2.dp))
         Text(
             text = "price",
             style = MaterialTheme.typography.body2,
@@ -658,16 +690,19 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
             fontSize = 12.sp,
             color = colorResource(id = R.color.app_white),
             modifier = modifier
-                .padding(start = 16.dp, top = 8.dp)
+                .padding(top = 8.dp)
                 .width(100.dp)
-                .clip(RoundedCornerShape(40))
+                .clip(RoundedCornerShape(30))
                 .background(if (dashboardViewModel.filterChip == "price") onSelectedBackgroundColor else onNotSelectedBackgroundColor)
-                .clickable {
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(bounded = true),
+                ){
                     dashboardViewModel.filterCryptos("price")
                     dashboardViewModel.sortCryptos("price")
                 }
         )
-
+        Spacer(modifier = Modifier.width(2.dp))
         Text(
             text = "24h change",
             style = MaterialTheme.typography.body2,
@@ -675,11 +710,14 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
             fontSize = 12.sp,
             color = colorResource(id = R.color.app_white),
             modifier = modifier
-                .padding(start = 16.dp, top = 8.dp)
+                .padding(top = 8.dp, end = 16.dp)
                 .width(100.dp)
-                .clip(RoundedCornerShape(40))
+                .clip(RoundedCornerShape(30))
                 .background(if (dashboardViewModel.filterChip == "24h-change") onSelectedBackgroundColor else onNotSelectedBackgroundColor)
-                .clickable {
+                .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(bounded = true),
+                ){
                     dashboardViewModel.filterCryptos("24h-change")
                     dashboardViewModel.sortCryptos("24h-change")
                 }

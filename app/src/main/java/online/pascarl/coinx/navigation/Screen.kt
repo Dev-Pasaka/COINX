@@ -17,6 +17,13 @@ sealed class Screen(val route:String){
     object EmailResetConfirmation: Screen("EmailResetConfirmation")
     object NavigationDrawer: Screen("nav_drawer")
     object BuyOrSellCryptos: Screen("buy_or_sell_cryptos")
+    object BuyAmountScreen: Screen("buy_amount_screen")
+    object SellAmountScreen: Screen("sell_amount_screen")
+    object BuyConfirmationScreen:Screen("buy_confirmation_screen")
+    object SellConfirmationScreen:Screen("sell_confirmation_screen")
+    object BuyOrderCreationScreen:Screen("buy_order_creation_screen")
+    object SellOrderCreationScreen:Screen("sell_order_creation_screen")
+
 
 
 }

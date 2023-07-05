@@ -11,9 +11,10 @@
     <color name="background">#5d5dff</color>
     <color name="app_white">#ffffff</color>
     <color name="blue">#674ea7</color>
-    <color name="gray_blue">#5A5261</color>
+    <color name="lightest_gray">#D7D6D8</color>
     <color name="light_gray">#D8D8F8</color>
     <color name="orange">#ffa500</color>
+    <color name="light_orange">#FDF080</color>
     <color name="cream">#EF7970</color>
     <color name="yellow_green">#2FF924</color>
     <color name="grass_green">#03A850</color>
