@@ -18,15 +18,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowForwardIos
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -61,7 +60,8 @@ import online.pascarl.coinx.screens.NoInternet
 fun OrderPreview(){
     Orders()
 }*/
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Orders(
     navController: NavHostController,
@@ -83,14 +83,13 @@ fun Orders(
         delay(1000)
     }
 
-    val scaffoldState = rememberScaffoldState()
+   // val scaffoldState = rememberScaffoldState()
 
     Scaffold(
-        scaffoldState = scaffoldState,
-        drawerContent = { NavigationDrawer(navController = navController) },
+      //  scaffoldState = scaffoldState,
+        //drawerContent = { NavigationDrawer(navController = navController) },
         bottomBar = { CustomBottomNavigation(
             navController = navController,
-            bottomBarViewModel = bottomBarViewModel
         )
         }
     ){
@@ -184,7 +183,6 @@ fun FilterOrdersItem(
     ) {
         Text(
             text = filter.item,
-            style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             fontSize = 12.sp,
             color = colorResource(id = R.color.app_white),
@@ -207,7 +205,6 @@ fun Body(ordersViewModel: OrdersViewModel){
        ) {
            Text(
                text ="No Orders Present ",
-               style = MaterialTheme.typography.body1,
                textAlign = TextAlign.Center,
                color = Color.Gray
            )
@@ -249,7 +246,6 @@ fun OrderItemBody(order: Order){
             Row {
                 Text(
                     text = order.orderType,
-                    style = MaterialTheme.typography.h6,
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp,
                     color = if (order.orderType == "Sell") Color.Red else colorResource(id = R.color.grass_green)
@@ -257,7 +253,6 @@ fun OrderItemBody(order: Order){
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = order.coinSymbol,
-                    style = MaterialTheme.typography.h6,
                     textAlign = TextAlign.Center,
                     fontSize = 14.sp,
                 )
@@ -267,7 +262,6 @@ fun OrderItemBody(order: Order){
             ){
                 Text(
                     text = order.orderStatus,
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = when(order.orderStatus){
                         "Expired" -> Color.Red
@@ -295,7 +289,6 @@ fun OrderItemBody(order: Order){
         ){
             Text(
                 text = "Price Ksh ${order.price}",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
                 color = Color.Gray
@@ -310,14 +303,12 @@ fun OrderItemBody(order: Order){
         ){
             Text(
                 text = "Amount ${order.amount}",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
                 color = Color.Gray
             )
             Text(
                 text = order.time,
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 fontSize = 11.sp,
                 color = Color.Gray
@@ -332,14 +323,12 @@ fun OrderItemBody(order: Order){
         ){
             Text(
                 text = "Order ${order.orderId}",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
                 color = Color.Gray
             )
             Text(
                 text = order.orderValue,
-                style = MaterialTheme.typography.h5,
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
                 color = colorResource(id = R.color.background)

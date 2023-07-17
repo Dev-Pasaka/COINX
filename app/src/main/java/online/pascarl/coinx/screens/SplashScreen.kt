@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 
 import androidx.compose.ui.Modifier
@@ -54,13 +56,20 @@ fun AnimatedSplashScreen(navController: NavHostController, splashScreenViewModel
         delay(3000)
         navController.popBackStack()
 
-        val roomResult = roomDB.getUser("12345678")
-        if (roomResult != null) splashScreenViewModel.roomUser = roomResult
-        else splashScreenViewModel.roomUser = RoomUser()
+        val roomResult = try {
+            roomDB.getUser("12345678")
+        }catch (e:Exception){
+            null
+        }
+        roomResult?.let {
+            splashScreenViewModel.roomUser = roomResult
+        }
         splashScreenViewModel.getUserData()
-        if (splashScreenViewModel.isUserSignedIn)
+        if (splashScreenViewModel.isUserSignedIn){
             navController.navigate(Screen.Dashboard.route)
+        }
         else navController.navigate(Screen.Register.route)
+       // navController.navigate(Screen.Register.route)
     }
 
     SplashScreen(alpha = alphaAnim.value)
@@ -73,7 +82,7 @@ fun SplashScreen(image: Painter= painterResource(id = R.drawable.coinx), alpha:F
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = colorResource(id = R.color.background))
+            .background(color = MaterialTheme.colorScheme.background)
 
     ) {
         Column(
@@ -81,9 +90,10 @@ fun SplashScreen(image: Painter= painterResource(id = R.drawable.coinx), alpha:F
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter =image ,
-                contentDescription = "APP LOGO",
+            Text(
+                text = "Coinx",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier.alpha(alpha)
             )
         }

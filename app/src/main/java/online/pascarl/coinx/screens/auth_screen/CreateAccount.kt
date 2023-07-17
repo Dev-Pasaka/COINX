@@ -21,6 +21,13 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -133,6 +140,7 @@ fun CreateAccount(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FullName(createAccountViewModel: CreateAccountViewModel) {
     Column(
@@ -147,7 +155,6 @@ fun FullName(createAccountViewModel: CreateAccountViewModel) {
             label = {
                 Text(
                     text = "Name",
-                    style = MaterialTheme.typography.body2,
 
                     )
             },
@@ -160,7 +167,7 @@ fun FullName(createAccountViewModel: CreateAccountViewModel) {
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = colorResource(id = R.color.background),
-                backgroundColor = colorResource(id = R.color.light_gray)
+                //backgroundColor = colorResource(id = R.color.light_gray)
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
@@ -170,6 +177,7 @@ fun FullName(createAccountViewModel: CreateAccountViewModel) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Username(createAccountViewModel: CreateAccountViewModel) {
     Column(
@@ -184,7 +192,6 @@ fun Username(createAccountViewModel: CreateAccountViewModel) {
             label = {
                 Text(
                     text = "Username",
-                    style = MaterialTheme.typography.body2,
 
                     )
             },
@@ -197,7 +204,7 @@ fun Username(createAccountViewModel: CreateAccountViewModel) {
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = colorResource(id = R.color.background),
-                backgroundColor = colorResource(id = R.color.light_gray)
+               // backgroundColor = colorResource(id = R.color.light_gray)
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
@@ -207,6 +214,7 @@ fun Username(createAccountViewModel: CreateAccountViewModel) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Email(createAccountViewModel: CreateAccountViewModel) {
     Column(
@@ -220,7 +228,6 @@ fun Email(createAccountViewModel: CreateAccountViewModel) {
             label = {
                 Text(
                     text = "Email",
-                    style = MaterialTheme.typography.body2
 
                 )
             },
@@ -233,7 +240,7 @@ fun Email(createAccountViewModel: CreateAccountViewModel) {
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = colorResource(id = R.color.background),
-                backgroundColor = colorResource(id = R.color.light_gray)
+              //  backgroundColor = colorResource(id = R.color.light_gray)
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
@@ -243,7 +250,7 @@ fun Email(createAccountViewModel: CreateAccountViewModel) {
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
+@OptIn(ExperimentalCoilApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PhoneNumber(createAccountViewModel: CreateAccountViewModel) {
     Column(
@@ -258,7 +265,6 @@ fun PhoneNumber(createAccountViewModel: CreateAccountViewModel) {
             label = {
                 Text(
                     text = "Phone",
-                    style = MaterialTheme.typography.body2,
                 )
             },
             textStyle = LocalTextStyle.current.copy(color = Color.Black),
@@ -270,7 +276,7 @@ fun PhoneNumber(createAccountViewModel: CreateAccountViewModel) {
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = colorResource(id = R.color.background),
-                backgroundColor = colorResource(id = R.color.light_gray)
+               // backgroundColor = colorResource(id = R.color.light_gray)
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
@@ -281,6 +287,7 @@ fun PhoneNumber(createAccountViewModel: CreateAccountViewModel) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Password(createAccountViewModel: CreateAccountViewModel) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -292,7 +299,6 @@ fun Password(createAccountViewModel: CreateAccountViewModel) {
             label = {
                 Text(
                     text = "Password",
-                    style = MaterialTheme.typography.body2
 
                 )
             },
@@ -317,7 +323,7 @@ fun Password(createAccountViewModel: CreateAccountViewModel) {
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = colorResource(id = R.color.background),
-                backgroundColor = colorResource(id = R.color.light_gray)
+               // backgroundColor = colorResource(id = R.color.light_gray)
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
@@ -331,6 +337,7 @@ fun Password(createAccountViewModel: CreateAccountViewModel) {
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfirmPassword(createAccountViewModel: CreateAccountViewModel) {
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -342,7 +349,6 @@ fun ConfirmPassword(createAccountViewModel: CreateAccountViewModel) {
             label = {
                 Text(
                     text = "Confirm Password",
-                    style = MaterialTheme.typography.body2
 
                 )
             },
@@ -368,7 +374,7 @@ fun ConfirmPassword(createAccountViewModel: CreateAccountViewModel) {
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = colorResource(id = R.color.background),
-                backgroundColor = colorResource(id = R.color.light_gray)
+              //  backgroundColor = colorResource(id = R.color.light_gray)
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
@@ -425,7 +431,6 @@ fun FirstRegistrationScreen(
             )
             Text(
                 text = "Sign up",
-                style = MaterialTheme.typography.body1,
                 color = colorResource(id = R.color.cream)
             )
 
@@ -440,7 +445,6 @@ fun FirstRegistrationScreen(
             Text(
                 text = "Register your name and username below",
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.body1,
                 color = Color.Gray,
                 modifier = Modifier.padding(top = 20.dp)
             )
@@ -493,7 +497,6 @@ fun FirstRegistrationScreen(
             ) {
                 Text(
                     text = "Next",
-                    style = MaterialTheme.typography.body1,
                     textAlign = TextAlign.Center,
                     color = Color.White,
                     fontSize = 14.sp
@@ -547,7 +550,6 @@ fun SecondRegistrationScreen(
             )
             Text(
                 text = "Sign up",
-                style = MaterialTheme.typography.body1,
                 color = colorResource(id = R.color.cream)
             )
             Icon(
@@ -571,7 +573,6 @@ fun SecondRegistrationScreen(
             Text(
                 text = "Enter your Email and Phone number below",
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.body1,
                 color = Color.Gray,
                 modifier = Modifier.padding(top = 20.dp)
             )
@@ -619,7 +620,6 @@ fun SecondRegistrationScreen(
             ) {
                 Text(
                     text = "Next",
-                    style = MaterialTheme.typography.body1,
                     textAlign = TextAlign.Center,
                     color = Color.White,
                     fontSize = 14.sp
@@ -680,7 +680,6 @@ fun ThirdRegistrationScreen(
             )
             Text(
                 text = "Sign up",
-                style = MaterialTheme.typography.body1,
                 color = colorResource(id = R.color.cream)
             )
             Icon(
@@ -704,7 +703,6 @@ fun ThirdRegistrationScreen(
             Text(
                 text = "Password Confirmation",
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.body1,
                 color = Color.Gray,
                 modifier = Modifier.padding(top = 20.dp)
             )
@@ -762,7 +760,6 @@ fun ThirdRegistrationScreen(
             ) {
                 Text(
                     text = "Register",
-                    style = MaterialTheme.typography.body1,
                     textAlign = TextAlign.Center,
                     color = Color.White,
                     fontSize = 14.sp

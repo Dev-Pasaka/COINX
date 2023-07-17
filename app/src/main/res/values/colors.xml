@@ -8,12 +8,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#191919</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="background">#5d5dff</color>
+    <color name="background">#0054D6</color>
     <color name="app_white">#ffffff</color>
     <color name="blue">#674ea7</color>
-    <color name="gray_blue">#5A5261</color>
+    <color name="lightest_gray">#D7D6D8</color>
     <color name="light_gray">#D8D8F8</color>
     <color name="orange">#ffa500</color>
+    <color name="light_orange">#FDF080</color>
     <color name="cream">#EF7970</color>
     <color name="yellow_green">#2FF924</color>
     <color name="grass_green">#03A850</color>
@@ -21,5 +22,11 @@
     <color name="bamboo">#D2B04C</color>
     <color name="gray">#F4F4F4</color>
     <color name="deep_blue">#1f1046</color>
+    <color name="top_bar_color_light_mode">#FFFBFF</color>
+    <color name="bottom_bar_color_light_mode">#FFFBFF</color>
+    <color name="top_bar_color_dark_mode">#1C1B1E</color>
+    <color name="bottom_bar_color_dark_mode">#1C1B1E</color>
+    <color name="transparent">#00000000</color>
+
 </resources>
 

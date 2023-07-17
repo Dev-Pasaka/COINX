@@ -26,12 +26,15 @@ class SplashScreenViewModel: ViewModel() {
                     append(HttpHeaders.Authorization, "Bearer ${roomUser.token}")
                 }
             }
-        }catch (_: Exception){
-            println("An exception was called")
+
+        }catch (e: Exception){
+            println("An exception was called ${e.printStackTrace()}")
             null
         }
+        result?.let {
+            _isUserSignedIn = true
+        }
         println("Here is user information $result")
-        _isUserSignedIn = result != null
     }
 
 }

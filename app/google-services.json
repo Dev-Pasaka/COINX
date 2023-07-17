@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:241143851123:android:e9ca82b74b3e585447a206",
+        "mobilesdk_app_id": "1:241143851123:android:55183046c4833b4147a206",
         "android_client_info": {
           "package_name": "online.pascarl.coinx"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "241143851123-td2d1cduo6odl09ncru5vrc0i6t6rsjj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "online.pascarl.coinx",
+            "certificate_hash": "ab87a07a9a60b1068b3d11b94591767819713b8b"
+          }
+        },
         {
           "client_id": "241143851123-2psprgvd68oq4r2uh7lr9hqbj2cmrvpr.apps.googleusercontent.com",
           "client_type": 3

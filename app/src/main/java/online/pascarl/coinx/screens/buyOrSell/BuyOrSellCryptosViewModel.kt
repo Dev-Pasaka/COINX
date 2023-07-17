@@ -1,4 +1,4 @@
-package online.pascarl.coinx.screens.bottom_bar_navigation
+package online.pascarl.coinx.screens.buyOrSell
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -6,32 +6,31 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import online.pascarl.coinx.model.Ads
+import online.pascarl.coinx.model.PaymentMethods
 import kotlin.random.Random
 
 class BuyOrSellCryptosViewModel:ViewModel() {
-    var isBuySelected by mutableStateOf("Buy")
-        private set
+    var isBuySelected by mutableStateOf(ISBUYSELECTED)
+
     // State to keep track of the selected item
     var selectedItem by mutableStateOf("USDT")
     var cryptoBuyAmount by mutableStateOf("")
     var cryptoSellAmount by mutableStateOf("")
-    val cryptoBuyAmountDouble get()  = (cryptoBuyAmount.toDoubleOrNull() ?: 0.0) / enterAmountScreenCryptoPrice
-    val cryptoSellAmountDouble get()  = (cryptoSellAmount.toDoubleOrNull() ?: 0.0) * enterAmountScreenCryptoPrice
-
+    val cryptoBuyAmountDouble get()  = (cryptoBuyAmount.toDoubleOrNull() ?: 0.0)
+    val cryptoSellAmountDouble get()  = (cryptoSellAmount.toDoubleOrNull() ?: 0.0)
 
 
     var finalListOfAds = mutableStateListOf<Ads>()
     var adsDummyList  = mutableStateListOf<Ads>()
         private set
     var isEnterAmountScreenOpen by mutableStateOf(false)
-        private set
+        //private set
+    var showPaymentConfirmationScreen by mutableStateOf(false)
     // State to track whether the dropdown menu is expanded or not
     var isDropdownExpanded by mutableStateOf(false)
         private set
-    var enterAmountScreenAdType by mutableStateOf("")
-    var enterAmountScreenCryptoName by mutableStateOf("")
-    var enterAmountScreenCryptoPrice by mutableStateOf(0.0)
-    var enterAmountScreenCryptoSymbol by mutableStateOf("")
+
+
 
 
     val listOfCryptoNamesAndSymbols = mutableStateListOf(
@@ -41,6 +40,10 @@ class BuyOrSellCryptosViewModel:ViewModel() {
         SelectedCrypto(name = "USD COIN", symbol = "USDC"),
         SelectedCrypto(name = "Bnb", symbol = "BNB"),
     )
+
+    fun showPaymentConfirmationScreen(){
+        showPaymentConfirmationScreen = !showPaymentConfirmationScreen
+    }
     fun toggle(toggleOption:String){
         when(toggleOption){
             "Buy" -> {
@@ -108,10 +111,18 @@ class BuyOrSellCryptosViewModel:ViewModel() {
     }
     fun openOrCloseEnterAmountScreen(){
         isEnterAmountScreenOpen = !isEnterAmountScreenOpen
+
     }
+
     private fun createDummyAdsList() {
         val adsTypeList = listOf("Buy", "Sell")
-        val paymentMethodList = listOf("M-Pesa Paybill", "M-Pesa Safaricom")
+        val paymentMethodList = listOf(
+            PaymentMethods(paymentMethods = "M-Pesa Safaricom"),
+            PaymentMethods(paymentMethods = "M-Pesa Paybill"),
+            PaymentMethods(paymentMethods = "Equity Bank"),
+            PaymentMethods(paymentMethods = "Absa Bank"),
+            PaymentMethods(paymentMethods = "KCB Bank"),
+        )
         val adsList = mutableListOf<Ads>()
         repeat(100) {
             val listOfCryptoNamesAndSymbols = mutableStateListOf(
@@ -132,7 +143,7 @@ class BuyOrSellCryptosViewModel:ViewModel() {
                 maxOrder = String.format("%.0f", Random.nextDouble(500.0, 500000.0)).toDouble(),
                 totalOrders = Random.nextInt(100, 10000),
                 ordersCompleted = Random.nextInt(0, 100),
-                paymentMethod = paymentMethodList.random()
+                paymentMethods = paymentMethodList.random().paymentMethods
             )
             adsList.add(ad)
         }
@@ -140,19 +151,12 @@ class BuyOrSellCryptosViewModel:ViewModel() {
         adsDummyList.addAll(adsList.sortedByDescending { it.cryptoPrice }.reversed())
         println(adsList)
     }
-    fun removeLastCharacter(input: String): String {
-        return when {
-            input.isEmpty() -> input
-            input.length == 1 -> ""
-            else -> input.substring(0, input.length - 1)
-        }
-    }
     init {
         createDummyAdsList()
         toggle(toggleOption = isBuySelected)
     }
 }
-
+var ISBUYSELECTED = "Buy"
 
 
 data class SelectedCrypto(

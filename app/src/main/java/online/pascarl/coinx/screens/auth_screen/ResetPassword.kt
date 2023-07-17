@@ -12,6 +12,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +46,7 @@ fun ResetPasswordPreview(){
     ResetPassword()
 }*/
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResetPassword(
     navController:NavHostController,
@@ -70,13 +78,11 @@ fun ResetPassword(
         ) {
             Text(
                 text = "Forgot your password?",
-                style = MaterialTheme.typography.h4,
                 textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Enter your registered phone number below \n to receive password reset instructions",
-                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 color = Color.Gray,
                 fontSize = 16.sp
@@ -120,7 +126,6 @@ fun ResetPassword(
             label = {
                 Text(
                     text = "Phone",
-                    style = MaterialTheme.typography.body2,
                     )
             },
             textStyle =  LocalTextStyle.current.copy(color = Color.Gray),
@@ -135,7 +140,7 @@ fun ResetPassword(
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = colorResource(id = R.color.background),
                 unfocusedIndicatorColor = colorResource(id = R.color.background),
-                backgroundColor = colorResource(id = R.color.light_gray)
+                //backgroundColor = colorResource(id = R.color.light_gray)
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
@@ -155,14 +160,12 @@ fun ResetPassword(
         ){
             Text(
                 text = "Remember password?",
-                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 fontSize = 14.sp
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "Login",
-                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 color = colorResource(id = R.color.cream),
                 fontSize = 14.sp,
@@ -209,7 +212,6 @@ fun ResetPassword(
         ){
             Text(
                 text = "Send",
-                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 color = Color.White,
                 fontSize = 14.sp

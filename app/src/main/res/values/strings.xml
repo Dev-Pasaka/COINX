@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">COINX</string>
+    <string name="app_name">Coinx</string>
     <string name="news_article_api_key">FgVYHnjk0pyttJOeCgngKEkitCjpLoQSEQTSjEr_mVk</string>
     <string name="web_client_id">241143851123-2psprgvd68oq4r2uh7lr9hqbj2cmrvpr.apps.googleusercontent.com</string>
     <string name="emailConfirmation">https://img.freepik.com/premium-vector/opened-envelope-document-with-green-check-mark-line-icon-official-confirmation-message-mail-sent-successfully-email-delivery-verification-email-flat-design-vector_662353-720.jpg?w=2000</string>
