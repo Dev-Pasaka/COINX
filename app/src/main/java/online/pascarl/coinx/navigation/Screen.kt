@@ -22,7 +22,10 @@ sealed class Screen(val route:String){
     object BuyConfirmationScreen:Screen("buy_confirmation_screen")
     object SellConfirmationScreen:Screen("sell_confirmation_screen")
     object BuyOrderCreationScreen:Screen("buy_order_creation_screen")
+    object TransferMoneyScreen:Screen("transfer_amount_screen")
+    object ReleasingScreen:Screen("Releasing_screen")
     object SellOrderCreationScreen:Screen("sell_order_creation_screen")
+    object Settings:Screen("settings")
 
 
 

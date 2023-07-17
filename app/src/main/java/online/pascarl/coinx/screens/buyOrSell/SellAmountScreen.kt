@@ -20,16 +20,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.FloatingActionButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.Backspace
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -106,18 +105,17 @@ fun SellAmountScreen(
                             }
                     ){
                         Icon(
-                            imageVector = Icons.Default.ArrowBackIos,
+                            imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Go Back",
                             tint = Color.DarkGray,
                             modifier = Modifier
                                 .padding(2.dp)
-                                .size(15.dp)
+                                .size(20.dp)
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = sharedViewModel.orderData.value.adsType,
-                        style = MaterialTheme.typography.body2,
                         textAlign = TextAlign.Center,
                         color = Color.Black,
                         fontSize = 12.sp,
@@ -139,7 +137,6 @@ fun SellAmountScreen(
                 ) {
                     Text(
                         text = "Limit ${sharedViewModel.orderData.value.minLimit} - ${sharedViewModel.orderData.value.maxLimit}",
-                        style = MaterialTheme.typography.body2,
                         textAlign = TextAlign.Center,
                         color = colorResource(id = R.color.background),
                         fontSize = 12.sp,
@@ -251,7 +248,6 @@ fun SellNumberKey(numberKey: String = "1", sellAmountViewModel: SellAmountViewMo
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = numberKey,
-                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 color = Color.DarkGray,
                 fontSize = 32.sp,
@@ -269,7 +265,6 @@ fun SellAmountInput(sellAmountViewModel: SellAmountViewModel, sharedViewModel: B
     ) {
         Text(
             text = "AMT ${sellAmountViewModel.fiatAmount}",
-            style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Normal,
             color = Color.DarkGray,
@@ -277,7 +272,6 @@ fun SellAmountInput(sellAmountViewModel: SellAmountViewModel, sharedViewModel: B
         )
         Text(
             text = "1 ${sharedViewModel.orderData.value.cryptoSymbol} = ${sharedViewModel.orderData.value.cryptoPrice} KES",
-            style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             color = Color.Gray,
             fontSize = 16.sp,
@@ -286,7 +280,6 @@ fun SellAmountInput(sellAmountViewModel: SellAmountViewModel, sharedViewModel: B
             text = sellAmountViewModel.formatCurrency(
                 amount = sellAmountViewModel.fiatAmount*sharedViewModel.orderData.value.cryptoPrice
             ),
-            style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             color = Color.Gray,
             fontSize = 16.sp,
@@ -310,7 +303,7 @@ fun SellButton(
             .padding(bottom = 40.dp)
     ) {
         FloatingActionButton(
-            backgroundColor = if (
+          /*  backgroundColor = if (
                 sellAmountViewModel.fiatAmount > sharedViewModel.orderData.value.minLimit
                 && sellAmountViewModel.fiatAmount < sharedViewModel.orderData.value.maxLimit
             ) Color.Red else Color.LightGray,
@@ -319,7 +312,7 @@ fun SellButton(
                 pressedElevation = 8.dp,
                 hoveredElevation = 18.dp,
                 focusedElevation = 18.dp
-            ),
+            ),*/
             modifier = Modifier
                 .padding(top = 16.dp),
             onClick = {

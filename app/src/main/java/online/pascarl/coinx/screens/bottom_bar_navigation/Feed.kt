@@ -13,39 +13,23 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.FloatingActionButtonDefaults
-import androidx.compose.material.FloatingActionButtonElevation
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIos
-import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -57,14 +41,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -94,7 +73,8 @@ import online.pascarl.coinx.navigation.NavigationDrawer
 import online.pascarl.coinx.screens.NoInternet
 
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NewsFeed(
     navController: NavHostController,
@@ -120,15 +100,14 @@ fun NewsFeed(
         delay(1000)
     }
 
-    val scaffoldState = rememberScaffoldState()
+  //  val scaffoldState = rememberScaffoldState()
 
     Scaffold(
-        scaffoldState = scaffoldState,
+       // scaffoldState = scaffoldState,
         // drawerContent = { NavigationDrawer(navController = navController) },
         bottomBar = {
             CustomBottomNavigation(
                 navController = navController,
-                bottomBarViewModel = bottomBarViewModel
             )
         }
     ) {
@@ -167,7 +146,6 @@ fun NewsHeader() {
     ) {
         Text(
             text = "Discover",
-            style = MaterialTheme.typography.body1,
             color = colorResource(id = R.color.background)
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -175,7 +153,6 @@ fun NewsHeader() {
             text = "Full disclaimer. This platform includes third party opinions. We do " +
                     "not endorse their accuracy. Digital asset prices can be volatile.For more " +
                     "information please check our terms and conditions.",
-            style = MaterialTheme.typography.body2,
             fontSize = 12.sp,
             color = Color.Gray,
         )
@@ -264,13 +241,11 @@ fun NewsListItem(
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.h6,
                 color = Color.DarkGray
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "By: $byAuthor",
-                style = MaterialTheme.typography.body2,
                 color = Color.Gray
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -287,7 +262,6 @@ fun NewsListItem(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = description,
-                style = MaterialTheme.typography.body1,
                 color = Color.DarkGray,
                 textAlign = TextAlign.Justify,
                 overflow = TextOverflow.Ellipsis,
@@ -303,7 +277,6 @@ fun NewsListItem(
             ) {
                 Text(
                     text = "Published: $publishedDate",
-                    style = MaterialTheme.typography.body2,
                     color = Color.Gray
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -319,7 +292,6 @@ fun NewsListItem(
                 ) {
                     Text(
                         text = "Read more",
-                        style = MaterialTheme.typography.body1,
                         textAlign = TextAlign.Center,
                         color = Color.White,
                         fontSize = 12.sp,
@@ -364,7 +336,7 @@ fun ReadMoreWebView(
             }
         })
         FloatingActionButton(
-            backgroundColor = Color.Gray,
+           // backgroundColor = Color.Gray,
             elevation = FloatingActionButtonDefaults.elevation(
                 defaultElevation = 16.dp,
                 pressedElevation = 8.dp,

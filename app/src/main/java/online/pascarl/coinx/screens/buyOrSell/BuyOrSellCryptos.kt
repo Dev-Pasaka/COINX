@@ -3,7 +3,6 @@ package online.pascarl.coinx.screens.buyOrSell
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,15 +18,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIos
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -113,12 +111,12 @@ fun BuyOrSellCryptoHeader(navController: NavController) {
                 }
         ){
             Icon(
-                imageVector = Icons.Default.ArrowBackIos,
+                imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Go Back",
                 tint = Color.DarkGray,
                 modifier = Modifier
                     .padding(2.dp)
-                    .size(15.dp)
+                    .size(20.dp)
             )
         }
 
@@ -150,7 +148,6 @@ fun SubHeader() {
     ) {
         Text(
             text = "Ads are sorted from lowest price to highest price",
-            style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             color = Color.Gray,
             fontSize = 12.sp,
@@ -199,7 +196,6 @@ fun OrderAdsItem(
                         ) {
                             Text(
                                 text = "${cryptoAd.Username[0]}",
-                                style = MaterialTheme.typography.body2,
                                 textAlign = TextAlign.Center,
                                 fontSize = 20.sp,
                                 color = Color.White,
@@ -208,7 +204,6 @@ fun OrderAdsItem(
                         Spacer(modifier = Modifier.width(5.dp))
                         Text(
                             text = cryptoAd.Username,
-                            style = MaterialTheme.typography.body1,
                             textAlign = TextAlign.Center,
                             fontSize = 16.sp,
                             color = colorResource(id = R.color.background)
@@ -219,7 +214,6 @@ fun OrderAdsItem(
                     ) {
                         Text(
                             text = "${cryptoAd.totalOrders} orders",
-                            style = MaterialTheme.typography.body2,
                             textAlign = TextAlign.Center,
                             color = Color.Gray,
                             fontSize = 12.sp,
@@ -227,7 +221,6 @@ fun OrderAdsItem(
                         Spacer(modifier = Modifier.width(3.dp))
                         Text(
                             text = "${cryptoAd.ordersCompleted}% completed",
-                            style = MaterialTheme.typography.body2,
                             textAlign = TextAlign.Center,
                             color = colorResource(id = R.color.grass_green),
                             fontSize = 12.sp,
@@ -243,7 +236,6 @@ fun OrderAdsItem(
             ) {
                 Text(
                     text = "Price",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.Gray,
                     fontSize = 12.sp,
@@ -251,7 +243,6 @@ fun OrderAdsItem(
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(
                     text = "Ksh ${cryptoAd.cryptoPrice}",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.Gray,
                     fontSize = 12.sp,
@@ -282,7 +273,7 @@ fun OrderAdsItem(
                                         cryptoPrice = cryptoAd.cryptoPrice,
                                         cryptoAmount = cryptoAd.cryptoAmount,
                                         cryptoSymbol = cryptoAd.cryptoSymbol,
-                                        paymentMethod = cryptoAd.paymentMethod
+                                        paymentMethods = cryptoAd.paymentMethods
                                     )
                                     navController.navigate(Screen.BuyAmountScreen.route)
                                 }
@@ -297,7 +288,7 @@ fun OrderAdsItem(
                                         cryptoPrice = cryptoAd.cryptoPrice,
                                         cryptoAmount = cryptoAd.cryptoAmount,
                                         cryptoSymbol = cryptoAd.cryptoSymbol,
-                                        paymentMethod = cryptoAd.paymentMethod
+                                        paymentMethods = cryptoAd.paymentMethods
                                     )
                                     navController.navigate(Screen.SellAmountScreen.route)
                                 }
@@ -310,7 +301,6 @@ fun OrderAdsItem(
                 ) {
                     Text(
                         text = buyOrSellCryptosViewModel.isBuySelected,
-                        style = MaterialTheme.typography.body2,
                         textAlign = TextAlign.Center,
                         fontSize = 12.sp,
                         color = colorResource(id = R.color.app_white),
@@ -360,7 +350,6 @@ fun BuyOrSellToggle(buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel) {
                 ) {
                     Text(
                         text = "Buy",
-                        style = MaterialTheme.typography.body2,
                         textAlign = TextAlign.Center,
                         fontSize = 12.sp,
                         color = when (buyOrSellCryptosViewModel.isBuySelected) {
@@ -395,7 +384,6 @@ fun BuyOrSellToggle(buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel) {
                 ) {
                     Text(
                         text = "Sell",
-                        style = MaterialTheme.typography.body2,
                         textAlign = TextAlign.Center,
                         fontSize = 12.sp,
                         color = when (buyOrSellCryptosViewModel.isBuySelected) {
@@ -449,7 +437,6 @@ fun SelectCrypto(buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel) {
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(
                     text = buyOrSellCryptosViewModel.selectedItem,
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.Gray,
                     fontSize = 12.sp,
@@ -466,13 +453,30 @@ fun SelectCrypto(buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel) {
         ) {
             buyOrSellCryptosViewModel.listOfCryptoNamesAndSymbols.forEach {
                 DropdownMenuItem(
+                    leadingIcon = { Image(
+                        painter = imageLoader(symbol = it.symbol),
+                        contentDescription = "Crypto symbol",
+                        modifier = Modifier.size(30.dp)
+                    )},
+                    text = {
+                        Text(
+                            text = it.name +
+                                    " ${it.symbol}",
+                            textAlign = TextAlign.Center,
+                            color = Color.DarkGray,
+                            fontSize = 12.sp,
+                            modifier = Modifier
+                                .padding(10.dp)
+                        )
+                    },
                     onClick = {
                         buyOrSellCryptosViewModel.selectedItem = it.symbol
                         buyOrSellCryptosViewModel.filterCryptoBySelection()
                         buyOrSellCryptosViewModel.openAndCloseDropdown()
                     }
-                ) {
-                    Row(
+                )/* {
+
+                  *//*  Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
@@ -482,18 +486,9 @@ fun SelectCrypto(buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel) {
                             modifier = Modifier.size(30.dp)
                         )
                         Spacer(modifier = Modifier.width(3.dp))
-                        Text(
-                            text = it.name +
-                                    " ${it.symbol}",
-                            style = MaterialTheme.typography.body2,
-                            textAlign = TextAlign.Center,
-                            color = Color.DarkGray,
-                            fontSize = 12.sp,
-                            modifier = Modifier
-                                .padding(10.dp)
-                        )
-                    }
-                }
+
+                    }*//*
+                }*/
             }
         }
     }

@@ -9,12 +9,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -192,7 +191,6 @@ fun SortCryptosItem(
     ) {
         Text(
             text = sortBy,
-            style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             fontSize = 12.sp,
             color = colorResource(id = R.color.app_white),
@@ -237,14 +235,12 @@ fun SortCryptoListItem(
             ) {
                 Text(
                     text = name!!,
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     fontSize = 16.sp,
                     color = colorResource(id = R.color.black),
                 )
                 Text(
                     text = symbol!!,
-                    style = MaterialTheme.typography.body1,
                     textAlign = TextAlign.Center,
                     fontSize = 12.sp,
                     color = colorResource(id = R.color.black),
@@ -257,7 +253,6 @@ fun SortCryptoListItem(
         ) {
             Text(
                 text = "$percentageChange%",
-                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 fontSize = 14.sp,
                 color = if (percentageChange!! < 0.0)
@@ -265,7 +260,6 @@ fun SortCryptoListItem(
             )
             Text(
                 text = price!!,
-                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
                 color = colorResource(id = R.color.black),

@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,7 +22,8 @@ import online.pascarl.coinx.navigation.BottomBarViewModel
 import online.pascarl.coinx.navigation.CustomBottomNavigation
 import online.pascarl.coinx.navigation.NavigationDrawer
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Wallet(
     navController: NavHostController,
@@ -42,13 +43,11 @@ fun Wallet(
         delay(1000)
     }
 
-    val scaffoldState = rememberScaffoldState()
     Scaffold(
-        scaffoldState = scaffoldState,
-        drawerContent = { NavigationDrawer(navController = navController) },
+      //  scaffoldState = scaffoldState,
+      //  drawerContent = { NavigationDrawer(navController = navController) },
         bottomBar = { CustomBottomNavigation(
             navController = navController,
-            bottomBarViewModel = bottomBarViewModel
         )
         }
     ) {

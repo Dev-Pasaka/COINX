@@ -9,6 +9,6 @@ data class OrderData(
     var maxLimit:Double = 0.0,
     var cryptoPrice :Double = 0.0,
     var cryptoAmount :Double = 0.0,
-    var paymentMethod :String = "",
+    var paymentMethods :String = "M-pesa Safaricom",
     var username:String = ""
 )

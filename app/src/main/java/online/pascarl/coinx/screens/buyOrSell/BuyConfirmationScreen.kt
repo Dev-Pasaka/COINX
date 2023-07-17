@@ -21,15 +21,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.outlined.PlayCircleFilled
 import androidx.compose.material.icons.outlined.SwapHorizontalCircle
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -125,12 +125,12 @@ fun SelectPaymentMethodUpperSection(
                 }
         ){
             Icon(
-                imageVector = Icons.Default.ArrowBackIos,
+                imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Go Back",
                 tint = Color.DarkGray,
                 modifier = Modifier
                     .padding(2.dp)
-                    .size(15.dp)
+                    .size(20.dp)
             )
         }
     }
@@ -142,7 +142,6 @@ fun SelectPaymentMethodUpperSection(
     ) {
         Text(
             text =  "You will pay",
-            style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             color = Color.DarkGray,
             fontSize = 16.sp,
@@ -162,7 +161,6 @@ fun SelectPaymentMethodUpperSection(
         ) {
             Text(
                 text = sharedViewModel.formatCurrency(),
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = colorResource(id = R.color.background),
                 fontSize = 14.sp,
@@ -197,7 +195,6 @@ fun SelectPaymentMethodMiddleSection(
             ){
                 Text(
                     text = "P2P Trading ",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.White,
                     fontSize = 14.sp,
@@ -212,7 +209,6 @@ fun SelectPaymentMethodMiddleSection(
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = sharedViewModel.orderData.value.username,
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.White,
                 fontSize = 12.sp,
@@ -231,7 +227,6 @@ fun SelectPaymentMethodMiddleSection(
             ) {
                 Text(
                     text = "You bought ",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.White,
                     fontSize = 14.sp,
@@ -242,7 +237,6 @@ fun SelectPaymentMethodMiddleSection(
             Text(
                 text = String.format("%.8f",sharedViewModel.youWillGet.value) +
                         " ${sharedViewModel.orderData.value.cryptoSymbol}",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.White,
                 fontSize = 12.sp,
@@ -259,7 +253,6 @@ fun SelectPaymentMethodMiddleSection(
             Text(
                 text = "How to buy ",
 
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.White,
                 fontSize = 14.sp,
@@ -299,7 +292,6 @@ fun SelectPaymentMethodLowerSection(
             ) {
                 Text(
                     text = "Buy",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.White,
                     fontSize = 14.sp,
@@ -327,14 +319,12 @@ fun SelectPaymentMethodLowerSection(
         ){
             Text(
                 text = "Fiat Amount",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.Gray,
                 fontSize = 14.sp,
             )
             Text(
                 text = sharedViewModel.formatCurrency(),
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.DarkGray,
                 fontSize = 12.sp,
@@ -350,14 +340,12 @@ fun SelectPaymentMethodLowerSection(
         ){
             Text(
                 text = "Price",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.Gray,
                 fontSize = 14.sp,
             )
             Text(
                 text = sharedViewModel.formatCurrency(amount = sharedViewModel.orderData.value.cryptoPrice),
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.DarkGray,
                 fontSize = 12.sp,
@@ -373,14 +361,12 @@ fun SelectPaymentMethodLowerSection(
         ){
             Text(
                 text = "Crypto Amount",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.Gray,
                 fontSize = 14.sp,
             )
             Text(
                 text = "${sharedViewModel.youWillGet.value} ${sharedViewModel.orderData.value.cryptoSymbol}",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.DarkGray,
                 fontSize = 12.sp,
@@ -404,14 +390,12 @@ fun SelectPaymentMethodLowerSection(
 
                 Text(
                     text = "You will pay",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.Gray,
                     fontSize = 14.sp,
                 )
                 Text(
                     text = sharedViewModel.formatCurrency(),
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.Gray,
                     fontSize = 16.sp,
@@ -431,7 +415,6 @@ fun SelectPaymentMethodLowerSection(
             ) {
                 Text(
                     text = "Confirm",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.White,
                     fontSize = 14.sp,

@@ -19,16 +19,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.FloatingActionButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.Backspace
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -105,18 +105,17 @@ fun BuyAmountScreen(
                             }
                     ){
                         Icon(
-                            imageVector = Icons.Default.ArrowBackIos,
+                            imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Go Back",
                             tint = Color.DarkGray,
                             modifier = Modifier
                                 .padding(2.dp)
-                                .size(15.dp)
+                                .size(20.dp)
                         )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = sharedViewModel.orderData.value.adsType,
-                        style = MaterialTheme.typography.body2,
                         textAlign = TextAlign.Center,
                         color = Color.Black,
                         fontSize = 12.sp,
@@ -138,7 +137,6 @@ fun BuyAmountScreen(
                 ) {
                     Text(
                         text = "Limit ${sharedViewModel.orderData.value.minLimit} - ${sharedViewModel.orderData.value.maxLimit}" ,
-                        style = MaterialTheme.typography.body2,
                         textAlign = TextAlign.Center,
                         color = colorResource(id = R.color.background),
                         fontSize = 12.sp,
@@ -150,15 +148,13 @@ fun BuyAmountScreen(
             ) {
                 Text(
                     text = "Payment Method",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.Gray,
                     fontSize = 12.sp,
                 )
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(
-                    text = sharedViewModel.orderData.value.paymentMethod,
-                    style = MaterialTheme.typography.body2,
+                    text = sharedViewModel.orderData.value.paymentMethods,
                     textAlign = TextAlign.Center,
                     color = colorResource(id = R.color.background),
                     fontSize = 12.sp,
@@ -276,7 +272,6 @@ fun BuyNumberKey(
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = numberKey,
-                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 color = Color.DarkGray,
                 fontSize = 24.sp,
@@ -294,7 +289,6 @@ fun BuyAmountInput(buyAmountViewModel: BuyAmountViewModel, sharedViewModel: BuyO
     ) {
         Text(
             text = buyAmountViewModel.formatCurrency(),
-            style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Normal,
             color = Color.DarkGray,
@@ -302,14 +296,12 @@ fun BuyAmountInput(buyAmountViewModel: BuyAmountViewModel, sharedViewModel: BuyO
         )
         Text(
             text = "1 ${sharedViewModel.orderData.value.cryptoSymbol} = ${sharedViewModel.orderData.value.cryptoPrice} KES",
-            style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             color = Color.Gray,
             fontSize = 16.sp,
         )
         Text(
             text = "${String.format("%.6f", buyAmountViewModel.fiatAmount/sharedViewModel.orderData.value.cryptoPrice)} ${sharedViewModel.orderData.value.cryptoSymbol}",
-            style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             color = Color.Gray,
             fontSize = 16.sp,
@@ -333,12 +325,6 @@ fun BuyButton(
             .fillMaxWidth()
     ) {
         FloatingActionButton(
-            backgroundColor =  if(
-                buyAmountViewModel.fiatAmount > sharedViewModel.orderData.value.minLimit
-                && buyAmountViewModel.fiatAmount < sharedViewModel.orderData.value.maxLimit
-            ) {
-                colorResource(id = R.color.grass_green)
-            } else Color.LightGray,
             elevation = FloatingActionButtonDefaults.elevation(
                 defaultElevation = 16.dp,
                 pressedElevation = 8.dp,

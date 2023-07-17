@@ -15,6 +15,22 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -32,10 +48,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
 import online.pascarl.coinx.navigation.Screen
@@ -45,17 +63,26 @@ import online.pascarl.coinx.roomDB.RoomViewModel
 import online.pascarl.coinx.roomDB.UserDatabase
 import online.pascarl.coinx.roomDB.UserRepository
 
+@Preview(showSystemUi = true)
+@Composable
+fun RegisterScreenPreview() {
+    val navController = rememberNavController()
+    RegisterScreen(navController = navController)
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
     navController: NavHostController,
-    image:Painter = painterResource(id = R.drawable.coinx),
+    image: Painter = painterResource(id = R.drawable.coinx),
     signInViewModel: SignInViewModel = viewModel()
 
 ) {
     val roomDB = RoomViewModel(
         application = Application(),
-        userRepository = UserRepository(UserDatabase.getInstance(LocalContext.current.applicationContext).userDao())
+        userRepository = UserRepository(
+            UserDatabase.getInstance(LocalContext.current.applicationContext).userDao()
+        )
     )
 
     val scrollState = rememberScrollState()
@@ -66,58 +93,39 @@ fun RegisterScreen(
     val imeState = rememberImeState()
 
     LaunchedEffect(key1 = imeState.value) {
-        if (imeState.value){
+        if (imeState.value) {
             scrollState.animateScrollTo(scrollState.maxValue, tween(500))
         }
     }
 
     Column(
+        verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .fillMaxSize()
-            .background(color = colorResource(id = R.color.gray))
+            .background(color = MaterialTheme.colorScheme.background)
+            .verticalScroll(state = scrollState)
 
 
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top,
             modifier = Modifier
+                .padding(top = 32.dp)
                 .fillMaxWidth()
-                .fillMaxHeight(0.3f)
-                .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-                .background(color = colorResource(id = R.color.background))
-
-
         ) {
-            Image(
-                painter = image, contentDescription = "logo",
-                modifier = Modifier
-                    .height(600.dp)
-                    .width(600.dp)
+            Text(
+                text = "Coinx",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.titleLarge
             )
+            Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = "Free . Secure . Fast . Trading",
-                color = colorResource(id = R.color.app_white),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.h2,
-                modifier = Modifier.padding(top = 130.dp)
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.titleMedium
             )
-
-        }
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth())
-        {
-
-            if (signInViewModel.circularProgressBar) CircularProgressBar()
-            else Text(
-                    text = "LogIn",
-                    fontSize = 16.sp,
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.h5,
-                    modifier = Modifier.padding(top = 5.dp)
-                  )
         }
         Box(
             contentAlignment = Alignment.Center,
@@ -126,109 +134,90 @@ fun RegisterScreen(
                 .padding(top = 5.dp, bottom = 16.dp)
 
         ) {
-            Column (
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
                 modifier = Modifier
-                    .fillMaxSize()
                     .fillMaxWidth()
-                    .verticalScroll(state = scrollState)
-            ){
+            ) {
                 /** Email Text Field*/
-                Column {
-                    OutlinedTextField(
-                        value = signInViewModel.email,
-                        onValueChange = {
-                            signInViewModel.email = it
-                        },
-                        label = {
-                            Text(
-                                text = "Email",
-                                style = MaterialTheme.typography.body2,
+                Spacer(modifier = Modifier.height(16.dp))
+                OutlinedTextField(
+                    value = signInViewModel.email,
+                    onValueChange = { signInViewModel.email = it },
+                    placeholder = { Text(text = "Email") },
+                    isError = !signInViewModel.isSignInSuccessful(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(10.dp),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    ),
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        textColor = MaterialTheme.colorScheme.onSurface,
+                        placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        errorIndicatorColor = MaterialTheme.colorScheme.error,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
+                )
 
-                                )
-                        },
-                        isError = !signInViewModel.isSignInSuccessful(),
-                        textStyle = LocalTextStyle.current.copy(color = Color.Black),
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                            imeAction = ImeAction.Next
-                        ),
-                        colors = TextFieldDefaults.textFieldColors(
-                            focusedIndicatorColor = colorResource(id = R.color.background),
-                            unfocusedIndicatorColor = colorResource(id = R.color.background),
-                            backgroundColor = colorResource(id = R.color.light_gray)
-                        ),
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 /** Password text-field */
+                OutlinedTextField(
+                    value = signInViewModel.password,
+                    onValueChange = {
+                        signInViewModel.password = it
+                    },
+                    placeholder = { Text(text = "Password") },
+                    isError = !signInViewModel.isSignInSuccessful(),
+                    singleLine = true,
+                    shape = RoundedCornerShape(10.dp),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Next
+                    ),
+                    visualTransformation = if (showPassword) VisualTransformation.None else
+                        PasswordVisualTransformation(),
+                    trailingIcon = {
+                        if (showPassword) {
+                            IconButton(onClick = { showPassword = false }) {
 
-                Column {
-                    OutlinedTextField(
-                        value = signInViewModel.password,
-                        onValueChange = {
-                            signInViewModel.password = it
-                        },
-                        label = {
-                            Text(
-                                text = "Password",
-                                style = MaterialTheme.typography.body2
-
+                                Icon(
+                                    imageVector = Icons.Filled.Visibility,
+                                    contentDescription = "Hide password"
                                 )
-                        },
-                        isError = !signInViewModel.isSignInSuccessful(),
+                                //Text(text = "hide")
 
-                        visualTransformation = if (showPassword) VisualTransformation.None else
-                            PasswordVisualTransformation(),
-                        trailingIcon = {
-                            if (showPassword){
-                                IconButton(onClick = {showPassword = false}) {
-
-                                    Icon(
-                                        imageVector = Icons.Filled.Visibility,
-                                        contentDescription = "Hide password"
-                                    )
-                                    //Text(text = "hide")
-
-                                }
-                            }else{
-                                IconButton(onClick = {showPassword = true}) {
-
-                                    Icon(
-                                        imageVector = Icons.Filled.VisibilityOff,
-                                        contentDescription = "Hide password"
-                                    )
-                                    //Text(text = "show")
-
-                                }
                             }
-                        },
-                        textStyle = LocalTextStyle.current.copy(color = Color.Black),
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Next
+                        } else {
+                            IconButton(onClick = { showPassword = true }) {
+
+                                Icon(
+                                    imageVector = Icons.Filled.VisibilityOff,
+                                    contentDescription = "Hide password"
+                                )
+                                //Text(text = "show")
+
+                            }
+                        }
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        textColor = MaterialTheme.colorScheme.onSurface,
+                        placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        errorIndicatorColor = MaterialTheme.colorScheme.error,
+                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
+
                         ),
-                        colors = TextFieldDefaults.textFieldColors(
-                            focusedIndicatorColor = colorResource(id = R.color.background),
-                            unfocusedIndicatorColor = colorResource(id = R.color.background),
-                            backgroundColor = colorResource(id = R.color.light_gray)
-                        ),
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
 
-
-                    )
-
-                }
+                )
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     horizontalArrangement = Arrangement.End,
@@ -238,11 +227,9 @@ fun RegisterScreen(
                 ) {
                     Text(
                         text = "Forgot password?",
-                        color = colorResource(id = R.color.background),
+                        color = MaterialTheme.colorScheme.secondary,
+                        style = MaterialTheme.typography.bodySmall,
                         textDecoration = TextDecoration.Underline,
-                        fontStyle = FontStyle.Italic,
-                        style = MaterialTheme.typography.body2,
-                        fontWeight = FontWeight.W400,
                         modifier = Modifier
                             .padding(start = 5.dp)
                             .clickable {
@@ -252,130 +239,129 @@ fun RegisterScreen(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 /** Sign In Button */
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
+
+                FilledTonalButton(
+                    onClick = {
+                        scope.launch {
+                            //Circular ProgressBard
+                            signInViewModel.circularProgressBar()
+                            //Backend SignIn Auth
+                            signInViewModel.getSignInToken()
+                            if (signInViewModel.isSignInSuccessful()) {
+                                signInViewModel.roomUser = roomDB.getUser(id = "12345678")
+                                if (signInViewModel.roomUser == null) {
+                                    roomDB.addUser(
+                                        user = RoomUser(
+                                            email = signInViewModel.email,
+                                            token = signInViewModel.backendAuthToken!!
+                                        )
+                                    )
+                                    showMessage(context, "Signing in ...")
+                                    navController.navigate(Screen.Dashboard.route)
+                                } else {
+                                    roomDB.updateUser(
+                                        user = RoomUser(
+                                            email = signInViewModel.email,
+                                            token = signInViewModel.backendAuthToken!!
+                                        )
+                                    )
+                                    showMessage(context, "Signing in ...")
+                                    navController.navigate(Screen.Dashboard.route)
+                                }
+                            } else {
+                                showMessage(context, "Invalid email or password")
+                            }
+                        }
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    enabled = signInViewModel.password.isNotBlank() && signInViewModel.email.isNotBlank(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+
+                        ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
-
                 ) {
-
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .height(50.dp)
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(20))
-                            .background(
-                                color = if (signInViewModel.password.isNotBlank() && signInViewModel.email.isNotBlank())
-                                    colorResource(id = R.color.background)
-                                else colorResource(id = R.color.light_gray)
-                            )
-                            .clickable(
-                                enabled = signInViewModel.password.isNotBlank() && signInViewModel.email.isNotBlank()
-                            ) {
-                                scope.launch {
-                                    //Circular ProgressBard
-                                    signInViewModel.circularProgressBar()
-                                    //Backend SignIn Auth
-                                    signInViewModel.getSignInToken()
-                                    if (signInViewModel.isSignInSuccessful()) {
-                                        signInViewModel.roomUser = roomDB.getUser(id = "12345678")
-                                        if (signInViewModel.roomUser == null) {
-                                            roomDB.addUser(
-                                                user = RoomUser(
-                                                    email = signInViewModel.email,
-                                                    token = signInViewModel.backendAuthToken!!
-                                                )
-                                            )
-                                            showMessage(context, "Signing in ...")
-                                            navController.navigate(Screen.Dashboard.route)
-                                        } else {
-                                            roomDB.updateUser(
-                                                user = RoomUser(
-                                                    email = signInViewModel.email,
-                                                    token = signInViewModel.backendAuthToken!!
-                                                )
-                                            )
-                                            showMessage(context, "Signing in ...")
-                                            navController.navigate(Screen.Dashboard.route)
-                                        }
-                                    } else {
-                                        showMessage(context, "Invalid email or password")
-                                    }
-                                }
-                            }
-
-                    ) {
-                        Text(
-                            text = "Login",
-                            color = colorResource(id = R.color.app_white),
-                            style = MaterialTheme.typography.body1,
-                            fontWeight = FontWeight.W400
-                        )
-                    }
+                    Text(
+                        text = "Login",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
                 }
 
                 Row(
-                    horizontalArrangement = Arrangement.Center,
+                    horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 16.dp)
-                ){
+                ) {
                     Text(
                         text = "Don't have an account? ",
-                        style = MaterialTheme.typography.body1,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodyMedium,
 
-                    )
+                        )
 
                     Text(
                         text = "Sign Up",
-                        color = colorResource(id = R.color.cream),
-                        fontStyle = FontStyle.Normal,
-                        style = MaterialTheme.typography.body2,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.clickable {
                             navController.navigate(Screen.CreateAccount.route)
                         }
 
                     )
                 }
+                Spacer(modifier = Modifier.height(10.dp))
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                {
+                    if (signInViewModel.circularProgressBar) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary,
+                            strokeWidth = 4.dp,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+
+                    }
+
+                }
+
 
             }
         }
-
-
 
 
     }
 }
 
 @Composable
-fun CircularProgressBar(){
-    Card(
+fun CircularProgressBar() {
+    ElevatedCard(
+        modifier = Modifier
+            .height(40.dp)
+            .width(40.dp)
+            .clip(RoundedCornerShape(100))
 
-        elevation = 10.dp,
-            backgroundColor  = Color.White,
-            modifier = Modifier
-                .height(40.dp)
-                .width(40.dp)
-                .clip(RoundedCornerShape(100))
-
-    ){
+    ) {
         CircularProgressIndicator(
             strokeWidth = 3.dp,
             modifier = Modifier
                 .requiredHeight(25.dp)
                 .requiredWidth(25.dp)
-            )
+        )
 
     }
 
 }
 
-fun showMessage(context: Context, message:String){
+fun showMessage(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
 

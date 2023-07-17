@@ -6,12 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -87,7 +84,6 @@ fun NoInternet(dashboardViewModel: DashboardViewModel = viewModel()){
         ) {
             Text(
                 text = "Connection failed.Please check your network settings.",
-                style = MaterialTheme.typography.body1,
                 fontWeight = FontWeight.W300,
                 color = Color.Gray,
             )

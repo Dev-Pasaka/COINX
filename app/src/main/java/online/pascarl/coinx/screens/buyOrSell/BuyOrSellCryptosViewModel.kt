@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import online.pascarl.coinx.model.Ads
+import online.pascarl.coinx.model.PaymentMethods
 import kotlin.random.Random
 
 class BuyOrSellCryptosViewModel:ViewModel() {
@@ -115,7 +116,13 @@ class BuyOrSellCryptosViewModel:ViewModel() {
 
     private fun createDummyAdsList() {
         val adsTypeList = listOf("Buy", "Sell")
-        val paymentMethodList = listOf("M-Pesa Paybill", "M-Pesa Safaricom")
+        val paymentMethodList = listOf(
+            PaymentMethods(paymentMethods = "M-Pesa Safaricom"),
+            PaymentMethods(paymentMethods = "M-Pesa Paybill"),
+            PaymentMethods(paymentMethods = "Equity Bank"),
+            PaymentMethods(paymentMethods = "Absa Bank"),
+            PaymentMethods(paymentMethods = "KCB Bank"),
+        )
         val adsList = mutableListOf<Ads>()
         repeat(100) {
             val listOfCryptoNamesAndSymbols = mutableStateListOf(
@@ -136,7 +143,7 @@ class BuyOrSellCryptosViewModel:ViewModel() {
                 maxOrder = String.format("%.0f", Random.nextDouble(500.0, 500000.0)).toDouble(),
                 totalOrders = Random.nextInt(100, 10000),
                 ordersCompleted = Random.nextInt(0, 100),
-                paymentMethod = paymentMethodList.random()
+                paymentMethods = paymentMethodList.random().paymentMethods
             )
             adsList.add(ad)
         }

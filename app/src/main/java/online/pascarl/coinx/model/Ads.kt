@@ -11,5 +11,5 @@ data class Ads(
     val totalOrders:Int = 957,
     val ordersCompleted:Int = 89,
     val cryptoPrice:Double = 150.0,
-    val paymentMethod:String = "M-pesa Paybill",
+    val paymentMethods:String
 )

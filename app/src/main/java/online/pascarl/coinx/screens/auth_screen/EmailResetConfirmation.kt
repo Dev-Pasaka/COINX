@@ -7,6 +7,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,12 +24,15 @@ import androidx.navigation.NavHostController
 import online.pascarl.coinx.R
 import online.pascarl.coinx.imageLoader
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition",
+    "UnusedMaterial3ScaffoldPaddingParameter"
+)
 @Composable
 fun EmailResetConfirmation(navController: NavHostController) {
-    val scaffoldState = rememberScaffoldState()
+   // val scaffoldState = rememberScaffoldState()
     Scaffold(
-        scaffoldState = scaffoldState,
+        //scaffoldState = scaffoldState,
         modifier = Modifier
             .fillMaxSize()
             .background(color = colorResource(id = R.color.background))
@@ -46,14 +52,12 @@ fun EmailResetConfirmation(navController: NavHostController) {
             ) {
                 Text(
                     text = "Password reset is successful!",
-                    style = MaterialTheme.typography.h4,
                     color = colorResource(id = R.color.background),
                     textAlign = TextAlign.Center,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "You can now login with your new password",
-                    style = MaterialTheme.typography.body1,
                     textAlign = TextAlign.Center,
                     color = Color.Gray,
                     fontSize = 16.sp
@@ -100,7 +104,6 @@ fun EmailResetConfirmation(navController: NavHostController) {
                 ) {
                     Text(
                         text = "Login",
-                        style = MaterialTheme.typography.body1,
                         textAlign = TextAlign.Center,
                         color = Color.White,
                         fontSize = 14.sp

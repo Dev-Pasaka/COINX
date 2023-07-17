@@ -8,8 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -94,7 +93,6 @@ fun OtpHeader(){
                     color = colorResource(id = R.color.app_white),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.h3,
                     modifier = Modifier.padding(top = 170.dp),
                     textAlign = TextAlign.Center,
 
@@ -138,7 +136,6 @@ fun VerifyButton(navController: NavHostController, resetPasswordViewModel: Reset
     ){
         Text(
             text = "Verify",
-            style = MaterialTheme.typography.body1,
             textAlign = TextAlign.Center,
             color = Color.White,
             fontSize = 14.sp
@@ -225,7 +222,6 @@ private fun CharView(
     ) {
         Text(
             text = char,
-            style = MaterialTheme.typography.h4,
             color = if (isFocused) {
                 Color.LightGray
             } else {
@@ -250,7 +246,6 @@ fun ResendOTP(resetPasswordViewModel: ResetPasswordViewModel){
         if (resetPasswordViewModel.seconds <= 0){
             Text(
                 text = "Resend Code",
-                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.W500,
                 color = colorResource(id = R.color.cream),
@@ -268,7 +263,6 @@ fun ResendOTP(resetPasswordViewModel: ResetPasswordViewModel){
         }else{
             Text(
                 text = " Resend in ${resetPasswordViewModel.seconds}",
-                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
                 color = colorResource(id = R.color.cream),
                 fontSize = 14.sp,

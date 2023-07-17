@@ -20,6 +20,18 @@ import androidx.compose.material.icons.filled.StopCircle
 import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +47,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
 import online.pascarl.coinx.roomDB.RoomViewModel
 import online.pascarl.coinx.roomDB.UserDatabase
@@ -43,26 +56,72 @@ import online.pascarl.coinx.screens.auth_screen.showMessage
 import online.pascarl.coinx.screens.bottom_bar_navigation.*
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NavDrawer(
-    navController: NavHostController, 
-    bottomBarViewModel: BottomBarViewModel = viewModel()
+    navController: NavHostController
 ) {
-    val navController1 = rememberNavController()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    val drawerItems = listOf(
+        DrawerItems(icon = Icons.Default.VerifiedUser, title = "Kyc Verification"),
+        DrawerItems(icon = Icons.Default.Update, title = "Update information"),
+        DrawerItems(icon = Icons.Default.Share, title = "Invite friends"),
+        DrawerItems(icon = Icons.Default.Phone, title = "Contact us"),
+        DrawerItems(icon = Icons.Default.Settings, title = "Settings"),
+        DrawerItems(icon = Icons.Default.Logout, title = "Logout"),
+    )
+    val selectedItem = remember { mutableStateOf(drawerItems[0]) }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom,
-        modifier = Modifier.fillMaxHeight()
-    ) {
-        Scaffold(
-            drawerContent = { NavigationDrawer(navController = navController)},
-        ) {
-
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                Spacer(Modifier.height(12.dp))
+                drawerItems.forEach { item ->
+                    NavigationDrawerItem(
+                        icon = { Icon(item.icon, contentDescription = null) },
+                        label = { Text(item.title) },
+                        selected = item == selectedItem.value,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            selectedItem.value = item
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    )
+                }
+            }
+        },
+        content = {
+           /* Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = if (drawerState.isClosed) ">>> Swipe >>>" else "<<< Swipe <<<")
+                Spacer(Modifier.height(20.dp))
+                Button(onClick = { scope.launch { drawerState.open() } }) {
+                    Text("Click to open")
+                }
+            }*/
         }
-    }
+    )
+
+
+    /*  Column(
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.Bottom,
+          modifier = Modifier.fillMaxHeight()
+      ) {
+          Scaffold(
+              //drawerContent = { NavigationDrawer(navController = navController)},
+          ) {
+
+          }
+      }*/
 
 }
 
@@ -194,7 +253,6 @@ fun BodyItems(
             Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = title,
-                style = MaterialTheme.typography.body2,
                 fontSize = 16.sp,
             )
 
@@ -214,8 +272,7 @@ fun LogOutDialog(
         userRepository = UserRepository(UserDatabase.getInstance(LocalContext.current.applicationContext).userDao())
     )
     Dialog(onDismissRequest = { /*TODO*/ }) {
-        Card(
-            elevation = 5.dp,
+        ElevatedCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.48f)
@@ -238,7 +295,6 @@ fun LogOutDialog(
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
                         text = "Logout Confirmation",
-                        style = MaterialTheme.typography.body2,
                         fontSize = 16.sp,
                         color = Color.DarkGray
                     )
@@ -252,7 +308,6 @@ fun LogOutDialog(
                 ) {
                     Text(
                         text = "Are you sure you want to logout?",
-                        style = MaterialTheme.typography.body2,
                         fontSize = 14.sp,
                         color = Color.Gray
                     )
@@ -267,7 +322,6 @@ fun LogOutDialog(
 
                     Text(
                         text = "No thanks",
-                        style = MaterialTheme.typography.body2,
                         fontSize = 14.sp,
                         color = colorResource(id = R.color.background),
                         modifier = Modifier.clickable {
@@ -285,22 +339,12 @@ fun LogOutDialog(
                             .clip(RoundedCornerShape(30.dp))
                             .background(color = colorResource(id = R.color.background))
                             .clickable {
-                                val result = roomDB.deleteUser(id = "12345678")
-                                if (result > 0) {
-                                    showMessage(context, "Logging you out")
-                                    navController.navigate(Screen.Register.route) {
-                                        popUpTo(Screen.SplashScreen.route) {
-                                            inclusive = true
-                                        }
-                                    }
 
-                                }
                             }
 
                     ) {
                         Text(
                             text = "Yes",
-                            style = MaterialTheme.typography.body2,
                             fontSize = 14.sp,
                             color = Color.White
                         )
@@ -317,6 +361,6 @@ fun LogOutDialog(
 
 
 data class DrawerItems(
-    val icon: ImageVector,
-    val title:String
+    var icon: ImageVector,
+    var title:String
 )

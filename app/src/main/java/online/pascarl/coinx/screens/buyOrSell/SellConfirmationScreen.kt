@@ -20,15 +20,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.outlined.PlayCircleFilled
 import androidx.compose.material.icons.outlined.SwapHorizontalCircle
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -121,11 +121,11 @@ fun SellPaymentMethodUpperSection(
                 }
         ) {
             Icon(
-                imageVector = Icons.Default.ArrowBackIos,
+                imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Go Back",
                 tint = Color.DarkGray,
                 modifier = Modifier
-                    .size(15.dp)
+                    .size(20.dp)
                     .clip(RoundedCornerShape(360.dp))
 
             )
@@ -140,7 +140,6 @@ fun SellPaymentMethodUpperSection(
     ) {
         Text(
             text =  "You will receive",
-            style = MaterialTheme.typography.body2,
             textAlign = TextAlign.Center,
             color = Color.DarkGray,
             fontSize = 16.sp,
@@ -160,7 +159,6 @@ fun SellPaymentMethodUpperSection(
         ) {
             Text(
                 text = sharedViewModel.formatCurrency(amount = sharedViewModel.youWillReceive.value),
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = colorResource(id = R.color.background),
                 fontSize = 14.sp,
@@ -191,7 +189,6 @@ fun SellPaymentMethodMiddleSection(sharedViewModel: BuyOrSellSharedViewModel){
             ){
                 Text(
                     text = "P2P Trading ",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.White,
                     fontSize = 14.sp,
@@ -205,7 +202,6 @@ fun SellPaymentMethodMiddleSection(sharedViewModel: BuyOrSellSharedViewModel){
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = sharedViewModel.orderData.value.username,
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.White,
                 fontSize = 12.sp,
@@ -225,7 +221,6 @@ fun SellPaymentMethodMiddleSection(sharedViewModel: BuyOrSellSharedViewModel){
             ) {
                 Text(
                     text = "Sold amount",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.White,
                     fontSize = 14.sp,
@@ -236,7 +231,6 @@ fun SellPaymentMethodMiddleSection(sharedViewModel: BuyOrSellSharedViewModel){
             Text(
                 text = sharedViewModel.youSold.value.toString() +
                         " ${sharedViewModel.orderData.value.cryptoSymbol}",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.White,
                 fontSize = 12.sp,
@@ -250,7 +244,6 @@ fun SellPaymentMethodMiddleSection(sharedViewModel: BuyOrSellSharedViewModel){
         ) {
             Text(
                 text = "How to Sell ",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.White,
                 fontSize = 14.sp,
@@ -290,7 +283,6 @@ fun SellPaymentMethodLowerSection(
             ) {
                 Text(
                     text = "Sell",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.White,
                     fontSize = 14.sp,
@@ -318,14 +310,12 @@ fun SellPaymentMethodLowerSection(
         ){
             Text(
                 text = "Fiat Amount ",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.Gray,
                 fontSize = 14.sp,
             )
             Text(
                 text = sharedViewModel.formatCurrency(amount = sharedViewModel.youWillReceive.value),
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.DarkGray,
                 fontSize = 12.sp,
@@ -341,14 +331,12 @@ fun SellPaymentMethodLowerSection(
         ){
             Text(
                 text = "Price",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.Gray,
                 fontSize = 14.sp,
             )
             Text(
                 text =sharedViewModel.formatCurrency(amount = sharedViewModel.orderData.value.cryptoPrice),
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.DarkGray,
                 fontSize = 12.sp,
@@ -364,7 +352,6 @@ fun SellPaymentMethodLowerSection(
         ){
             Text(
                 text = "Sold amount",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.Gray,
                 fontSize = 14.sp,
@@ -372,7 +359,6 @@ fun SellPaymentMethodLowerSection(
             Text(
                 text = sharedViewModel.youSold.value.toString() +
                         " ${sharedViewModel.orderData.value.cryptoSymbol}",
-                style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
                 color = Color.DarkGray,
                 fontSize = 12.sp,
@@ -419,14 +405,12 @@ fun SellPaymentMethodLowerSection(
 
                 Text(
                     text = "You will receive",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.Gray,
                     fontSize = 14.sp,
                 )
                 Text(
                     text = sharedViewModel.formatCurrency(amount = sharedViewModel.youWillReceive.value),
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.Gray,
                     fontSize = 16.sp,
@@ -446,7 +430,6 @@ fun SellPaymentMethodLowerSection(
             ) {
                 Text(
                     text = "Confirm",
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
                     color = Color.White,
                     fontSize = 14.sp,

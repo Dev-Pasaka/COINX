@@ -12,9 +12,27 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Outlined
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Update
+import androidx.compose.material.icons.filled.VerifiedUser
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
+import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,15 +49,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.accompanist.flowlayout.SizeMode
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -49,6 +70,9 @@ import online.pascarl.coinx.*
 import online.pascarl.coinx.R
 import online.pascarl.coinx.navigation.BottomBarViewModel
 import online.pascarl.coinx.navigation.CustomBottomNavigation
+import online.pascarl.coinx.navigation.DrawerItems
+import online.pascarl.coinx.navigation.LogOutDialog
+import online.pascarl.coinx.navigation.NavDrawer
 import online.pascarl.coinx.navigation.NavigationDrawer
 import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.roomDB.RoomUser
@@ -61,17 +85,18 @@ import online.pascarl.coinx.screens.buyOrSell.BuyOrSellCryptosViewModel
 import online.pascarl.coinx.screens.buyOrSell.ISBUYSELECTED
 
 
-/*@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true)
 @Composable
-fun Preview1(){
-    Dashboard()
-}*/
-
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterialApi::class)
+fun DashboardPreview() {
+    val navController = rememberNavController()
+    Dashboard(navController = navController)
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
+
 @Composable
 fun Dashboard(
     bottomBarViewModel: BottomBarViewModel = viewModel(),
@@ -79,6 +104,8 @@ fun Dashboard(
     navController: NavHostController
 
 ) {
+    NavDrawer(navController = navController)
+
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val isNetworkAvailable = isInternetAvailable(context = context)
@@ -96,7 +123,7 @@ fun Dashboard(
         delay(1000)
     }
 
-    val scaffoldState = rememberScaffoldState()
+    //  val scaffoldState = rememberScaffoldState()
     val roomDB = RoomViewModel(
         application = Application(),
         userRepository = UserRepository(
@@ -111,78 +138,126 @@ fun Dashboard(
         dashboardViewModel.getUserData()
         dashboardViewModel.getUserPortfolio()
     }
-    Scaffold(
-        scaffoldState = scaffoldState,
-        drawerContent = { NavigationDrawer(navController = navController) },
-        bottomBar = {
-            CustomBottomNavigation(
-                navController = navController,
-                bottomBarViewModel = bottomBarViewModel
-            )
-        },
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet(
+                drawerContainerColor = MaterialTheme.colorScheme.surface,
+                drawerContentColor = MaterialTheme.colorScheme.onSurface
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Coinx",
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.titleLarge,
 
-        ) {
+                        )
+                }
+                dashboardViewModel.drawerItems.forEach { item ->
+                    NavigationDrawerItem(
+                        icon = { Icon(item.icon, contentDescription = null) },
+                        label = { Text(item.title) },
+                        selected = item == dashboardViewModel.selectedDrawerItem,
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            dashboardViewModel.selectedDrawerItem = item
+                            when (item.title) {
+                                "Settings" -> {
+                                    navController.navigate(Screen.Settings.route) {
+                                        popUpTo(Screen.Settings.route) { inclusive = true }
+                                    }
+                                }
 
-        val context = LocalContext.current
-
-        Column(
-            modifier = Modifier
-                .background(color = colorResource(id = R.color.app_white))
-                .fillMaxSize()
-                .alpha(alphaAnim.value)
-        ) {
-
-            TopBarComponents(
-                navDrawer = scaffoldState,
-                dashboardViewModel = dashboardViewModel
-            )
-            if (isInternetAvailable(context = context)) {
-                Column(verticalArrangement = Arrangement.SpaceBetween) {
-                    Salutation(dashboardViewModel = dashboardViewModel)
-                    WalletCardComposable(
-                        dashboardViewModel = dashboardViewModel,
-                        navController = navController
-                    )
-                    ExpressCheckout(dashboardViewModel = dashboardViewModel)
-                    CoinsOrWatchList(
-                        navController = navController,
-                        dashboardViewModel = dashboardViewModel
+                                "Logout" -> {
+                                    dashboardViewModel.openDialog = true
+                                }
+                            }
+                        },
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                     )
                 }
-            } else {
-                NoInternet()
             }
+        },
+        content = {
+            Scaffold(
+                bottomBar = { CustomBottomNavigation(navController = navController) },
+            ) {
+                val context = LocalContext.current
+                Column(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colorScheme.background)
+                        .fillMaxSize()
+                        .alpha(alphaAnim.value)
+                ) {
+                    TopBarComponents(
+                        drawerState = drawerState,
+                        dashboardViewModel = dashboardViewModel
+                    )
+                    if (isInternetAvailable(context = context)) {
+                        Column(verticalArrangement = Arrangement.SpaceBetween) {
+                            if (dashboardViewModel.openDialog) LogOutAlertDialog(
+                                navController = navController,
+                                dashboardViewModel = dashboardViewModel
+                            )
+                            Salutation(dashboardViewModel = dashboardViewModel)
+                            WalletCardComposable(
+                                dashboardViewModel = dashboardViewModel,
+                                navController = navController
+                            )
+                            ExpressCheckout(dashboardViewModel = dashboardViewModel)
+                            CoinsOrWatchList(
+                                navController = navController,
+                                dashboardViewModel = dashboardViewModel
+                            )
+                        }
+                    } else {
+                        NoInternet()
+                    }
 
+                }
+
+            }
         }
+    )
 
-    }
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarComponents(navDrawer: ScaffoldState, dashboardViewModel: DashboardViewModel) {
+fun TopBarComponents(
+    drawerState: DrawerState,
+    dashboardViewModel: DashboardViewModel
+) {
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
+            .padding(start = 13.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
     ) {
         val scope = rememberCoroutineScope()
         Icon(
             painter = painterResource(id = R.drawable.person_icon),
-            tint = Color.White,
+            tint = MaterialTheme.colorScheme.tertiary,
             contentDescription = "Profile Icon",
             modifier = Modifier
-                .size(25.dp)
+                .size(30.dp)
+                .padding(3.dp)
                 .clip(RoundedCornerShape(360.dp))
-                .background(color = colorResource(id = R.color.background))
+                .background(color = MaterialTheme.colorScheme.background)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(bounded = true),
-                ){
+                ) {
                     scope.launch {
-                        navDrawer.drawerState.open()
+                        scope.launch { drawerState.open() }
                     }
                 }
         )
@@ -194,7 +269,7 @@ fun TopBarComponents(navDrawer: ScaffoldState, dashboardViewModel: DashboardView
             Icon(
                 painter = painterResource(id = R.drawable.qr_code_scanner),
                 contentDescription = "Profile Icon",
-                tint = colorResource(id = R.color.background),
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .size(25.dp)
                     .clip(RoundedCornerShape(360.dp))
@@ -207,14 +282,14 @@ fun TopBarComponents(navDrawer: ScaffoldState, dashboardViewModel: DashboardView
             Icon(
                 imageVector = Outlined.Notifications,
                 contentDescription = "Profile Icon",
-                tint = colorResource(id = R.color.background),
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .size(25.dp)
                     .clip(RoundedCornerShape(360.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = true),
-                    ){
+                    ) {
 
                     },
 
@@ -239,15 +314,13 @@ fun Salutation(username: String = "Pasaka", dashboardViewModel: DashboardViewMod
             val salutation by remember { mutableStateOf(getCurrentTime()) }
             Text(
                 text = "$salutation,",
-                color = colorResource(id = R.color.background),
-                style = MaterialTheme.typography.body2,
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.titleLarge,
             )
             Text(
                 text = dashboardViewModel.userInformation.username,
-                //color = colorResource(id = R.color.),
-                style = MaterialTheme.typography.body1,
-                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge,
             )
         }
     }
@@ -261,140 +334,160 @@ fun WalletCardComposable(
     dashboardViewModel: DashboardViewModel,
     buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel = viewModel()
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .background(color = colorResource(id = R.color.background))
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier.padding(16.dp)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(start = 4.dp, end = 4.dp)
         ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp)
+            ) {
+                Text(
+                    text = "Portfolio Balance",
+                    fontWeight = FontWeight.W500,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                IconButton(
+                    onClick = {
+                        dashboardViewModel.showBalance()
+                    }
+                ) {
+                    Icon(
+                        imageVector = if (dashboardViewModel.showBalance)
+                            Outlined.Visibility else Outlined.VisibilityOff,
+                        contentDescription = "Profile Icon",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
+            }
+
             Text(
-                text = "Portfolio Balance",
-                style = MaterialTheme.typography.body1,
-                fontSize = 15.sp,
+                text = if (dashboardViewModel.showBalance) dashboardViewModel.userBalance() else "KES ****",
                 fontWeight = FontWeight.W500,
-                color = colorResource(id = R.color.app_white)
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.padding(start = 8.dp, end = 8.dp)
+
             )
 
-            IconButton(
-                onClick = {
-                    dashboardViewModel.showBalance()
-                }
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
             ) {
-                Icon(
-                    imageVector = if (dashboardViewModel.showBalance)
-                        Outlined.Visibility else Outlined.VisibilityOff,
-                    contentDescription = "Profile Icon",
-                    tint = colorResource(id = R.color.app_white),
-                )
-            }
-        }
-
-        Text(
-            text = if (dashboardViewModel.showBalance) dashboardViewModel.userBalance() else "KES ****",
-            style = MaterialTheme.typography.body1,
-            fontWeight = FontWeight.W500,
-            textAlign = TextAlign.Center,
-            fontSize = 16.sp,
-            color = colorResource(id = R.color.app_white),
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-
-        )
-
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            /**Buy Icon*/
-            IconButton(onClick = {
-                ISBUYSELECTED = "Buy"
-                navController.navigate("buy_or_sell")
-            }) {
-                Column {
+                /**Buy Icon*/
+                Column(
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = true),
+                    ) {
+                        ISBUYSELECTED = "Buy"
+                        navController.navigate("buy_or_sell")
+                    }
+                ) {
                     Icon(
                         imageVector = Outlined.CurrencyBitcoin,
                         contentDescription = "Buy Icon",
-                        tint = colorResource(id = R.color.app_white),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Buy",
-                        style = MaterialTheme.typography.body1,
                         fontWeight = FontWeight.W300,
-                        color = colorResource(id = R.color.app_white),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        style = MaterialTheme.typography.bodyMedium
+
                     )
                 }
-            }
-            /**Sell Icon*/
-            IconButton(onClick = {
-                ISBUYSELECTED = "Sell"
-                navController.navigate(Screen.BuyOrSellCryptos.route)
-            }) {
-                Column() {
+
+                /**Sell Icon*/
+                Column(
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = true),
+                    ) {
+                        ISBUYSELECTED = "Sell"
+                        navController.navigate(Screen.BuyOrSellCryptos.route)
+                    }
+                ) {
 
                     Icon(
                         imageVector = Outlined.Payments,
                         contentDescription = "Profile Icon",
-                        tint = colorResource(id = R.color.app_white),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Sell",
-                        style = MaterialTheme.typography.body1,
                         fontWeight = FontWeight.W300,
-                        color = colorResource(id = R.color.app_white),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        style = MaterialTheme.typography.bodyMedium
+
                     )
                 }
-            }
-            /**Pay Icon*/
-            IconButton(onClick = { /*TODO*/ }) {
-                Column() {
+
+                /**Pay Icon*/
+                Column(
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = true),
+                    ) { }
+                ) {
                     Icon(
                         imageVector = Outlined.CreditCard,
                         contentDescription = "Pay Icon",
-                        tint = colorResource(id = R.color.app_white),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Pay",
-                        style = MaterialTheme.typography.body1,
                         fontWeight = FontWeight.W300,
-                        color = colorResource(id = R.color.app_white),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        style = MaterialTheme.typography.bodyMedium
+
                     )
                 }
-            }
 
-            /**Send Icon*/
-
-            IconButton(onClick = { /*TODO*/ }) {
-                Column() {
+                /**Send Icon*/
+                Column(
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = true),
+                    ) { }
+                ) {
                     Icon(
                         imageVector = Outlined.Send,
                         contentDescription = "Send Icon",
-                        tint = colorResource(id = R.color.app_white),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = "Send",
-                        style = MaterialTheme.typography.body1,
                         fontWeight = FontWeight.W300,
-                        color = colorResource(id = R.color.app_white),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
+
+
             }
-
-
         }
     }
 }
@@ -406,7 +499,7 @@ fun ExpressCheckout(dashboardViewModel: DashboardViewModel) {
     val configuration = LocalConfiguration.current
     val heightInDp = configuration.screenHeightDp.toFloat()
     println(heightInDp)
-    if(heightInDp >= 700.0 ){
+    if (heightInDp >= 700.0) {
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
@@ -417,11 +510,11 @@ fun ExpressCheckout(dashboardViewModel: DashboardViewModel) {
             val pagerState = rememberPagerState()
             Text(
                 text = "Express Checkout",
-                color = Color.Gray,
-                style = MaterialTheme.typography.body2,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.W400,
+                style = MaterialTheme.typography.bodySmall
 
-                )
+            )
             if (dashboardViewModel.cryptoModel.isEmpty()) {
                 ExpressCheckOutLoadingPreview()
             } else {
@@ -481,105 +574,122 @@ fun ExpressCheckOutItems(
         start = Offset.Zero,
         end = Offset.Infinite
     )
-
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .background(brush = gradient)
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
+        shape = MaterialTheme.shapes.medium,
+        modifier = Modifier.padding(top = 3.dp)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
+        Column(
+            modifier = modifier
                 .fillMaxWidth()
-                .padding(start = 14.dp, end = 14.dp, top = 8.dp)
+
         ) {
             Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp, top = 8.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Image(
+                        painter = imageIcon,
+                        contentDescription = "Bitcoin",
+                        modifier = Modifier
+                            .height(30.dp)
+                            .width(30.dp)
+                            .clip(RoundedCornerShape(360.dp))
+                    )
+                    Text(
+                        text = "$name ($symbol)",
+                        fontWeight = FontWeight.W400,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.padding(start = 10.dp),
+                        style = MaterialTheme.typography.bodyMedium
+
+                    )
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Text(
+                        text = "$percentageChangeIn24Hrs %",
+                        fontWeight = FontWeight.W300,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        style = MaterialTheme.typography.bodySmall
+
+                    )
+                    Spacer(modifier = Modifier.height(3.dp))
+                    Text(
+                        text = "last 24 hrs",
+                        fontWeight = FontWeight.W300,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        style = MaterialTheme.typography.bodySmall
+
+                    )
+                }
+            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+
             ) {
-                Image(
-                    painter = imageIcon,
-                    contentDescription = "Bitcoin",
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = "Last Price",
+                        fontWeight = FontWeight.W300,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(
+                        text = dashboardViewModel.formatCurrency(amount = price),
+                        //   fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        style = MaterialTheme.typography.bodyMedium
+
+                    )
+                }
+                Card(
+                    shape = RoundedCornerShape(30.dp),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 10.dp
+                    ),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    ),
                     modifier = Modifier
-                        .height(30.dp)
-                        .width(30.dp)
-                        .clip(RoundedCornerShape(360.dp))
-                )
-                Text(
-                    text = "$name ($symbol)",
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.W400,
-                    color = colorResource(id = R.color.app_white),
-                    modifier = Modifier.padding(start = 10.dp)
-                )
-            }
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = modifier
 
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.End
-            ) {
-                Text(
-                    text = "$percentageChangeIn24Hrs %",
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.W300,
-                    color = Color.White
-                )
-                Spacer(modifier = Modifier.height(3.dp))
-                Text(
-                    text = "last 24 hrs",
-                    style = MaterialTheme.typography.body2,
-                    fontWeight = FontWeight.W300,
-                    fontSize = 12.sp,
-                    color = colorResource(id = R.color.app_white),
-                )
-            }
-        }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-        ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = "Last Price",
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.W300,
-                    fontSize = 12.sp,
-                    color = colorResource(id = R.color.app_white),
-                )
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = dashboardViewModel.formatCurrency(amount = price),
-                    style = MaterialTheme.typography.body1,
-                    //   fontSize = 14.sp,
-                    color = colorResource(id = R.color.app_white),
-                )
-            }
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = modifier
-                    .height(30.dp)
-                    .width(70.dp)
-                    .clip(RoundedCornerShape(30.dp))
-                    .background(color = colorResource(id = R.color.app_white))
+                    ) {
+                        Text(
+                            text = "Buy Now",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
 
-            ) {
-                Text(
-                    text = "Buy Now",
-                    style = MaterialTheme.typography.h3,
-                    fontSize = 12.sp,
-                )
+                        )
+                    }
+                }
             }
+            Spacer(modifier = Modifier.width(16.dp))
         }
-        Spacer(modifier = Modifier.width(16.dp))
     }
 }
 
@@ -598,30 +708,28 @@ fun CoinsOrWatchList(
             ) {
                 Text(
                     text = "Coin",
-                    style = MaterialTheme.typography.body1,
-                    fontSize = 16.sp,
-                    color = if (dashboardViewModel.isCoinOrWatchlistSelected) colorResource(id = R.color.background) else Color.Gray,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (dashboardViewModel.isCoinOrWatchlistSelected) MaterialTheme.colorScheme.onBackground else Color.Gray,
                     modifier = Modifier
                         .padding(start = 16.dp, top = 8.dp)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(bounded = true),
-                        ){
+                        ) {
                             dashboardViewModel.isCoinOrWatchlist(toggle = "coin")
                         }
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = "Watchlist",
-                    style = MaterialTheme.typography.body1,
-                    fontSize = 16.sp,
-                    color = if (!dashboardViewModel.isCoinOrWatchlistSelected) colorResource(id = R.color.background) else Color.Gray,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (!dashboardViewModel.isCoinOrWatchlistSelected) MaterialTheme.colorScheme.onBackground else Color.Gray,
                     modifier = Modifier
                         .padding(start = 16.dp, top = 8.dp)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(bounded = true),
-                        ){
+                        ) {
                             dashboardViewModel.isCoinOrWatchlist(toggle = "watchlist")
                         }
                 )
@@ -630,17 +738,16 @@ fun CoinsOrWatchList(
             Text(
                 text = "See all",
                 textAlign = TextAlign.End,
-                style = MaterialTheme.typography.body1,
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.bodySmall,
                 textDecoration = TextDecoration.Underline,
-                color = colorResource(id = R.color.background),
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .padding(top = 8.dp, end = 16.dp)
                     .clip(RoundedCornerShape(360.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = true),
-                    ){
+                    ) {
                         navController.navigate(Screen.SeeAllCryptos.route)
                     }
 
@@ -651,78 +758,103 @@ fun CoinsOrWatchList(
 }
 
 
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardViewModel) {
 
     val onSelectedBackgroundColor = colorResource(id = R.color.background)
     val onNotSelectedBackgroundColor = Color.Gray
 
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+    FlowRow(
         modifier = Modifier
-            .fillMaxWidth()
-
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(
-            text = "market cap",
-            style = MaterialTheme.typography.body2,
-            textAlign = TextAlign.Center,
-            fontSize = 12.sp,
-            color = colorResource(id = R.color.app_white),
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
-                .padding(start = 16.dp, top = 8.dp)
-                .width(100.dp)
-                .clip(RoundedCornerShape(30))
-                .background(if (dashboardViewModel.filterChip == "market-cap") onSelectedBackgroundColor else onNotSelectedBackgroundColor)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = true),
-                ){
+                .clip(shape = MaterialTheme.shapes.medium)
+                .background(
+                    color = if (dashboardViewModel.filterChip == "market-cap")
+                        MaterialTheme.colorScheme.secondaryContainer
+                    else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
+                )
+                .clickable {
                     dashboardViewModel.filterCryptos("market-cap")
                     dashboardViewModel.sortCryptos("market-cap")
                 }
-        )
-        Spacer(modifier = Modifier.width(2.dp))
-        Text(
-            text = "price",
-            style = MaterialTheme.typography.body2,
-            textAlign = TextAlign.Center,
-            fontSize = 12.sp,
-            color = colorResource(id = R.color.app_white),
+
+        ) {
+            Text(
+                text = "market-cap",
+                color = if (dashboardViewModel.filterChip == "market-cap")
+                    MaterialTheme.colorScheme.onSecondaryContainer else
+                    MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.3f),
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+
+            )
+        }
+
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
-                .padding(top = 8.dp)
-                .width(100.dp)
-                .clip(RoundedCornerShape(30))
-                .background(if (dashboardViewModel.filterChip == "price") onSelectedBackgroundColor else onNotSelectedBackgroundColor)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = true),
-                ){
+                .clip(shape = MaterialTheme.shapes.medium)
+                .background(
+                    color = if (dashboardViewModel.filterChip == "price")
+                        MaterialTheme.colorScheme.secondaryContainer
+                    else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
+                )
+                .clickable {
                     dashboardViewModel.filterCryptos("price")
                     dashboardViewModel.sortCryptos("price")
                 }
-        )
-        Spacer(modifier = Modifier.width(2.dp))
-        Text(
-            text = "24h change",
-            style = MaterialTheme.typography.body2,
-            textAlign = TextAlign.Center,
-            fontSize = 12.sp,
-            color = colorResource(id = R.color.app_white),
+
+        ) {
+            Text(
+                text = "Price",
+                color = if (dashboardViewModel.filterChip == "price")
+                    MaterialTheme.colorScheme.onSecondaryContainer else
+                    MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.3f),
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+
+            )
+        }
+
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
-                .padding(top = 8.dp, end = 16.dp)
-                .width(100.dp)
-                .clip(RoundedCornerShape(30))
-                .background(if (dashboardViewModel.filterChip == "24h-change") onSelectedBackgroundColor else onNotSelectedBackgroundColor)
-                .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = true),
-                ){
+                .clip(shape = MaterialTheme.shapes.medium)
+                .background(
+                    color = if (dashboardViewModel.filterChip == "24h-change")
+                        MaterialTheme.colorScheme.secondaryContainer
+                    else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
+                )
+                .clickable {
                     dashboardViewModel.filterCryptos("24h-change")
                     dashboardViewModel.sortCryptos("24h-change")
                 }
-        )
+
+        ) {
+            Text(
+                text = "24H-change",
+                color = if (dashboardViewModel.filterChip == "24h-change")
+                    MaterialTheme.colorScheme.onSecondaryContainer else
+                    MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.3f),
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+
+            )
+        }
+
+
     }
+
 
     val context = LocalContext.current
     if (dashboardViewModel.cryptoModel.isEmpty()) {
@@ -783,17 +915,15 @@ fun CryptoCoinListItem(
             ) {
                 Text(
                     text = name,
-                    style = MaterialTheme.typography.body2,
                     textAlign = TextAlign.Center,
-                    fontSize = 16.sp,
-                    color = colorResource(id = R.color.black),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
                 Text(
                     text = symbol,
-                    style = MaterialTheme.typography.body1,
                     textAlign = TextAlign.Center,
-                    fontSize = 12.sp,
-                    color = colorResource(id = R.color.black),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
         }
@@ -803,18 +933,16 @@ fun CryptoCoinListItem(
         ) {
             Text(
                 text = "$percentageChangeIn24Hrs%",
-                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.bodySmall,
                 color = if (percentageChangeIn24Hrs < 0.0)
                     colorResource(id = R.color.red) else colorResource(id = R.color.grass_green)
             )
             Text(
                 text = dashboardViewModel.formatCurrency(amount = price),
-                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center,
-                fontSize = 12.sp,
-                color = colorResource(id = R.color.black),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground,
             )
         }
     }
@@ -900,6 +1028,71 @@ fun CryptoListPreview() {
     }
 }
 
+
+@Composable
+fun LogOutAlertDialog(navController: NavHostController,dashboardViewModel: DashboardViewModel) {
+    val context = LocalContext.current
+    val roomDB = RoomViewModel(
+        application = Application(),
+        userRepository = UserRepository(UserDatabase.getInstance(LocalContext.current.applicationContext).userDao())
+    )
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.surface,
+        onDismissRequest = {
+            // Dismiss the dialog when the user clicks outside the dialog or on the back
+            // button. If you want to disable that functionality, simply use an empty
+            // onDismissRequest.
+            dashboardViewModel.openDialog = false
+        },
+        icon = {
+            Icon(
+                Icons.Filled.Logout,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.secondary
+            )
+               },
+        title = {
+            Text(
+                text = "Logout Confirmation",
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        },
+        text = {
+            Text(
+                text = "Are you sure you want to logout?",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+
+
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val result = roomDB.deleteUser(id = "12345678")
+                    if (result > 0) {
+                        showMessage(context, "Logging you out")
+                        navController.navigate(Screen.Register.route) {
+                            popUpTo(Screen.Register.route) { inclusive = true}
+                        }
+
+                    }
+                    dashboardViewModel.openDialog = false
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    dashboardViewModel.openDialog = false
+                }
+            ) {
+                Text("Dismiss")
+            }
+        }
+    )
+}
 
 
 

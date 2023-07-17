@@ -14,16 +14,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -90,7 +90,6 @@ fun UpdatePasswordHeader(navController: NavHostController){
                 color = colorResource(id = R.color.gray),
                 fontSize = 14.sp,
                 textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.body2,
                 modifier = Modifier
                     .padding(top = 30.dp, start = 16.dp)
                     .clickable {
@@ -115,7 +114,6 @@ fun UpdatePasswordHeader(navController: NavHostController){
                     color = colorResource(id = R.color.app_white),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.h3,
                     modifier = Modifier.padding(top = 170.dp),
                     textAlign = TextAlign.Center,
 
@@ -127,6 +125,7 @@ fun UpdatePasswordHeader(navController: NavHostController){
 
     }
 }
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewPassword(updatePasswordViewModel: UpdatePasswordViewModel){
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp)) {
@@ -136,7 +135,6 @@ fun NewPassword(updatePasswordViewModel: UpdatePasswordViewModel){
             label = {
                 Text(
                     text = "New Password",
-                    style = MaterialTheme.typography.body2
 
                 )
             },
@@ -173,6 +171,7 @@ fun NewPassword(updatePasswordViewModel: UpdatePasswordViewModel){
     }
 
 }
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfirmNewPassword(updatePasswordViewModel: UpdatePasswordViewModel){
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp)) {
@@ -182,7 +181,6 @@ fun ConfirmNewPassword(updatePasswordViewModel: UpdatePasswordViewModel){
             label = {
                 Text(
                     text = "Confirm New Password",
-                    style = MaterialTheme.typography.body2
                 )
             },
 
@@ -257,7 +255,6 @@ fun ChangePasswordButton(navController: NavHostController, updatePasswordViewMod
     ){
         Text(
             text = "Change Password",
-            style = MaterialTheme.typography.body1,
             textAlign = TextAlign.Center,
             color = Color.White,
             fontSize = 14.sp
