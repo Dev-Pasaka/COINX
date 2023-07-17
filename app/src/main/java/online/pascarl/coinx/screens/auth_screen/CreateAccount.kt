@@ -25,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -152,22 +153,17 @@ fun FullName(createAccountViewModel: CreateAccountViewModel) {
             onValueChange = {
                 createAccountViewModel.fullName = it
             },
-            label = {
-                Text(
-                    text = "Name",
-
-                    )
-            },
-            textStyle = LocalTextStyle.current.copy(color = Color.Black),
+            placeholder = {Text(text = "Name")},
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             ),
             colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = colorResource(id = R.color.background),
-                unfocusedIndicatorColor = colorResource(id = R.color.background),
-                //backgroundColor = colorResource(id = R.color.light_gray)
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                textColor = MaterialTheme.colorScheme.onSurface,
+                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
@@ -189,28 +185,25 @@ fun Username(createAccountViewModel: CreateAccountViewModel) {
             onValueChange = {
                 createAccountViewModel.username = it
             },
-            label = {
-                Text(
-                    text = "Username",
-
-                    )
-            },
-            textStyle = LocalTextStyle.current.copy(color = Color.Black),
+            placeholder = {Text(text = "Username")},
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             ),
             colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = colorResource(id = R.color.background),
-                unfocusedIndicatorColor = colorResource(id = R.color.background),
-               // backgroundColor = colorResource(id = R.color.light_gray)
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                textColor = MaterialTheme.colorScheme.onSurface,
+                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         )
+
+
     }
 }
 
@@ -225,22 +218,17 @@ fun Email(createAccountViewModel: CreateAccountViewModel) {
             onValueChange = {
                 createAccountViewModel.email = it
             },
-            label = {
-                Text(
-                    text = "Email",
-
-                )
-            },
-            textStyle = LocalTextStyle.current.copy(color = Color.Black),
+            placeholder = {Text(text = "Email")},
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
             colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = colorResource(id = R.color.background),
-                unfocusedIndicatorColor = colorResource(id = R.color.background),
-              //  backgroundColor = colorResource(id = R.color.light_gray)
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                textColor = MaterialTheme.colorScheme.onSurface,
+                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
@@ -262,26 +250,23 @@ fun PhoneNumber(createAccountViewModel: CreateAccountViewModel) {
             onValueChange = {
                 createAccountViewModel.formatedPhoneNumber = it
             },
-            label = {
-                Text(
-                    text = "Phone",
-                )
-            },
-            textStyle = LocalTextStyle.current.copy(color = Color.Black),
+            placeholder = { Text(text = "Phone")    },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Phone,
                 imeAction = ImeAction.Next
             ),
             colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = colorResource(id = R.color.background),
-                unfocusedIndicatorColor = colorResource(id = R.color.background),
-               // backgroundColor = colorResource(id = R.color.light_gray)
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                textColor = MaterialTheme.colorScheme.onSurface,
+                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
+
         )
 
     }
@@ -296,13 +281,7 @@ fun Password(createAccountViewModel: CreateAccountViewModel) {
             onValueChange = {
                 createAccountViewModel.password = it
             },
-            label = {
-                Text(
-                    text = "Password",
-
-                )
-            },
-
+            placeholder = { Text(text = "Password")},
             visualTransformation = if (createAccountViewModel.showPassword)
                 VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
@@ -314,24 +293,23 @@ fun Password(createAccountViewModel: CreateAccountViewModel) {
                     )
                 }
             },
-            textStyle = LocalTextStyle.current.copy(color = Color.Black),
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Next
             ),
             colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = colorResource(id = R.color.background),
-                unfocusedIndicatorColor = colorResource(id = R.color.background),
-               // backgroundColor = colorResource(id = R.color.light_gray)
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                textColor = MaterialTheme.colorScheme.onSurface,
+                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-
-
         )
+
 
     }
 
@@ -346,13 +324,7 @@ fun ConfirmPassword(createAccountViewModel: CreateAccountViewModel) {
             onValueChange = {
                 createAccountViewModel.confirmPassword = it
             },
-            label = {
-                Text(
-                    text = "Confirm Password",
-
-                )
-            },
-
+            placeholder = {Text(text = "Confirm password")},
             visualTransformation = if (createAccountViewModel.showConfirmPassword)
                 VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
@@ -369,20 +341,19 @@ fun ConfirmPassword(createAccountViewModel: CreateAccountViewModel) {
                     )
                 }
             },
-            textStyle = LocalTextStyle.current.copy(color = Color.Black),
-            singleLine = true,
             colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = colorResource(id = R.color.background),
-                unfocusedIndicatorColor = colorResource(id = R.color.background),
-              //  backgroundColor = colorResource(id = R.color.light_gray)
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                textColor = MaterialTheme.colorScheme.onSurface,
+                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
+            singleLine = true,
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
 
-
-        )
+            )
     }
 }
 
@@ -405,7 +376,7 @@ fun FirstRegistrationScreen(
         modifier = Modifier
             .fillMaxSize()
             .fillMaxWidth()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(state = scrollState)
             .scrollable(scrollState, Orientation.Vertical)
             .alpha(alpha)
@@ -420,9 +391,9 @@ fun FirstRegistrationScreen(
                 .padding(16.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.ArrowBackIos,
+                imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Go Back",
-                tint = colorResource(id = R.color.background),
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
@@ -431,8 +402,10 @@ fun FirstRegistrationScreen(
             )
             Text(
                 text = "Sign up",
-                color = colorResource(id = R.color.cream)
-            )
+                color = MaterialTheme.colorScheme.tertiary,
+                style = MaterialTheme.typography.bodyMedium,
+
+                )
 
         }
         Column(
@@ -445,16 +418,12 @@ fun FirstRegistrationScreen(
             Text(
                 text = "Register your name and username below",
                 textAlign = TextAlign.Center,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Image(
-                painter = rememberImagePainter(
-                    data = "https://img.freepik.com/free-vector/cryptocurrency-trading-desk-abstract" +
-                            "-concept-illustration_335657-2170.jpg?w=740&t=st=1687206080~exp=" +
-                            "1687206680~hmac=" +
-                            "0f41638793942d93498b500e512ab8e09442ac6e5c22f2702d80b4c9d4e3ce47"
-                ),
+                painter = painterResource(id = R.drawable.register_image_1),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -466,7 +435,7 @@ fun FirstRegistrationScreen(
             Username(createAccountViewModel = createAccountViewModel)
 
         }
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -478,15 +447,9 @@ fun FirstRegistrationScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(horizontal = 32.dp)
-                    .width(100.dp)
-                    .height(50.dp)
                     .clip(RoundedCornerShape(50))
                     .background(
-                        color = if (createAccountViewModel.fullName.isNotBlank()
-                            && createAccountViewModel.username.isNotBlank()
-                        )
-                            colorResource(id = R.color.background) else
-                            colorResource(id = R.color.light_gray)
+                        color = MaterialTheme.colorScheme.surfaceVariant
                     )
                     .clickable(
                         enabled = createAccountViewModel.fullName.isNotBlank() &&
@@ -498,12 +461,14 @@ fun FirstRegistrationScreen(
                 Text(
                     text = "Next",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
 
         }
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -524,7 +489,7 @@ fun SecondRegistrationScreen(
         modifier = Modifier
             .fillMaxSize()
             .fillMaxWidth()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(state = scrollState)
             .scrollable(scrollState, Orientation.Vertical)
             .alpha(alpha)
@@ -539,9 +504,9 @@ fun SecondRegistrationScreen(
                 .padding(16.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.ArrowBackIos,
+                imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Go Back",
-                tint = colorResource(id = R.color.background),
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
@@ -550,12 +515,13 @@ fun SecondRegistrationScreen(
             )
             Text(
                 text = "Sign up",
-                color = colorResource(id = R.color.cream)
+                color = MaterialTheme.colorScheme.tertiary,
+                style = MaterialTheme.typography.bodyMedium
             )
             Icon(
-                imageVector = Icons.Default.Cancel,
+                imageVector = Icons.Default.Close,
                 contentDescription = "Cancel",
-                tint = Color.LightGray,
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
@@ -573,7 +539,8 @@ fun SecondRegistrationScreen(
             Text(
                 text = "Enter your Email and Phone number below",
                 textAlign = TextAlign.Center,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = 20.dp)
             )
             Image(
@@ -601,15 +568,9 @@ fun SecondRegistrationScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(horizontal = 32.dp)
-                    .width(100.dp)
-                    .height(50.dp)
                     .clip(RoundedCornerShape(50))
                     .background(
-                        color = if (createAccountViewModel.email.contains("@")
-                            && createAccountViewModel.phoneNumber.length >= 10
-                        )
-                            colorResource(id = R.color.background)
-                        else colorResource(id = R.color.light_gray)
+                        color = MaterialTheme.colorScheme.surfaceVariant
                     )
                     .clickable(
                         enabled = createAccountViewModel.email.contains("@") &&
@@ -621,8 +582,9 @@ fun SecondRegistrationScreen(
                 Text(
                     text = "Next",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
 
@@ -654,7 +616,7 @@ fun ThirdRegistrationScreen(
         modifier = Modifier
             .fillMaxSize()
             .fillMaxWidth()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(state = scrollState)
             .scrollable(scrollState, Orientation.Vertical)
             .alpha(alpha)
@@ -669,9 +631,9 @@ fun ThirdRegistrationScreen(
                 .padding(16.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.ArrowBackIos,
+                imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Go Back",
-                tint = colorResource(id = R.color.background),
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
@@ -680,12 +642,13 @@ fun ThirdRegistrationScreen(
             )
             Text(
                 text = "Sign up",
-                color = colorResource(id = R.color.cream)
+                color = MaterialTheme.colorScheme.tertiary,
+                style = MaterialTheme.typography.bodyMedium
             )
             Icon(
-                imageVector = Icons.Default.Cancel,
+                imageVector = Icons.Default.Close,
                 contentDescription = "Cancel",
-                tint = Color.LightGray,
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
@@ -703,7 +666,8 @@ fun ThirdRegistrationScreen(
             Text(
                 text = "Password Confirmation",
                 textAlign = TextAlign.Center,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = 20.dp)
             )
             LottieAnimation(
@@ -730,15 +694,9 @@ fun ThirdRegistrationScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(horizontal = 32.dp)
-                    .width(100.dp)
-                    .height(50.dp)
                     .clip(RoundedCornerShape(50))
                     .background(
-                        color = if (
-                            createAccountViewModel.password == createAccountViewModel.confirmPassword
-                            && createAccountViewModel.password.isNotBlank() && createAccountViewModel.confirmPassword.isNotBlank()
-                        ) colorResource(id = R.color.background) else colorResource(id = R.color.light_gray)
-
+                        color = MaterialTheme.colorScheme.surfaceVariant
                     )
                     .clickable(
                         enabled = createAccountViewModel.password == createAccountViewModel.confirmPassword
@@ -751,7 +709,6 @@ fun ThirdRegistrationScreen(
                                     navController.popBackStack()
                                     showMessage(context, "Registration Successful")
                                 }
-
                                 "user exists" -> showMessage(context, "User already exists")
                                 null -> showMessage(context, "Registration failed")
                             }
@@ -761,8 +718,9 @@ fun ThirdRegistrationScreen(
                 Text(
                     text = "Register",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
 
             }
