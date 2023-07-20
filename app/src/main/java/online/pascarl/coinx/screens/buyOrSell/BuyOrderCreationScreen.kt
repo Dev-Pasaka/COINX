@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -89,6 +90,7 @@ fun BuyOrderCreationScreen(
     }
     Column(
         modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.background)
             .verticalScroll(state = scrollState)
             .alpha(alphaAnim.value)
     ) {
@@ -127,7 +129,7 @@ fun BuyOrderCreationTopSection(
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Go Back",
-                    tint = Color.Gray,
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
                         .padding(5.dp)
                         .size(20.dp)
@@ -153,13 +155,13 @@ fun BuyOrderCreationTopSection(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
-                        .background(color = colorResource(id = R.color.grass_green))
+                        .background(color = MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     Text(
                         text = "Buy",
                         textAlign = TextAlign.Center,
-                        color = Color.White,
-                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                             .padding(horizontal = 32.dp, vertical = 8.dp)
                     )
@@ -178,7 +180,7 @@ fun BuyOrderCreationTopSection(
             Text(
                 text = "Order Created",
                 textAlign = TextAlign.Center,
-                color = Color.DarkGray,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 18.sp,
             )
         }
@@ -198,14 +200,14 @@ fun BuyOrderCreationTopSection(
                 Text(
                     text = "Pay seller within ",
                     textAlign = TextAlign.Center,
-                    color = Color.Gray,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodySmall
                 )
                 Text(
                     text = "15 mins",
                     textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.orange),
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
@@ -225,7 +227,7 @@ fun BuyOrderCreationMiddleSection(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .clip(RoundedCornerShape(10))
-                .background(color = colorResource(id = R.color.background))
+                .background(color = MaterialTheme.colorScheme.primaryContainer)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -241,29 +243,11 @@ fun BuyOrderCreationMiddleSection(
 
 
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .size(18.dp)
-                            .background(
-                                shape = CircleShape,
-                                color = colorResource(id = R.color.orange)
-                            )
-                    ) {
-                        Text(
-                            text = orderCreatedModel.merchantUsername.firstOrNull().toString(),
-                            textAlign = TextAlign.Center,
-                            fontSize = 10.sp,
-                            color = Color.White,
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(5.dp))
                     Text(
                         text = orderCreatedModel.merchantUsername,
                         textAlign = TextAlign.Center,
-                        fontSize = 12.sp,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodySmall,
                     )
                     Spacer(modifier = Modifier.width(5.dp))
 
@@ -277,7 +261,7 @@ fun BuyOrderCreationMiddleSection(
                         Icon(
                             imageVector = Icons.Default.ArrowForwardIos,
                             contentDescription = "Go Back",
-                            tint = Color.White,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier
                                 .size(15.dp)
                                 .clip(RoundedCornerShape(360.dp))
@@ -296,7 +280,7 @@ fun BuyOrderCreationMiddleSection(
                     Icon(
                         imageVector = Icons.Filled.Chat,
                         contentDescription = "Chat icon",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .padding(start = 10.dp)
                             .size(18.dp)
@@ -304,9 +288,8 @@ fun BuyOrderCreationMiddleSection(
                     Text(
                         text = " Chat",
                         textAlign = TextAlign.Center,
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        modifier = Modifier
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
 
@@ -325,29 +308,12 @@ fun BuyOrderCreationMiddleSection(
                     modifier = Modifier
                         .padding(end = 16.dp)
                 ){
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .size(15.dp)
-                            .background(
-                                shape = CircleShape,
-                                color = colorResource(id = R.color.grass_green)
-                            )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = "Check icon",
-                            tint = Color.White,
-                            modifier = Modifier.size(10.dp)
-                        )
-                    }
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
                         text = "Coinx is holding the seller's crypto in the escrow account",
                         textAlign = TextAlign.Justify,
-                        color = Color.White,
-                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                     )
 
@@ -366,29 +332,12 @@ fun BuyOrderCreationMiddleSection(
                     modifier = Modifier
                         .padding(end = 16.dp)
                 ){
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .size(15.dp)
-                            .background(
-                                shape = CircleShape,
-                                color = colorResource(id = R.color.grass_green)
-                            )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = "Check icon",
-                            tint = Color.White,
-                            modifier = Modifier.size(10.dp)
-                        )
-                    }
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
                         text = "Coinx 24/7 customer support",
                         textAlign = TextAlign.Justify,
-                        color = Color.White,
-                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                     )
 
@@ -404,7 +353,7 @@ fun BuyOrderCreationMiddleSection(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .clip(RoundedCornerShape(8))
-                .background(color = colorResource(id = R.color.light_orange))
+                .background(color = MaterialTheme.colorScheme.errorContainer)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -412,31 +361,13 @@ fun BuyOrderCreationMiddleSection(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ){
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .size(18.dp)
-                        .background(
-                            shape = CircleShape,
-                            color = colorResource(id = R.color.orange)
-                        )
-                ) {
-                    Text(
-                        text = "!",
-                        textAlign = TextAlign.Center,
-                        fontSize = 10.sp,
-                        color = Color.White,
-                    )
-                }
-                Spacer(modifier = Modifier.width(5.dp))
                 Text(
                     text = "For security reasons, only use your own account to transfer funds to the" +
                             "seller. Payments made from accounts not matching your verified KYC name" +
                             " will not be accepted.",
                     textAlign = TextAlign.Justify,
-                    color = colorResource(id = R.color.orange),
-                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                 )
             }
@@ -457,7 +388,7 @@ fun BuyOrderCreationBottomSection(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(8))
-            .background(color = colorResource(id = R.color.light_gray))
+            .background(color = MaterialTheme.colorScheme.tertiaryContainer)
     ) {
         Column(
             horizontalAlignment = Alignment.Start,
@@ -468,8 +399,8 @@ fun BuyOrderCreationBottomSection(
             Text(
                 text = "Terms",
                 textAlign = TextAlign.Justify,
-                color = Color.DarkGray,
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp, top = 8.dp)
             )
@@ -477,16 +408,16 @@ fun BuyOrderCreationBottomSection(
                 text = "Strictly terms and conditions to apply Do not mark order as paid before the " +
                         "payment to the seller.",
                 textAlign = TextAlign.Justify,
-                color = Color.Gray,
-                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             )
             Text(
                 text = "Read more",
                 textAlign = TextAlign.Justify,
-                color = colorResource(id = R.color.background),
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
             )
@@ -503,7 +434,7 @@ fun BuyOrderCreationBottomSection(
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(20))
-                .background(color = colorResource(id = R.color.light_gray))
+                .background(color = MaterialTheme.colorScheme.secondary)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(bounded = true),
@@ -518,8 +449,8 @@ fun BuyOrderCreationBottomSection(
             Text(
                 text = "Cancel",
                 textAlign = TextAlign.Center,
-                color = Color.Gray,
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSecondary,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             )
@@ -528,7 +459,7 @@ fun BuyOrderCreationBottomSection(
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(20))
-                .background(color = colorResource(id = R.color.background))
+                .background(color = MaterialTheme.colorScheme.primary)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(bounded = true),
@@ -539,8 +470,8 @@ fun BuyOrderCreationBottomSection(
             Text(
                 text = "Make Payment",
                 textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 8.dp)
             )

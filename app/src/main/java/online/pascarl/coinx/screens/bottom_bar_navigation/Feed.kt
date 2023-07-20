@@ -28,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -103,8 +104,6 @@ fun NewsFeed(
   //  val scaffoldState = rememberScaffoldState()
 
     Scaffold(
-       // scaffoldState = scaffoldState,
-        // drawerContent = { NavigationDrawer(navController = navController) },
         bottomBar = {
             CustomBottomNavigation(
                 navController = navController,
@@ -146,7 +145,7 @@ fun NewsHeader() {
     ) {
         Text(
             text = "Discover",
-            color = colorResource(id = R.color.background)
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
@@ -154,7 +153,7 @@ fun NewsHeader() {
                     "not endorse their accuracy. Digital asset prices can be volatile.For more " +
                     "information please check our terms and conditions.",
             fontSize = 12.sp,
-            color = Color.Gray,
+            color = MaterialTheme.colorScheme.onBackground,
         )
 
     }
@@ -205,7 +204,7 @@ fun NewsListBody(
                         newsFeedViewModel = newsFeedViewModel
                     )
                     Divider(
-                        color = Color.LightGray,
+                        color = MaterialTheme.colorScheme.onBackground,
                         thickness = 1.dp
                     )
                 }
@@ -229,6 +228,7 @@ fun NewsListItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.surface)
             .clickable {
                 newsFeedViewModel.openWebView(url = externalLink)
             }
@@ -236,17 +236,20 @@ fun NewsListItem(
         Column(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
                 .fillMaxWidth()
         ) {
             Text(
                 text = title,
-                color = Color.DarkGray
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "By: $byAuthor",
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodySmall
+
             )
             Spacer(modifier = Modifier.height(8.dp))
             Image(painter = rememberImagePainter(data = imageUrl), contentDescription = null)
@@ -262,7 +265,8 @@ fun NewsListItem(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = description,
-                color = Color.DarkGray,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Justify,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2,
@@ -277,7 +281,8 @@ fun NewsListItem(
             ) {
                 Text(
                     text = "Published: $publishedDate",
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.bodySmall
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(
@@ -285,7 +290,7 @@ fun NewsListItem(
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(color = colorResource(id = R.color.background))
+                        .background(color = MaterialTheme.colorScheme.surfaceVariant)
                         .clickable {
                             newsFeedViewModel.openWebView(url = externalLink)
                         }
@@ -293,8 +298,8 @@ fun NewsListItem(
                     Text(
                         text = "Read more",
                         textAlign = TextAlign.Center,
-                        color = Color.White,
-                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                             .padding(horizontal = 6.dp, vertical = 4.dp)
                     )
@@ -319,6 +324,7 @@ fun ReadMoreWebView(
         contentAlignment = Alignment.TopCenter,
         modifier = Modifier
             .padding(top = 16.dp)
+            .background(color = MaterialTheme.colorScheme.background)
             .fillMaxWidth()
     ) {
         AndroidView(factory = {
@@ -336,7 +342,7 @@ fun ReadMoreWebView(
             }
         })
         FloatingActionButton(
-           // backgroundColor = Color.Gray,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
             elevation = FloatingActionButtonDefaults.elevation(
                 defaultElevation = 16.dp,
                 pressedElevation = 8.dp,
@@ -350,7 +356,7 @@ fun ReadMoreWebView(
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = "Close",
-                tint = Color.White,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier
                     .size(30.dp)
             )
@@ -435,7 +441,7 @@ fun NewsFeedLoadingPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(10.dp))
-                .background(color = Color.LightGray)
+                .background(color = MaterialTheme.colorScheme.background)
                 .alpha(alphaAnim.value)
 
         ) {

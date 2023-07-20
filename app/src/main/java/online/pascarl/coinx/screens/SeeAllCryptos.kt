@@ -10,9 +10,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -122,9 +124,9 @@ fun SeeAllCryptosHeader(navController: NavHostController){
            .padding(16.dp)
    ){
        Icon(
-           imageVector = Icons.Default.ArrowBackIos,
+           imageVector = Icons.Default.ArrowBack,
            contentDescription = "Go Back",
-           tint = Color.Gray,
+           tint = MaterialTheme.colorScheme.onBackground,
            modifier = Modifier
                .size(20.dp)
                .clip(RoundedCornerShape(360.dp))
@@ -144,7 +146,7 @@ fun SeeAllCryptosHeader(navController: NavHostController){
            Icon(
                painter = painterResource(id = R.drawable.qr_code_scanner),
                contentDescription = "Code Scanner",
-               tint = colorResource(id = R.color.background),
+               tint = MaterialTheme.colorScheme.onBackground,
                modifier = Modifier
                    .size(25.dp)
                    .clip(RoundedCornerShape(360.dp))
@@ -157,7 +159,7 @@ fun SeeAllCryptosHeader(navController: NavHostController){
            Icon(
                imageVector = Icons.Outlined.Notifications,
                contentDescription = "Notifications",
-               tint = colorResource(id = R.color.background),
+               tint = MaterialTheme.colorScheme.onBackground,
                modifier = Modifier
                    .size(25.dp)
                    .clip(RoundedCornerShape(360.dp))
@@ -175,8 +177,8 @@ fun SortCryptosItem(
     isSortMethodSelected:Boolean,
     seeAllCryptosViewModel: SeeAllCryptosViewModel
 ){
-    val onSelectedBackgroundColor = colorResource(id = R.color.background)
-    val onNotSelectedBackgroundColor = Color.LightGray
+    val onSelectedBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+    val onNotSelectedBackgroundColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
 
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -192,8 +194,8 @@ fun SortCryptosItem(
         Text(
             text = sortBy,
             textAlign = TextAlign.Center,
-            fontSize = 12.sp,
-            color = colorResource(id = R.color.app_white),
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .padding(10.dp)
 
@@ -236,14 +238,14 @@ fun SortCryptoListItem(
                 Text(
                     text = name!!,
                     textAlign = TextAlign.Center,
-                    fontSize = 16.sp,
-                    color = colorResource(id = R.color.black),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 Text(
                     text = symbol!!,
                     textAlign = TextAlign.Center,
-                    fontSize = 12.sp,
-                    color = colorResource(id = R.color.black),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
         }
@@ -254,15 +256,15 @@ fun SortCryptoListItem(
             Text(
                 text = "$percentageChange%",
                 textAlign = TextAlign.Center,
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.bodySmall,
                 color = if (percentageChange!! < 0.0)
-                    colorResource(id = R.color.red) else colorResource(id = R.color.grass_green)
+                    Color.Red.copy(alpha = 0.8f) else colorResource(id = R.color.grass_green)
             )
             Text(
                 text = price!!,
                 textAlign = TextAlign.Center,
-                fontSize = 12.sp,
-                color = colorResource(id = R.color.black),
+                color = MaterialTheme.colorScheme.tertiary,
+                style = MaterialTheme.typography.bodySmall,
             )
         }
     }
@@ -284,7 +286,7 @@ fun SeeAllCryptosLoadingPreview() {
         modifier = Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(10.dp))
-            .background(color = Color.LightGray)
+            .background(color = MaterialTheme.colorScheme.background)
 
     ) {
 

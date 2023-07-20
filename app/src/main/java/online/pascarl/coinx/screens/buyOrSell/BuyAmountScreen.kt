@@ -3,6 +3,7 @@ package online.pascarl.coinx.screens.buyOrSell
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,6 +79,7 @@ fun BuyAmountScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .background(color = MaterialTheme.colorScheme.background)
             .alpha(alphaAnim.value)
             .verticalScroll(state = scrollState)
     ) {
@@ -107,7 +110,7 @@ fun BuyAmountScreen(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Go Back",
-                            tint = Color.DarkGray,
+                            tint = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier
                                 .padding(2.dp)
                                 .size(20.dp)
@@ -117,8 +120,8 @@ fun BuyAmountScreen(
                     Text(
                         text = sharedViewModel.orderData.value.adsType,
                         textAlign = TextAlign.Center,
-                        color = Color.Black,
-                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Image(
@@ -138,8 +141,8 @@ fun BuyAmountScreen(
                     Text(
                         text = "Limit ${sharedViewModel.orderData.value.minLimit} - ${sharedViewModel.orderData.value.maxLimit}" ,
                         textAlign = TextAlign.Center,
-                        color = colorResource(id = R.color.background),
-                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.secondary,
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
@@ -149,15 +152,15 @@ fun BuyAmountScreen(
                 Text(
                     text = "Payment Method",
                     textAlign = TextAlign.Center,
-                    color = Color.Gray,
-                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(
                     text = sharedViewModel.orderData.value.paymentMethods,
                     textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.background),
-                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
@@ -243,7 +246,7 @@ fun BuyNumberPad(
                 Icon(
                     imageVector = Icons.Outlined.Backspace,
                     contentDescription = "Back Space",
-                    tint = Color.Gray,
+                    tint = MaterialTheme.colorScheme.onBackground,
                 )
             }
 
@@ -273,8 +276,8 @@ fun BuyNumberKey(
             Text(
                 text = numberKey,
                 textAlign = TextAlign.Center,
-                color = Color.DarkGray,
-                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }
@@ -291,20 +294,20 @@ fun BuyAmountInput(buyAmountViewModel: BuyAmountViewModel, sharedViewModel: BuyO
             text = buyAmountViewModel.formatCurrency(),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Normal,
-            color = Color.DarkGray,
-            fontSize = 24.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodyMedium
         )
         Text(
             text = "1 ${sharedViewModel.orderData.value.cryptoSymbol} = ${sharedViewModel.orderData.value.cryptoPrice} KES",
             textAlign = TextAlign.Center,
-            color = Color.Gray,
-            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodySmall
         )
         Text(
             text = "${String.format("%.6f", buyAmountViewModel.fiatAmount/sharedViewModel.orderData.value.cryptoPrice)} ${sharedViewModel.orderData.value.cryptoSymbol}",
             textAlign = TextAlign.Center,
-            color = Color.Gray,
-            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodySmall
         )
 
 
@@ -325,6 +328,7 @@ fun BuyButton(
             .fillMaxWidth()
     ) {
         FloatingActionButton(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
             elevation = FloatingActionButtonDefaults.elevation(
                 defaultElevation = 16.dp,
                 pressedElevation = 8.dp,
@@ -347,7 +351,7 @@ fun BuyButton(
             Icon(
                 imageVector = Icons.Default.Done,
                 contentDescription = "Buy Icon",
-                tint = Color.White,
+                tint = MaterialTheme.colorScheme.onSecondaryContainer,
                 modifier = Modifier
                     .size(30.dp)
             )
