@@ -41,6 +41,7 @@ fun PasswordResetConfirmation(){
 )
 @Composable
 fun EmailResetConfirmation(navController: NavHostController) {
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()

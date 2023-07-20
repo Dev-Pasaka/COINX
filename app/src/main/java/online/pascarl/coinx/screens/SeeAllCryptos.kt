@@ -121,7 +121,7 @@ fun SeeAllCryptosHeader(navController: NavHostController){
        verticalAlignment = Alignment.CenterVertically,
        modifier = Modifier
            .fillMaxWidth()
-           .padding(16.dp)
+           .padding(horizontal = 16.dp, vertical = 8.dp)
    ){
        Icon(
            imageVector = Icons.Default.ArrowBack,
@@ -140,7 +140,6 @@ fun SeeAllCryptosHeader(navController: NavHostController){
            verticalAlignment = Alignment.CenterVertically,
            modifier = Modifier
                .fillMaxWidth()
-               .padding(top = 16.dp, end = 16.dp)
        ) {
 
            Icon(
@@ -263,7 +262,7 @@ fun SortCryptoListItem(
             Text(
                 text = price!!,
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.tertiary,
+                color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.bodySmall,
             )
         }
