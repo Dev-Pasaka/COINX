@@ -1,3 +1,3 @@
 # COINX 
 
-![App Screenshots](https://drive.google.com/file/d/1zQxlmip-HSCG5YBM-PMtwecm7QNrIROc/view)
+![Dark mode](https://github.com/Dev-Pasaka/COINX/blob/maIn/app/src/main/java/online/pascarl/coinx/app_screenshots/Screenshot_dark_mode.png)
