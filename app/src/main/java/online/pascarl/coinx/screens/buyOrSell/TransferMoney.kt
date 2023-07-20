@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -54,7 +55,9 @@ fun TransferMoneyScreen(
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier.verticalScroll(state = scrollState)
+        modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.background)
+            .verticalScroll(state = scrollState)
     ) {
         TransferMoneyTopSection(
             navController = navController,
@@ -98,7 +101,7 @@ fun TransferMoneyTopSection(
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Go Back",
-                    tint = Color.Gray,
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
                         .padding(5.dp)
                         .size(20.dp)
@@ -119,13 +122,13 @@ fun TransferMoneyTopSection(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
-                    .background(color = colorResource(id = R.color.grass_green))
+                    .background(color = MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 Text(
                     text = sharedViewModel.orderData.value.adsType,
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .padding(horizontal = 32.dp, vertical = 8.dp)
                 )
@@ -138,8 +141,8 @@ fun TransferMoneyTopSection(
             Text(
                 text = "Pay the seller",
                 textAlign = TextAlign.Center,
-                color = Color.DarkGray,
-                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .padding(vertical = 2.dp)
             )
@@ -150,16 +153,16 @@ fun TransferMoneyTopSection(
                 Text(
                     text = "Order will be cancelled in ",
                     textAlign = TextAlign.Center,
-                    color = Color.Gray,
-                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .padding(vertical = 2.dp)
                 )
                 Text(
                     text = "13.15",
                     textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.orange),
-                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.bodySmall,
 
                     )
             }
@@ -171,8 +174,8 @@ fun TransferMoneyTopSection(
                 Text(
                     text = sharedViewModel.formatCurrency(amount = sharedViewModel.youWillPay.value),
                     textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.background),
-                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
                         .padding(vertical = 2.dp)
                 )
@@ -180,7 +183,7 @@ fun TransferMoneyTopSection(
                 Icon(
                     imageVector = Icons.Default.ContentCopy,
                     contentDescription = "Copy",
-                    tint = Color.Gray,
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
                         .padding(5.dp)
                         .size(20.dp)
@@ -198,7 +201,7 @@ fun TransferMoneyTopSection(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .clip(RoundedCornerShape(8))
-                .background(color = colorResource(id = R.color.light_orange))
+                .background(color = MaterialTheme.colorScheme.errorContainer)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -206,31 +209,14 @@ fun TransferMoneyTopSection(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .size(18.dp)
-                        .background(
-                            shape = CircleShape,
-                            color = colorResource(id = R.color.orange)
-                        )
-                ) {
-                    Text(
-                        text = "!",
-                        textAlign = TextAlign.Center,
-                        fontSize = 10.sp,
-                        color = Color.White,
-                    )
-                }
-                Spacer(modifier = Modifier.width(5.dp))
+
                 Text(
                     text = "For security reasons, only use your own account to transfer funds to the" +
                             "seller. Payments made from accounts not matching your verified KYC name" +
                             " will not be accepted.",
                     textAlign = TextAlign.Justify,
-                    color = colorResource(id = R.color.orange),
-                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                 )
             }
@@ -248,7 +234,7 @@ fun TransferMoneyMiddleSection(sharedViewModel: BuyOrSellSharedViewModel) {
                 .padding(horizontal = 16.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .fillMaxWidth()
-                .background(color = colorResource(id = R.color.background)),
+                .background(color = MaterialTheme.colorScheme.surface),
 
             ) {
             Column(
@@ -264,8 +250,8 @@ fun TransferMoneyMiddleSection(sharedViewModel: BuyOrSellSharedViewModel) {
                                 "account name that matches your verified name on coinx, and transfer the" +
                                 "funds to the seller's account provided below.",
                         textAlign = TextAlign.Justify,
-                        color = Color.White,
-                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                     )
                 }
@@ -274,7 +260,7 @@ fun TransferMoneyMiddleSection(sharedViewModel: BuyOrSellSharedViewModel) {
                         .padding(bottom = 8.dp, top = 8.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .fillMaxWidth()
-                        .background(color = colorResource(id = R.color.light_gray)),
+                        .background(color = MaterialTheme.colorScheme.surfaceVariant),
                 ) {
                    Column(
                        verticalArrangement = Arrangement.SpaceBetween
@@ -285,8 +271,8 @@ fun TransferMoneyMiddleSection(sharedViewModel: BuyOrSellSharedViewModel) {
                            Text(
                                text = "M-pesa Paybill",
                                textAlign = TextAlign.Justify,
-                               color = colorResource(id = R.color.background),
-                               fontSize = 12.sp,
+                               color = MaterialTheme.colorScheme.onSurfaceVariant,
+                               style = MaterialTheme.typography.bodyMedium,
                                modifier = Modifier
                                    .padding(horizontal = 16.dp, vertical = 4.dp)
                            )
@@ -299,8 +285,8 @@ fun TransferMoneyMiddleSection(sharedViewModel: BuyOrSellSharedViewModel) {
                            Text(
                                text = "Business Name",
                                textAlign = TextAlign.Justify,
-                               color = Color.Gray,
-                               fontSize = 12.sp,
+                               color = MaterialTheme.colorScheme.onSurfaceVariant,
+                               style = MaterialTheme.typography.bodySmall,
                                modifier = Modifier
                                    .padding(horizontal = 16.dp, vertical = 4.dp)
                            )
@@ -312,15 +298,15 @@ fun TransferMoneyMiddleSection(sharedViewModel: BuyOrSellSharedViewModel) {
                                Text(
                                    text = "IM bank",
                                    textAlign = TextAlign.Justify,
-                                   color = Color.Gray,
-                                   fontSize = 12.sp,
+                                   color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                   style = MaterialTheme.typography.bodySmall,
                                    modifier = Modifier
                                )
                                Spacer(modifier = Modifier.width(5.dp))
                                Icon(
                                    imageVector = Icons.Default.ContentCopy,
                                    contentDescription = "Copy",
-                                   tint = Color.Gray,
+                                   tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                    modifier = Modifier
                                        .size(15.dp)
                                        .clip(RoundedCornerShape(360.dp))
@@ -336,8 +322,8 @@ fun TransferMoneyMiddleSection(sharedViewModel: BuyOrSellSharedViewModel) {
                            Text(
                                text = "Business Number",
                                textAlign = TextAlign.Justify,
-                               color = Color.Gray,
-                               fontSize = 12.sp,
+                               color = MaterialTheme.colorScheme.onSurfaceVariant,
+                               style = MaterialTheme.typography.bodySmall,
                                modifier = Modifier
                                    .padding(horizontal = 16.dp, vertical = 4.dp)
                            )
@@ -349,15 +335,15 @@ fun TransferMoneyMiddleSection(sharedViewModel: BuyOrSellSharedViewModel) {
                                Text(
                                    text = "001301",
                                    textAlign = TextAlign.Justify,
-                                   color = Color.Gray,
-                                   fontSize = 12.sp,
+                                   color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                   style = MaterialTheme.typography.bodySmall,
                                    modifier = Modifier
                                )
                                Spacer(modifier = Modifier.width(5.dp))
                                Icon(
                                    imageVector = Icons.Default.ContentCopy,
                                    contentDescription = "Copy",
-                                   tint = Color.Gray,
+                                   tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                    modifier = Modifier
                                        .size(15.dp)
                                        .clip(RoundedCornerShape(360.dp))
@@ -373,8 +359,8 @@ fun TransferMoneyMiddleSection(sharedViewModel: BuyOrSellSharedViewModel) {
                            Text(
                                text = "Account Number",
                                textAlign = TextAlign.Justify,
-                               color = Color.Gray,
-                               fontSize = 12.sp,
+                               color = MaterialTheme.colorScheme.onSurfaceVariant,
+                               style = MaterialTheme.typography.bodySmall,
                                modifier = Modifier
                                    .padding(horizontal = 16.dp, vertical = 4.dp)
                            )
@@ -386,15 +372,15 @@ fun TransferMoneyMiddleSection(sharedViewModel: BuyOrSellSharedViewModel) {
                                Text(
                                    text = "00134543601",
                                    textAlign = TextAlign.Justify,
-                                   color = Color.Gray,
-                                   fontSize = 12.sp,
+                                   color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                   style = MaterialTheme.typography.bodySmall,
                                    modifier = Modifier
                                )
                                Spacer(modifier = Modifier.width(5.dp))
                                Icon(
                                    imageVector = Icons.Default.ContentCopy,
                                    contentDescription = "Copy",
-                                   tint = Color.Gray,
+                                   tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                    modifier = Modifier
                                        .size(15.dp)
                                        .clip(RoundedCornerShape(360.dp))
@@ -427,7 +413,7 @@ fun TransferMoneyBottomSection(
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(20))
-                .background(color = colorResource(id = R.color.light_gray))
+                .background(color = MaterialTheme.colorScheme.secondaryContainer)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(bounded = true),
@@ -437,8 +423,8 @@ fun TransferMoneyBottomSection(
             Text(
                 text = "Help",
                 textAlign = TextAlign.Center,
-                color = Color.Gray,
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
                     .padding(horizontal = 32.dp, vertical = 8.dp)
             )
@@ -447,7 +433,7 @@ fun TransferMoneyBottomSection(
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(20))
-                .background(color = colorResource(id = R.color.background))
+                .background(color = MaterialTheme.colorScheme.primaryContainer)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(bounded = true),
@@ -458,8 +444,8 @@ fun TransferMoneyBottomSection(
             Text(
                 text = "Transferred, notify seller",
                 textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 8.dp)
             )

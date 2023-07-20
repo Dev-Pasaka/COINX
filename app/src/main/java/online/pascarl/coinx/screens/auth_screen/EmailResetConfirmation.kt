@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -15,24 +16,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import online.pascarl.coinx.R
 import online.pascarl.coinx.imageLoader
 
+@Preview(showSystemUi = true)
+@Composable
+fun PasswordResetConfirmation(){
+    val navController = rememberNavController()
+    EmailResetConfirmation(navController = navController)
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition",
     "UnusedMaterial3ScaffoldPaddingParameter"
 )
 @Composable
 fun EmailResetConfirmation(navController: NavHostController) {
-   // val scaffoldState = rememberScaffoldState()
     Scaffold(
-        //scaffoldState = scaffoldState,
         modifier = Modifier
             .fillMaxSize()
             .background(color = colorResource(id = R.color.background))
@@ -41,7 +50,7 @@ fun EmailResetConfirmation(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(color = colorResource(id = R.color.app_white))
+                .background(color = MaterialTheme.colorScheme.background)
 
         ) {
             Spacer(modifier = Modifier.height(16.dp))
@@ -52,15 +61,16 @@ fun EmailResetConfirmation(navController: NavHostController) {
             ) {
                 Text(
                     text = "Password reset is successful!",
-                    color = colorResource(id = R.color.background),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "You can now login with your new password",
                     textAlign = TextAlign.Center,
-                    color = Color.Gray,
-                    fontSize = 16.sp
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
 
@@ -73,9 +83,13 @@ fun EmailResetConfirmation(navController: NavHostController) {
             ) {
 
                 Image(
+                    painter = painterResource(id = R.drawable.password_reset_confirmation),
+                    contentDescription = "Password reset confirmation",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier
+                        .fillMaxHeight(0.7f)
+                        .fillMaxWidth()
 
-                    painter = imageLoader(imageUri = stringResource(id = R.string.emailConfirmation)),
-                    contentDescription = null
 
                 )
 
@@ -95,7 +109,7 @@ fun EmailResetConfirmation(navController: NavHostController) {
                         .height(50.dp)
                         .clip(RoundedCornerShape(50))
                         .background(
-                            color = colorResource(id = R.color.background)
+                            color = MaterialTheme.colorScheme.primaryContainer
                         )
                         .clickable {
                             navController.popBackStack()
@@ -105,8 +119,8 @@ fun EmailResetConfirmation(navController: NavHostController) {
                     Text(
                         text = "Login",
                         textAlign = TextAlign.Center,
-                        color = Color.White,
-                        fontSize = 14.sp
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        style = MaterialTheme.typography.bodySmall,
                     )
                 }
             }

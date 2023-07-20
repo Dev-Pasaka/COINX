@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -39,26 +41,31 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
 import online.pascarl.coinx.navigation.Screen
 
-/*
+
 @Preview(showSystemUi = true)
 @Composable
 fun UpdatePasswordPreview(updatePasswordViewModel: UpdatePasswordViewModel = viewModel()){
-    UpdatePassword(updatePasswordViewModel = updatePasswordViewModel)
-}*/
+    val navController = rememberNavController()
+    UpdatePassword(navController, updatePasswordViewModel = updatePasswordViewModel)
+}
+
 
 @Composable()
 fun UpdatePassword(navController: NavHostController, updatePasswordViewModel: UpdatePasswordViewModel = viewModel()){
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.background)
     ){
         UpdatePasswordHeader(navController = navController)
         Spacer(modifier = Modifier.height(16.dp))
@@ -71,38 +78,37 @@ fun UpdatePassword(navController: NavHostController, updatePasswordViewModel: Up
 
 @Composable
 fun UpdatePasswordHeader(navController: NavHostController){
-    Column(
-        modifier = Modifier
-            .background(color = colorResource(id = R.color.gray))
-
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Box(
+        Text(
+            text = "Login",
+            color = MaterialTheme.colorScheme.tertiary,
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Start,
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.3f)
-                .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-                .background(color = colorResource(id = R.color.background))
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .clickable {
+                    navController.popBackStack()
+                }
 
+        )
+    }
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "Coinx",
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.titleLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 16.dp)
 
-        ) {
-            Text(
-                text = "Login",
-                color = colorResource(id = R.color.gray),
-                fontSize = 14.sp,
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .padding(top = 30.dp, start = 16.dp)
-                    .clickable {
-                        navController.popBackStack()
-                    }
-
-            )
-            Image(
-                painter = painterResource(id = R.drawable.coinx), contentDescription = "logo",
-                modifier = Modifier
-                    .height(600.dp)
-                    .width(600.dp)
-                    .align(Alignment.Center)
             )
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -111,16 +117,14 @@ fun UpdatePasswordHeader(navController: NavHostController){
             ) {
                 Text(
                     text = "Welcome Aboard",
-                    color = colorResource(id = R.color.app_white),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(top = 170.dp),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
 
                     )
             }
 
-        }
+
 
 
     }
@@ -129,16 +133,11 @@ fun UpdatePasswordHeader(navController: NavHostController){
 @Composable
 fun NewPassword(updatePasswordViewModel: UpdatePasswordViewModel){
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp)) {
+
         OutlinedTextField(
             value = updatePasswordViewModel.newPassword,
             onValueChange = {updatePasswordViewModel.newPassword = it},
-            label = {
-                Text(
-                    text = "New Password",
-
-                )
-            },
-
+            placeholder = {Text(text = "New Password",)},
             visualTransformation = if (updatePasswordViewModel.showPassword)
                 VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
@@ -158,15 +157,16 @@ fun NewPassword(updatePasswordViewModel: UpdatePasswordViewModel){
             },
             isError = updatePasswordViewModel.formValidationPassed,
             colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = colorResource(id = R.color.background),
-                unfocusedIndicatorColor = colorResource(id = R.color.background),
-                placeholderColor = colorResource(id = R.color.background),
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                textColor = MaterialTheme.colorScheme.onSurface,
+                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                errorIndicatorColor = MaterialTheme.colorScheme.error
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.fillMaxWidth()
 
-
-        )
+            )
 
     }
 
@@ -178,12 +178,7 @@ fun ConfirmNewPassword(updatePasswordViewModel: UpdatePasswordViewModel){
         OutlinedTextField(
             value = updatePasswordViewModel.confirmNewPassword,
             onValueChange = {updatePasswordViewModel.confirmNewPassword = it},
-            label = {
-                Text(
-                    text = "Confirm New Password",
-                )
-            },
-
+            placeholder = {Text(text = "Confirm New Password",)},
             visualTransformation = if (updatePasswordViewModel.showConfirmNewPassword)
                 VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
@@ -203,14 +198,14 @@ fun ConfirmNewPassword(updatePasswordViewModel: UpdatePasswordViewModel){
             },
             isError = updatePasswordViewModel.formValidationPassed,
             colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = colorResource(id = R.color.background),
-                unfocusedIndicatorColor = colorResource(id = R.color.background),
-                placeholderColor = colorResource(id = R.color.background),
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                textColor = MaterialTheme.colorScheme.onSurface,
+                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                errorIndicatorColor = MaterialTheme.colorScheme.error
             ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.fillMaxWidth()
-
-
         )
 
     }
@@ -232,21 +227,20 @@ fun ChangePasswordButton(navController: NavHostController, updatePasswordViewMod
                 color = if (
                     updatePasswordViewModel.newPassword.isBlank()
                     || updatePasswordViewModel.confirmNewPassword.isBlank()
-                ) Color.LightGray else colorResource(id = R.color.background)
+                ) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f) else MaterialTheme.colorScheme.primaryContainer
             )
             .clickable(
                 enabled = updatePasswordViewModel.newPassword.isNotBlank()
-                && updatePasswordViewModel.confirmNewPassword.isNotBlank()
+                        && updatePasswordViewModel.confirmNewPassword.isNotBlank()
             ) {
                 scope.launch {
                     updatePasswordViewModel.updatePassword()
-                    if (!updatePasswordViewModel.formValidationPassed){
-                        if (updatePasswordViewModel.isPasswordUpdateSuccessful){
-                              navController.popBackStack()
-                               navController.navigate(Screen.EmailResetConfirmation.route)
+                    if (!updatePasswordViewModel.formValidationPassed) {
+                        if (updatePasswordViewModel.isPasswordUpdateSuccessful) {
+                            navController.popBackStack()
+                            navController.navigate(Screen.EmailResetConfirmation.route)
                             showMessage(context, "Password Updated Successful")
-                        }
-                        else showMessage(context, "Password Update failed")
+                        } else showMessage(context, "Password Update failed")
                     }
                 }
             }
@@ -256,8 +250,8 @@ fun ChangePasswordButton(navController: NavHostController, updatePasswordViewMod
         Text(
             text = "Change Password",
             textAlign = TextAlign.Center,
-            color = Color.White,
-            fontSize = 14.sp
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            style = MaterialTheme.typography.bodySmall,
         )
     }
 }

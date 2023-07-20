@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -64,10 +65,21 @@ fun ResetPassword(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = colorResource(id = R.color.app_white))
+            .background(color = MaterialTheme.colorScheme.background)
             .verticalScroll(state = scrollState)
 
     ) {
+        Icon(
+            imageVector = Icons.Default.ArrowBack,
+            contentDescription = "Go Back",
+            tint = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .size(20.dp)
+                .clickable {
+                    navController.popBackStack()
+                }
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Column(
             verticalArrangement = Arrangement.Center,
@@ -79,13 +91,15 @@ fun ResetPassword(
             Text(
                 text = "Forgot your password?",
                 textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodyMedium,
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Enter your registered phone number below \n to receive password reset instructions",
                 textAlign = TextAlign.Center,
-                color = Color.Gray,
-                fontSize = 16.sp
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodySmall,
             )
         }
 
@@ -110,6 +124,7 @@ fun ResetPassword(
                 composition = composition,
                 progress = { progress },
                 modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.background)
                     .height(300.dp)
                     .fillMaxWidth()
             )
@@ -123,12 +138,6 @@ fun ResetPassword(
             onValueChange = {
                 resetPasswordViewModel.formatedPhoneNumber = it
             },
-            label = {
-                Text(
-                    text = "Phone",
-                    )
-            },
-            textStyle =  LocalTextStyle.current.copy(color = Color.Gray),
             singleLine = true,
             leadingIcon = { Icon(imageVector = Icons.Filled.Phone, contentDescription = "Phone icon") },
             keyboardOptions = KeyboardOptions(
@@ -137,18 +146,19 @@ fun ResetPassword(
             ),
             isError = !(resetPasswordViewModel.isPhoneVerificationSuccessful == null ||
                     resetPasswordViewModel.isPhoneVerificationSuccessful == true),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = colorResource(id = R.color.background),
-                unfocusedIndicatorColor = colorResource(id = R.color.background),
-                //backgroundColor = colorResource(id = R.color.light_gray)
-            ),
             shape = RoundedCornerShape(10.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                textColor = MaterialTheme.colorScheme.onSurface,
+                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                errorIndicatorColor = MaterialTheme.colorScheme.error
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
 
         )
-
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
@@ -161,14 +171,15 @@ fun ResetPassword(
             Text(
                 text = "Remember password?",
                 textAlign = TextAlign.Center,
-                fontSize = 14.sp
-            )
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodySmall,            )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = "Login",
                 textAlign = TextAlign.Center,
-                color = colorResource(id = R.color.cream),
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.tertiary,
+                style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.W500,
                 modifier = Modifier.clickable {
                     navController.popBackStack()
@@ -188,7 +199,7 @@ fun ResetPassword(
                 .clip(RoundedCornerShape(50))
                 .background(
                     color = if (resetPasswordViewModel.phoneNumber.length >= 11)
-                        colorResource(id = R.color.background) else colorResource(id = R.color.light_gray)
+                        MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
                 )
                 .clickable(
                     enabled = resetPasswordViewModel.phoneNumber.length >= 11
@@ -213,8 +224,8 @@ fun ResetPassword(
             Text(
                 text = "Send",
                 textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = 14.sp
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                style = MaterialTheme.typography.bodySmall,
             )
         }
 

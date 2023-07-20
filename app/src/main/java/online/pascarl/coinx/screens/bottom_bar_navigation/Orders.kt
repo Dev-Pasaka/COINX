@@ -24,6 +24,7 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -121,7 +122,7 @@ fun OrdersHeader(){
         Icon(
             painter = painterResource(id = R.drawable.qr_code_scanner),
             contentDescription = "Code Scanner",
-            tint = colorResource(id = R.color.background),
+            tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .size(25.dp)
                 .clip(RoundedCornerShape(360.dp))
@@ -134,7 +135,7 @@ fun OrdersHeader(){
         Icon(
             imageVector = Icons.Outlined.Notifications,
             contentDescription = "Notifications",
-            tint = colorResource(id = R.color.background),
+            tint = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .size(25.dp)
                 .clip(RoundedCornerShape(360.dp))
@@ -167,8 +168,8 @@ fun FilterOrdersItem(
     ordersViewModel: OrdersViewModel,
     isOrderSelected:Boolean
 ){
-    val onSelectedBackgroundColor = colorResource(id = R.color.background)
-    val onNotSelectedBackgroundColor =  Color.LightGray
+    val onSelectedBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+    val onNotSelectedBackgroundColor =  MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
 
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -185,7 +186,7 @@ fun FilterOrdersItem(
             text = filter.item,
             textAlign = TextAlign.Center,
             fontSize = 12.sp,
-            color = colorResource(id = R.color.app_white),
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier
                 .padding(10.dp)
 
@@ -201,12 +202,14 @@ fun Body(ordersViewModel: OrdersViewModel){
        Column(
            verticalArrangement = Arrangement.Center,
            horizontalAlignment = Alignment.CenterHorizontally,
-           modifier = Modifier.fillMaxSize()
+           modifier = Modifier
+               .background(color = MaterialTheme.colorScheme.background)
+               .fillMaxSize()
        ) {
            Text(
                text ="No Orders Present ",
                textAlign = TextAlign.Center,
-               color = Color.Gray
+               color = MaterialTheme.colorScheme.onBackground
            )
 
        }
@@ -247,14 +250,15 @@ fun OrderItemBody(order: Order){
                 Text(
                     text = order.orderType,
                     textAlign = TextAlign.Center,
-                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = if (order.orderType == "Sell") Color.Red else colorResource(id = R.color.grass_green)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = order.coinSymbol,
                     textAlign = TextAlign.Center,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
             Row(
@@ -268,12 +272,13 @@ fun OrderItemBody(order: Order){
                         "Pending" -> colorResource(id = R.color.orange)
                         "Completed" -> colorResource(id = R.color.grass_green)
                         else -> Color.Gray},
-                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     imageVector = Icons.Outlined.ArrowForwardIos,
                     contentDescription ="Select order",
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.size(10.dp)
                 )
             }
@@ -290,8 +295,8 @@ fun OrderItemBody(order: Order){
             Text(
                 text = "Price Ksh ${order.price}",
                 textAlign = TextAlign.Center,
-                fontSize = 12.sp,
-                color = Color.Gray
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground,
             )
         }
         Row(
@@ -304,14 +309,14 @@ fun OrderItemBody(order: Order){
             Text(
                 text = "Amount ${order.amount}",
                 textAlign = TextAlign.Center,
-                fontSize = 12.sp,
-                color = Color.Gray
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground,
             )
             Text(
                 text = order.time,
                 textAlign = TextAlign.Center,
-                fontSize = 11.sp,
-                color = Color.Gray
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground,
             )
         }
         Row(
@@ -324,14 +329,14 @@ fun OrderItemBody(order: Order){
             Text(
                 text = "Order ${order.orderId}",
                 textAlign = TextAlign.Center,
-                fontSize = 12.sp,
-                color = Color.Gray
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground,
             )
             Text(
                 text = order.orderValue,
                 textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                color = colorResource(id = R.color.background)
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary,
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
@@ -339,7 +344,7 @@ fun OrderItemBody(order: Order){
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp,),
-            color = Color.LightGray,
+            color = MaterialTheme.colorScheme.onBackground,
             thickness = 1.dp
         )
 

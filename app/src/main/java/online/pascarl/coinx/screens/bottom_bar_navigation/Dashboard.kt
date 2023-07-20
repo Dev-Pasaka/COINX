@@ -394,7 +394,12 @@ fun WalletCardComposable(
             ) {
                 /**Buy Icon*/
                 Column(
-                    modifier = Modifier.clickable(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(100))
+                        .padding(4.dp)
+                        .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = true),
                     ) {
@@ -419,7 +424,12 @@ fun WalletCardComposable(
 
                 /**Sell Icon*/
                 Column(
-                    modifier = Modifier.clickable(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(100))
+                        .padding(4.dp)
+                        .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = true),
                     ) {
@@ -445,7 +455,12 @@ fun WalletCardComposable(
 
                 /**Pay Icon*/
                 Column(
-                    modifier = Modifier.clickable(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(100))
+                        .padding(4.dp)
+                        .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = true),
                     ) { }
@@ -467,7 +482,12 @@ fun WalletCardComposable(
 
                 /**Send Icon*/
                 Column(
-                    modifier = Modifier.clickable(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(100))
+                        .padding(4.dp)
+                        .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = true),
                     ) { }
@@ -983,7 +1003,7 @@ fun ExpressCheckOutLoadingPreview() {
             .fillMaxWidth()
             .fillMaxHeight(0.2f)
             .clip(RoundedCornerShape(10.dp))
-            .background(color = Color.LightGray)
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(vertical = 16.dp)
     ) {
 
@@ -1013,7 +1033,7 @@ fun CryptoListPreview() {
             .fillMaxSize()
             .padding(16.dp)
             .clip(RoundedCornerShape(10.dp))
-            .background(color = Color.LightGray)
+            .background(color = MaterialTheme.colorScheme.background)
 
     ) {
 

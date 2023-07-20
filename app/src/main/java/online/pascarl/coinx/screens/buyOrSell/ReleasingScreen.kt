@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -52,7 +53,9 @@ fun ReleasingPreviewScreen(sharedViewModel: BuyOrSellSharedViewModel = viewModel
 fun ReleasingScreen(navController: NavHostController, sharedViewModel: BuyOrSellSharedViewModel){
     Column(
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.background)
+            .fillMaxSize()
     ) {
         ReleasingTopSection(navController = navController)
         ReleasingMiddleSection(sharedViewModel = sharedViewModel)
@@ -86,7 +89,7 @@ fun ReleasingTopSection(navController: NavHostController) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Go Back",
-                    tint = Color.Gray,
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
                         .padding(5.dp)
                         .size(20.dp)
@@ -109,16 +112,16 @@ fun ReleasingTopSection(navController: NavHostController) {
                 Text(
                     text = "Releasing",
                     textAlign = TextAlign.Center,
-                    color = Color.DarkGray,
-                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
                     text = "95% of this seller's orders " +
                             "have been completed within" +
                             " 12 minutes",
-                    color = Color.Gray,
-                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
@@ -128,14 +131,14 @@ fun ReleasingTopSection(navController: NavHostController) {
             ){
                 Text(
                     text = "11:44",
-                    color = colorResource(id = R.color.orange),
-                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 Spacer(modifier = Modifier.width(3.dp))
                 Text(
                     text = "mins",
-                    color = Color.Gray,
-                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
         }
@@ -149,48 +152,15 @@ fun ReleasingMiddleSection(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(10.dp))
             .background(color = colorResource(id = R.color.background))
     ) {
         Column(
             modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.primaryContainer)
                 .padding(vertical = 8.dp)
                 .fillMaxWidth()
         ) {
-            Row (
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(bottomEnd = 30.dp, topEnd = 30.dp))
-                        .background(
-                            color = colorResource(id = R.color.grass_green)
-                        )
-                ) {
-                    Text(
-                        text = "Buy",
-                        textAlign = TextAlign.Center,
-                        color = Color.White,
-                        fontSize = 14.sp,
-                        modifier = Modifier
-                            .padding(horizontal = 32.dp, vertical = 8.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                Image(
-                    painter = imageLoader(symbol = sharedViewModel.orderData.value.cryptoSymbol),
-                    contentDescription = "Crypto symbol",
-                    modifier = Modifier
-                        .clip(shape = CircleShape)
-                        .size(25.dp)
-                )
-
-            }
-            Spacer(modifier = Modifier.height(16.dp))
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -201,14 +171,14 @@ fun ReleasingMiddleSection(
                 Text(
                     text = "Fiat Amount",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 Text(
                     text = sharedViewModel.formatCurrency(),
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -222,14 +192,14 @@ fun ReleasingMiddleSection(
                 Text(
                     text = "Price",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 Text(
                     text = sharedViewModel.formatCurrency(amount = sharedViewModel.orderData.value.cryptoPrice),
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -243,14 +213,14 @@ fun ReleasingMiddleSection(
                 Text(
                     text = "Crypto Amount",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 Text(
                     text = "${sharedViewModel.youWillGet.value} ${sharedViewModel.orderData.value.cryptoSymbol}",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
         }
@@ -273,8 +243,8 @@ fun ReleasingBottomSection(
             Text(
                 text = "Terms",
                 textAlign = TextAlign.Justify,
-                color = Color.DarkGray,
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp, top = 8.dp)
             )
@@ -282,16 +252,16 @@ fun ReleasingBottomSection(
                 text = "Strictly terms and conditions to apply Do not mark order as paid before the " +
                         "payment to the seller.",
                 textAlign = TextAlign.Justify,
-                color = Color.Gray,
-                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             )
             Text(
                 text = "Read more",
                 textAlign = TextAlign.Justify,
-                color = colorResource(id = R.color.background),
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
                     .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
             )
@@ -307,7 +277,7 @@ fun ReleasingBottomSection(
             Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(20))
-                    .background(color = colorResource(id = R.color.light_gray))
+                    .background(color = MaterialTheme.colorScheme.secondaryContainer)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = true),
@@ -317,8 +287,8 @@ fun ReleasingBottomSection(
                 Text(
                     text = "Appeal",
                     textAlign = TextAlign.Center,
-                    color = Color.Gray,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .padding(horizontal = 32.dp, vertical = 8.dp)
                 )
@@ -327,7 +297,7 @@ fun ReleasingBottomSection(
             Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(20))
-                    .background(color = colorResource(id = R.color.background))
+                    .background(color = MaterialTheme.colorScheme.primaryContainer)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = true),
@@ -341,8 +311,8 @@ fun ReleasingBottomSection(
                 Text(
                     text = "Track order",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .padding(horizontal = 24.dp, vertical = 8.dp)
                 )

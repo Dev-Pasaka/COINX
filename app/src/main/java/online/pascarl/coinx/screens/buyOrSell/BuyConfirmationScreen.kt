@@ -29,6 +29,7 @@ import androidx.compose.material.icons.outlined.SwapHorizontalCircle
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -75,6 +76,7 @@ fun BuyConfirmationScreen(
     }
     Column(
         modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(vertical = 16.dp)
             .fillMaxSize()
             .alpha(alphaAnim.value)
@@ -127,7 +129,7 @@ fun SelectPaymentMethodUpperSection(
             Icon(
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Go Back",
-                tint = Color.DarkGray,
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .padding(2.dp)
                     .size(20.dp)
@@ -143,8 +145,8 @@ fun SelectPaymentMethodUpperSection(
         Text(
             text =  "You will pay",
             textAlign = TextAlign.Center,
-            color = Color.DarkGray,
-            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.bodyMedium
         )
     }
     Spacer(modifier = Modifier.height(8.dp))
@@ -162,8 +164,8 @@ fun SelectPaymentMethodUpperSection(
             Text(
                 text = sharedViewModel.formatCurrency(),
                 textAlign = TextAlign.Center,
-                color = colorResource(id = R.color.background),
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }
@@ -181,7 +183,7 @@ fun SelectPaymentMethodMiddleSection(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .clip(RoundedCornerShape(10))
-            .background(color = colorResource(id = R.color.background))
+            .background(color = MaterialTheme.colorScheme.primaryContainer)
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -196,22 +198,22 @@ fun SelectPaymentMethodMiddleSection(
                 Text(
                     text = "P2P Trading ",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     imageVector = Icons.Outlined.SwapHorizontalCircle,
                     contentDescription = null,
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = sharedViewModel.orderData.value.username,
                 textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                style = MaterialTheme.typography.bodySmall,
             )
         }
         Row(
@@ -228,8 +230,8 @@ fun SelectPaymentMethodMiddleSection(
                 Text(
                     text = "You bought ",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.bodySmall,
                 )
 
             }
@@ -238,8 +240,8 @@ fun SelectPaymentMethodMiddleSection(
                 text = String.format("%.8f",sharedViewModel.youWillGet.value) +
                         " ${sharedViewModel.orderData.value.cryptoSymbol}",
                 textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                style = MaterialTheme.typography.bodySmall,
             )
         }
         Row(
@@ -254,13 +256,13 @@ fun SelectPaymentMethodMiddleSection(
                 text = "How to buy ",
 
                 textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                style = MaterialTheme.typography.bodySmall,
             )
             Icon(
                 imageVector = Icons.Outlined.PlayCircleFilled,
                 contentDescription = null,
-                tint = Color.White
+                tint = MaterialTheme.colorScheme.onSurface
             )
         }
 
@@ -287,14 +289,14 @@ fun SelectPaymentMethodLowerSection(
                 modifier = Modifier
                     .clip(RoundedCornerShape(bottomEnd = 30.dp, topEnd = 30.dp))
                     .background(
-                        color = colorResource(id = R.color.grass_green)
+                        color = MaterialTheme.colorScheme.surfaceVariant
                     )
             ) {
                 Text(
                     text = "Buy",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .padding(horizontal = 32.dp, vertical = 8.dp)
                 )
@@ -320,14 +322,14 @@ fun SelectPaymentMethodLowerSection(
             Text(
                 text = "Fiat Amount",
                 textAlign = TextAlign.Center,
-                color = Color.Gray,
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodySmall,
             )
             Text(
                 text = sharedViewModel.formatCurrency(),
                 textAlign = TextAlign.Center,
-                color = Color.DarkGray,
-                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodySmall
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -341,14 +343,14 @@ fun SelectPaymentMethodLowerSection(
             Text(
                 text = "Price",
                 textAlign = TextAlign.Center,
-                color = Color.Gray,
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodySmall,
             )
             Text(
                 text = sharedViewModel.formatCurrency(amount = sharedViewModel.orderData.value.cryptoPrice),
                 textAlign = TextAlign.Center,
-                color = Color.DarkGray,
-                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodySmall
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -362,20 +364,20 @@ fun SelectPaymentMethodLowerSection(
             Text(
                 text = "Crypto Amount",
                 textAlign = TextAlign.Center,
-                color = Color.Gray,
-                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodySmall,
             )
             Text(
                 text = "${sharedViewModel.youWillGet.value} ${sharedViewModel.orderData.value.cryptoSymbol}",
                 textAlign = TextAlign.Center,
-                color = Color.DarkGray,
-                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.bodySmall
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
         Divider(
             thickness = 1.dp,
-            color = Color.LightGray,
+            color = MaterialTheme.colorScheme.onBackground,
         )
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -391,21 +393,21 @@ fun SelectPaymentMethodLowerSection(
                 Text(
                     text = "You will pay",
                     textAlign = TextAlign.Center,
-                    color = Color.Gray,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodySmall,
                 )
                 Text(
                     text = sharedViewModel.formatCurrency(),
                     textAlign = TextAlign.Center,
-                    color = Color.Gray,
-                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
 
             Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(30.dp))
-                    .background(color = colorResource(id = R.color.background))
+                    .background(color = MaterialTheme.colorScheme.secondaryContainer)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = true),
@@ -416,8 +418,8 @@ fun SelectPaymentMethodLowerSection(
                 Text(
                     text = "Confirm",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 )
