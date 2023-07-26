@@ -9,4 +9,5 @@ data class CryptoModel(
     var price: Double = 138.03,
     var percentageChangeIn24Hrs: Double = -0.01,
     var marketCap:Double = 0.0,
+    var logoUrl:String? = ""
 )

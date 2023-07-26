@@ -21,7 +21,7 @@ class SplashScreenViewModel: ViewModel() {
     suspend fun getUserData() {
         val result = try {
             KtorClient.httpClient.get<UserData>{
-                url("https://coinx.herokuapp.com/getUserData?email=${roomUser.email}")
+                url("https://coinx-2590f763d976.herokuapp.com/getUserData?email=${roomUser.email}")
                 headers {
                     append(HttpHeaders.Authorization, "Bearer ${roomUser.token}")
                 }

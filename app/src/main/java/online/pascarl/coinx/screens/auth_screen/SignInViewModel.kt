@@ -46,7 +46,7 @@ class SignInViewModel: ViewModel() {
 
     suspend fun getSignInToken(){
         try {
-            val response = KtorClient.httpClient.post<Token>("https://coinx.herokuapp.com/signIn"){
+            val response = KtorClient.httpClient.post<Token>("https://coinx-2590f763d976.herokuapp.com/signIn"){
                 contentType(ContentType.Application.Json)
                 body = SignIn(
                     email = email,
@@ -55,6 +55,7 @@ class SignInViewModel: ViewModel() {
             }
 
             result = response
+            println("--------------------------$response")
         }catch (_: Exception){
             result = null
         }

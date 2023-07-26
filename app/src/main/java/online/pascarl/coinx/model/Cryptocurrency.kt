@@ -15,6 +15,7 @@ data class Cryptocurrency(
     val percentageChange60d: String?,
     val percentageChange90d: String?,
     var marketCap: String?,
-    val fullyDilutedMarketCap: String?
+    val fullyDilutedMarketCap: String?,
+    var logoUrl:String? = ""
 )
 

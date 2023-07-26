@@ -14,6 +14,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import online.pascarl.coinx.KtorClient.KtorClient
 import online.pascarl.coinx.model.CryptoModel
+import online.pascarl.coinx.model.CryptoSymbols
 import online.pascarl.coinx.model.Cryptocurrency
 import java.text.NumberFormat
 import java.util.Currency
@@ -60,7 +61,7 @@ class SeeAllCryptosViewModel(): ViewModel() {
             //contentType(ContentType.Application.Json)
             url {
                 parameter("start", "1")
-                parameter("limit","100")
+                parameter("limit","199")
                 parameter("convert","KES")
             }
         }
@@ -94,13 +95,31 @@ class SeeAllCryptosViewModel(): ViewModel() {
                     percentageChange60d = currency["percent_change_60d"].toString(),
                     percentageChange90d = currency["percent_change_90d"].toString(),
                     marketCap = currency["market_cap"].toString() ,
-                    fullyDilutedMarketCap = currency["fully_diluted_market_cap"].toString()
+                    fullyDilutedMarketCap = currency["fully_diluted_market_cap"].toString(),
+                    logoUrl = getCryptoLogo(symbol = symbol.toString().replace("\"", ""))
                 )
             )
         }
         cryptocurrencies.addAll(cryptoList)
 
 
+    }
+    private fun getCryptoLogo(input: String = CryptoSymbols.input, symbol: String = "eth"):String?{
+        val map = mutableMapOf<String, String>()
+        // Remove the curly braces at the beginning and end of the input string
+        val trimmedInput = input.trimStart('{').trimEnd('}')
+        // Split the input into individual key-value pairs using ', ' as a delimiter
+        val keyValuePairs = trimmedInput.split(", ")
+        // Iterate through each key-value pair and extract the key and value
+        keyValuePairs.forEach {
+            val (key, value) = it.split("=")
+            val trimmedKey = key.trim()
+            val trimmedValue = value.trim()
+            map[trimmedKey] = trimmedValue
+        }
+        // Print the entire map
+        println("Resulting Map: ${map[symbol.uppercase()]}")
+        return map[symbol.uppercase()]
     }
 
     init {

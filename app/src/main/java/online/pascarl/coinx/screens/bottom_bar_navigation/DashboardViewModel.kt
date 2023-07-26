@@ -33,8 +33,10 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import online.pascarl.coinx.model.CryptoModel
+import online.pascarl.coinx.model.CryptoSymbols
 import online.pascarl.coinx.model.UserData
 import online.pascarl.coinx.model.UserPortfolio
+import online.pascarl.coinx.model.crytpo_info.CryptoInfo
 import online.pascarl.coinx.navigation.DrawerItems
 import online.pascarl.coinx.roomDB.RoomUser
 import java.text.NumberFormat
@@ -95,7 +97,7 @@ class DashboardViewModel : ViewModel() {
     suspend fun getUserData() {
         val result = try {
             KtorClient.httpClient.get<UserData> {
-                url("https://coinx.herokuapp.com/getUserData?email=${roomUser.email}")
+                url("https://coinx-2590f763d976.herokuapp.com/getUserData?email=${roomUser.email}")
                 headers {
                     append(Authorization, "Bearer ${roomUser.token}")
                 }
@@ -160,6 +162,7 @@ class DashboardViewModel : ViewModel() {
                         fullyDilutedMarketCap = currency["fully_diluted_market_cap"].toString()
                     )
                 )
+
             }
             _cryptocurrencies.clear()
             _cryptocurrencies.addAll(cryptoList)
@@ -167,8 +170,29 @@ class DashboardViewModel : ViewModel() {
 
 
     }
+    private fun removeDoubleQuotes(input: String): String {
+        return input.removeSurrounding("\"")
+    }
 
-    fun cryptoPrices() {
+    private fun getCryptoLogo(input: String = CryptoSymbols.input, symbol: String = "eth"):String?{
+        val map = mutableMapOf<String, String>()
+        // Remove the curly braces at the beginning and end of the input string
+        val trimmedInput = input.trimStart('{').trimEnd('}')
+        // Split the input into individual key-value pairs using ', ' as a delimiter
+        val keyValuePairs = trimmedInput.split(", ")
+        // Iterate through each key-value pair and extract the key and value
+        keyValuePairs.forEach {
+            val (key, value) = it.split("=")
+            val trimmedKey = key.trim()
+            val trimmedValue = value.trim()
+            map[trimmedKey] = trimmedValue
+        }
+        // Print the entire map
+        println("Resulting Map: ${map[symbol.uppercase()]}")
+        return map[symbol.uppercase()]
+    }
+
+    suspend fun cryptoPrices() {
         val newData = mutableListOf<CryptoModel>()
         for (liveData in _cryptocurrencies) {
             if (liveData != null) {
@@ -179,6 +203,7 @@ class DashboardViewModel : ViewModel() {
                         price = liveData.price!!.toDouble(),
                         marketCap = liveData.marketCap!!.toDouble(),
                         percentageChangeIn24Hrs = liveData.percentageChange24h!!.toDouble(),
+                        logoUrl = getCryptoLogo(symbol = liveData.symbol.replace("\"", ""),)
                     )
                 )
             }
@@ -193,7 +218,7 @@ class DashboardViewModel : ViewModel() {
     suspend fun getUserPortfolio() {
         val result = try {
             KtorClient.httpClient.get<UserPortfolio> {
-                url("https://coinx.herokuapp.com/getUserPortfolio?email=${roomUser.email}")
+                url("https://coinx-2590f763d976.herokuapp.com/getUserPortfolio?email=${roomUser.email}")
                 headers {
                     append(Authorization, "Bearer ${roomUser.token}")
                 }

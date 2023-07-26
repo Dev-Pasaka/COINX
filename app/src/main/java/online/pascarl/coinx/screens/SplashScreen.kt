@@ -69,7 +69,6 @@ fun AnimatedSplashScreen(navController: NavHostController, splashScreenViewModel
             navController.navigate(Screen.Dashboard.route)
         }
         else navController.navigate(Screen.Register.route)
-       // navController.navigate(Screen.Register.route)
     }
 
     SplashScreen(alpha = alphaAnim.value)

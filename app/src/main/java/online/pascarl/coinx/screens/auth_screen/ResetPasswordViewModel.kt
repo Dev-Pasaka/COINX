@@ -41,9 +41,9 @@ class ResetPasswordViewModel: ViewModel() {
 
     suspend fun verifyPhoneNumber():VerifyPhoneResponse?{
         val result =  try {
-           val response = KtorClient.httpClient.post<VerifyPhoneResponse>("https://coinx.herokuapp.com/verifyPhoneNumber"){
+           val response = KtorClient.httpClient.post<VerifyPhoneResponse>("https://coinx-2590f763d976.herokuapp.com/verifyPhoneNumber"){
                 contentType(ContentType.Application.Json)
-                body = Phone(phoneNumber = phoneNumber!!)
+                body = Phone(phoneNumber = phoneNumber)
             }
             if (response.status){
                 PHONENUMBER = phoneNumber

@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -95,7 +96,9 @@ fun SeeAllCryptos(
                         SortCryptoListItem(
                             name = seeAllCryptosViewModel.cryptocurrencies[it]?.name ?: "",
                             symbol = seeAllCryptosViewModel.cryptocurrencies[it]?.symbol ?: "",
-                            imageIcon = imageLoader(symbol = seeAllCryptosViewModel.cryptocurrencies[it]?.symbol ?: "BTC"),
+                            imageIcon = rememberAsyncImagePainter(
+                                model = seeAllCryptosViewModel.cryptocurrencies[it]?.logoUrl?: ""
+                            ),
                             percentageChange = seeAllCryptosViewModel.cryptocurrencies[it]?.percentageChange24h?.toDouble() ?: 0.0,
                             price = seeAllCryptosViewModel.formatCurrency(
                                 amount = seeAllCryptosViewModel.cryptocurrencies[it]?.price?.toDouble() ?: 0.0

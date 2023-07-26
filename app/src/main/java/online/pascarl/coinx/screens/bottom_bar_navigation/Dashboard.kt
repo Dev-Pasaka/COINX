@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -137,6 +138,7 @@ fun Dashboard(
         dashboardViewModel.cryptoPrices()
         dashboardViewModel.getUserData()
         dashboardViewModel.getUserPortfolio()
+        //dashboardViewModel.getCryptoInformation()
     }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     ModalNavigationDrawer(
@@ -168,12 +170,16 @@ fun Dashboard(
                             scope.launch { drawerState.close() }
                             dashboardViewModel.selectedDrawerItem = item
                             when (item.title) {
+                                "Contact us" ->{
+                                    navController.navigate(Screen.ContactUs.route) {
+                                        popUpTo(Screen.ContactUs.route) { inclusive = true }
+                                    }
+                                }
                                 "Settings" -> {
                                     navController.navigate(Screen.Settings.route) {
                                         popUpTo(Screen.Settings.route) { inclusive = true }
                                     }
                                 }
-
                                 "Logout" -> {
                                     dashboardViewModel.openDialog = true
                                 }
@@ -400,12 +406,12 @@ fun WalletCardComposable(
                         .clip(RoundedCornerShape(100))
                         .padding(4.dp)
                         .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(bounded = true),
-                    ) {
-                        ISBUYSELECTED = "Buy"
-                        navController.navigate("buy_or_sell")
-                    }
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(bounded = true),
+                        ) {
+                            ISBUYSELECTED = "Buy"
+                            navController.navigate("buy_or_sell")
+                        }
                 ) {
                     Icon(
                         imageVector = Outlined.CurrencyBitcoin,
@@ -430,12 +436,12 @@ fun WalletCardComposable(
                         .clip(RoundedCornerShape(100))
                         .padding(4.dp)
                         .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(bounded = true),
-                    ) {
-                        ISBUYSELECTED = "Sell"
-                        navController.navigate(Screen.BuyOrSellCryptos.route)
-                    }
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(bounded = true),
+                        ) {
+                            ISBUYSELECTED = "Sell"
+                            navController.navigate(Screen.BuyOrSellCryptos.route)
+                        }
                 ) {
 
                     Icon(
@@ -461,9 +467,9 @@ fun WalletCardComposable(
                         .clip(RoundedCornerShape(100))
                         .padding(4.dp)
                         .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(bounded = true),
-                    ) { }
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(bounded = true),
+                        ) { }
                 ) {
                     Icon(
                         imageVector = Outlined.CreditCard,
@@ -488,9 +494,9 @@ fun WalletCardComposable(
                         .clip(RoundedCornerShape(100))
                         .padding(4.dp)
                         .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(bounded = true),
-                    ) { }
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(bounded = true),
+                        ) { }
                 ) {
                     Icon(
                         imageVector = Outlined.Send,
@@ -550,7 +556,9 @@ fun ExpressCheckout(dashboardViewModel: DashboardViewModel) {
                         ExpressCheckOutItems(
                             name = cryptoItem.name,
                             symbol = cryptoItem.symbol,
-                            imageIcon = imageLoader(cryptoItem.symbol),
+                            imageIcon = rememberAsyncImagePainter(
+                                model = cryptoItem.logoUrl
+                            ),
                             price = cryptoItem.price,
                             percentageChangeIn24Hrs = cryptoItem.percentageChangeIn24Hrs,
                             dashboardViewModel = dashboardViewModel,
@@ -886,7 +894,7 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
                 CryptoCoinListItem(
                     name = dashboardViewModel.cryptoModel[it].name,
                     symbol = dashboardViewModel.cryptoModel[it].symbol,
-                    imageIcon = imageLoader(symbol = dashboardViewModel.cryptoModel[it].symbol),
+                    imageIcon = rememberAsyncImagePainter(model = dashboardViewModel.cryptoModel[it].logoUrl),
                     percentageChangeIn24Hrs = dashboardViewModel.cryptoModel[it].percentageChangeIn24Hrs,
                     price = dashboardViewModel.cryptoModel[it].price,
                     dashboardViewModel = dashboardViewModel,

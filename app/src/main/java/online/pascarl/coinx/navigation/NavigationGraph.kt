@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import online.pascarl.coinx.SlideInAnimation
+import online.pascarl.coinx.nav_drawer.ContactUs
 import online.pascarl.coinx.nav_drawer.Settings
 import online.pascarl.coinx.nav_drawer.SettingsViewModel
 import online.pascarl.coinx.screens.*
@@ -103,6 +104,10 @@ fun NavGraph(navController: NavHostController) {
         }
         composable(route = Screen.Settings.route) {
             Settings(navController = navController)
+        }
+
+        composable(route = Screen.ContactUs.route) {
+            ContactUs(navController = navController)
         }
 
 
