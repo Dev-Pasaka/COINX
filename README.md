@@ -10,16 +10,16 @@ CoinX is a revolutionary mobile platform that has been designed with the crypto 
 
 ## Why Choose CoinX?
 1. Fast Transactions
-With CoinX, you no longer have to endure the frustration of waiting for hours for your transactions to be confirmed. Our     cutting-edge technology ensures that your trades are executed swiftly, keeping you ahead in the fast-paced world of  cryptocurrencies.
+: With CoinX, you no longer have to endure the frustration of waiting for hours for your transactions to be confirmed. Our     cutting-edge technology ensures that your trades are executed swiftly, keeping you ahead in the fast-paced world of  cryptocurrencies.
 
 2. Free Trading
-Gone are the days of paying excessive trading fees that eat into your hard-earned profits. At CoinX, we believe that you deserve to keep what's yours. That's why we offer commission-free trading, allowing you to trade without any hidden costs.
+: Gone are the days of paying excessive trading fees that eat into your hard-earned profits. At CoinX, we believe that you deserve to keep what's yours. That's why we offer commission-free trading, allowing you to trade without any hidden costs.
 
 3. Secure Platform
-We take security very seriously. CoinX employs state-of-the-art security measures to safeguard your funds and personal information. Our robust encryption protocols and multi-factor authentication provide you with peace of mind, knowing your assets are protected.
+: We take security very seriously. CoinX employs state-of-the-art security measures to safeguard your funds and personal information. Our robust encryption protocols and multi-factor authentication provide you with peace of mind, knowing your assets are protected.
 
 4. Transparent Operations
-Transparency is the backbone of trust in the crypto world. At CoinX, we value transparency and maintain an open, auditable ledger of all transactions. You can verify any transaction you make on the platform at any time, ensuring a level of accountability not found on traditional exchanges.
+: Transparency is the backbone of trust in the crypto world. At CoinX, we value transparency and maintain an open, auditable ledger of all transactions. You can verify any transaction you make on the platform at any time, ensuring a level of accountability not found on traditional exchanges.
 
 ## How to Get Started?
 Getting started with CoinX is a breeze. Simply download our user-friendly mobile app from the App Store or Google Play Store, create an account, and start trading with fellow enthusiasts directly. We automatically assign you a wallet on registration, and you retain control over your private keys, giving you complete ownership of your crypto assets.
