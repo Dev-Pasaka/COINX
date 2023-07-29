@@ -138,7 +138,6 @@ fun Dashboard(
         dashboardViewModel.cryptoPrices()
         dashboardViewModel.getUserData()
         dashboardViewModel.getUserPortfolio()
-        //dashboardViewModel.getCryptoInformation()
     }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     ModalNavigationDrawer(
@@ -158,7 +157,6 @@ fun Dashboard(
                         text = "Coinx",
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.titleLarge,
-
                         )
                 }
                 dashboardViewModel.drawerItems.forEach { item ->
@@ -170,6 +168,11 @@ fun Dashboard(
                             scope.launch { drawerState.close() }
                             dashboardViewModel.selectedDrawerItem = item
                             when (item.title) {
+                                "Invite friends" ->{
+                                    navController.navigate(Screen.InviteFriends.route) {
+                                        popUpTo(Screen.InviteFriends.route) { inclusive = true }
+                                    }
+                                }
                                 "Contact us" ->{
                                     navController.navigate(Screen.ContactUs.route) {
                                         popUpTo(Screen.ContactUs.route) { inclusive = true }
