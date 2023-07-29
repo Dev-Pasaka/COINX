@@ -42,7 +42,7 @@ class UpdatePasswordViewModel: ViewModel() {
     suspend fun updatePassword(){
         formValidation()
         try {
-            val response = KtorClient.httpClient.post<UpdatePasswordResponse>("https://coinx.herokuapp.com/updatePassword"){
+            val response = KtorClient.httpClient.post<UpdatePasswordResponse>("https://coinx-2590f763d976.herokuapp.com/updatePassword"){
                 contentType(ContentType.Application.Json)
                 body = UpdatePassword(
                     newPassword = newPassword,

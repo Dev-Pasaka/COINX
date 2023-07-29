@@ -1,21 +1,7 @@
-package online.pascarl.coinx
+package online.pascarl.coinx.model
 
-import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.client.request.parameter
-import io.ktor.client.request.url
-import kotlinx.coroutines.delay
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import online.pascarl.coinx.KtorClient.KtorClient
-import online.pascarl.coinx.model.Cryptocurrency
-import online.pascarl.coinx.model.FormattedArticleList
-import online.pascarl.coinx.model.crytpo_info.CryptoInfo
-
-
-suspend fun main() {
-    //println(getCryptoPrices())
-    val input = "{BTC=https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" +
+object CryptoSymbols {
+    const val input = "{BTC=https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" +
             ", ETH=https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png," +
             " USDT=https://s2.coinmarketcap.com/static/img/coins/64x64/825.png," +
             " XRP=https://s2.coinmarketcap.com/static/img/coins/64x64/52.png," +
@@ -215,99 +201,4 @@ suspend fun main() {
             " NFT=https://s2.coinmarketcap.com/static/img/coins/64x64/27064.png," +
             " PLA=https://s2.coinmarketcap.com/static/img/coins/64x64/3711.png, " +
             "POLYX=https://s2.coinmarketcap.com/static/img/coins/64x64/20362.png}\n"
-    parseToMap(input)
-
-}
-
-suspend fun getCryptoInformation(symbol:String = "eth"):String? {
-    var logoUrl:String = ""
-    val client = KtorClient.httpClient
-    val request = try {
-        client.get<String>("https://pro-api.coinmarketcap.com/v2/cryptocurrency/info?symbol=$symbol") {
-            header("X-CMC_PRO_API_KEY", "0f42271f-74af-4b7d-b946-fa9933b9a1f6")
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-
-    val jsonResponseString: String? = request
-    var cryptoData: Any
-    val jsonResponseObj = jsonResponseString?.let { Json.parseToJsonElement(it) } as JsonObject
-    cryptoData = jsonResponseObj["data"] as Any
-    val coinObj = cryptoData.toString().let { Json.parseToJsonElement(it) } as JsonObject
-    val coinData = coinObj[symbol.uppercase()] as List<*>
-    coinData.forEach {obj ->
-        val logoObj = obj.toString().let { Json.parseToJsonElement(it) } as JsonObject
-        val logo = logoObj["logo"] as Any
-       // println(logo.toString().replace("\"", ""))
-        logoUrl =logo.toString().replace("\"", "")
-
-    }
-
-    return logoUrl
-}
-
-suspend fun getCryptoPrices():MutableMap<String, String> {
-    var cryptoSymbol:MutableMap<String, String> = mutableMapOf()
-    val client = KtorClient.httpClient
-    val request = try {
-        client.get<String>("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest") {
-            header("X-CMC_PRO_API_KEY", "0f42271f-74af-4b7d-b946-fa9933b9a1f6")
-            //contentType(ContentType.Application.Json)
-            url {
-                parameter("start", "1")
-                parameter("limit", "200")
-                //parameter("coins", "Bitcoin")
-                parameter("convert", "KES")
-            }
-        }
-    } catch (_: Exception) {
-        null
-    }
-    request?.let {
-        val jsonResponseString: String = request
-        var cryptoData: List<*>
-        val jsonResponseObj = Json.parseToJsonElement(jsonResponseString) as JsonObject
-        cryptoData = jsonResponseObj["data"] as List<*>
-
-        val cryptoList = mutableListOf<Cryptocurrency>()
-        cryptoData.forEach {
-            val dataObj = it as Map<*, *>
-            val id = dataObj["id"]
-            val name = dataObj["name"]
-            val symbol = dataObj["symbol"].toString().replace("\"", "")
-            val priceQuote = dataObj["quote"]
-            val currencyObj = Json.parseToJsonElement(priceQuote.toString()) as JsonObject
-            val currency = currencyObj["KES"] as Map<String, Double>
-           try{
-               getCryptoInformation(symbol = symbol)?.let { it1 -> cryptoSymbol.put(symbol, it1) }
-               delay(3000)
-               println(cryptoSymbol)
-           }catch (e:Exception){
-               delay(60000)
-           }
-        }
-    }
-    return cryptoSymbol
-}
-
-
-
-fun parseToMap(input: String, symbol: String = "eth"):String?{
-    val map = mutableMapOf<String, String>()
-    // Remove the curly braces at the beginning and end of the input string
-    val trimmedInput = input.trimStart('{').trimEnd('}')
-    // Split the input into individual key-value pairs using ', ' as a delimiter
-    val keyValuePairs = trimmedInput.split(", ")
-    // Iterate through each key-value pair and extract the key and value
-    keyValuePairs.forEach {
-        val (key, value) = it.split("=")
-        val trimmedKey = key.trim()
-        val trimmedValue = value.trim()
-        map[trimmedKey] = trimmedValue
-    }
-    // Print the entire map
-    println("Resulting Map: ${map[symbol.uppercase()]}")
-    return map[symbol.uppercase()]
 }

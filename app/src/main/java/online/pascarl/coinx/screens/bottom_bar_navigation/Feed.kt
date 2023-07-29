@@ -57,6 +57,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -252,9 +253,9 @@ fun NewsListItem(
 
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Image(painter = rememberImagePainter(data = imageUrl), contentDescription = null)
+            Image(painter = rememberAsyncImagePainter(model = imageUrl), contentDescription = null)
             Image(
-                painter = rememberImagePainter(data = imageUrl),
+                painter = rememberAsyncImagePainter(model = imageUrl),
                 contentDescription = "Article front image",
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
@@ -290,7 +291,7 @@ fun NewsListItem(
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier
                         .clip(RoundedCornerShape(50))
-                        .background(color = MaterialTheme.colorScheme.surfaceVariant)
+                        .background(color = MaterialTheme.colorScheme.primaryContainer)
                         .clickable {
                             newsFeedViewModel.openWebView(url = externalLink)
                         }
@@ -298,7 +299,7 @@ fun NewsListItem(
                     Text(
                         text = "Read more",
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                             .padding(horizontal = 6.dp, vertical = 4.dp)

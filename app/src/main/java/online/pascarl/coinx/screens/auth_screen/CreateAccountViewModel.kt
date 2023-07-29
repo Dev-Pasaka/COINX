@@ -81,7 +81,7 @@ class CreateAccountViewModel : ViewModel() {
 
     private suspend fun registerUser(): AccountCreationResponse? {
         return try {
-            KtorClient.httpClient.post<AccountCreationResponse>("https://coinx.herokuapp.com/registerUser") {
+            KtorClient.httpClient.post<AccountCreationResponse>("https://coinx-2590f763d976.herokuapp.com/registerUser") {
                 contentType(ContentType.Application.Json)
                 body = User(
                     fullName = fullName,

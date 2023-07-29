@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -95,7 +98,9 @@ fun SeeAllCryptos(
                         SortCryptoListItem(
                             name = seeAllCryptosViewModel.cryptocurrencies[it]?.name ?: "",
                             symbol = seeAllCryptosViewModel.cryptocurrencies[it]?.symbol ?: "",
-                            imageIcon = imageLoader(symbol = seeAllCryptosViewModel.cryptocurrencies[it]?.symbol ?: "BTC"),
+                            imageIcon = rememberAsyncImagePainter(
+                                model = seeAllCryptosViewModel.cryptocurrencies[it]?.logoUrl?: ""
+                            ),
                             percentageChange = seeAllCryptosViewModel.cryptocurrencies[it]?.percentageChange24h?.toDouble() ?: 0.0,
                             price = seeAllCryptosViewModel.formatCurrency(
                                 amount = seeAllCryptosViewModel.cryptocurrencies[it]?.price?.toDouble() ?: 0.0
@@ -149,7 +154,10 @@ fun SeeAllCryptosHeader(navController: NavHostController){
                modifier = Modifier
                    .size(25.dp)
                    .clip(RoundedCornerShape(360.dp))
-                   .clickable {
+                   .clickable(
+                       interactionSource = remember { MutableInteractionSource() },
+                       indication = rememberRipple(bounded = true),
+                   ){
 
                    }
            )
@@ -162,7 +170,10 @@ fun SeeAllCryptosHeader(navController: NavHostController){
                modifier = Modifier
                    .size(25.dp)
                    .clip(RoundedCornerShape(360.dp))
-                   .clickable {
+                   .clickable(
+                       interactionSource = remember { MutableInteractionSource() },
+                       indication = rememberRipple(bounded = true),
+                   ){
 
                    },
 
@@ -185,7 +196,10 @@ fun SortCryptosItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(20))
             .background(if (isSortMethodSelected) onSelectedBackgroundColor else onNotSelectedBackgroundColor)
-            .clickable {
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(bounded = true),
+            ){
                 seeAllCryptosViewModel.sort(sortBy = sortBy)
             }
 
