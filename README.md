@@ -22,7 +22,7 @@ CoinX is a revolutionary mobile platform that has been designed with the crypto 
 : Transparency is the backbone of trust in the crypto world. At CoinX, we value transparency and maintain an open, auditable ledger of all transactions. You can verify any transaction you make on the platform at any time, ensuring a level of accountability not found on traditional exchanges.
 
 ## How to Get Started?
-Getting started with CoinX is a breeze. Simply download our user-friendly mobile app from the App Store or Google Play Store, create an account, and start trading with fellow enthusiasts directly. We automatically assign you a wallet on registration, and you retain control over your private keys, giving you complete ownership of your crypto assets.
+Getting started with CoinX is a breeze. Simply download our user-friendly mobile app from the Google Play Store, create an account, and start trading with fellow enthusiasts directly. We automatically assign you a wallet on registration, and you retain control over your private keys, giving you complete ownership of your crypto assets.
 
 Join us on this decentralized journey, and let's shape the future of finance together!
 
