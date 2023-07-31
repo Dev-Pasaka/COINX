@@ -1,6 +1,7 @@
 package online.pascarl.coinx.screens.bottom_bar_navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.JoinFull
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Mode
@@ -36,7 +37,6 @@ import online.pascarl.coinx.model.CryptoModel
 import online.pascarl.coinx.model.CryptoSymbols
 import online.pascarl.coinx.model.UserData
 import online.pascarl.coinx.model.UserPortfolio
-import online.pascarl.coinx.model.crytpo_info.CryptoInfo
 import online.pascarl.coinx.navigation.DrawerItems
 import online.pascarl.coinx.roomDB.RoomUser
 import java.text.NumberFormat
@@ -275,8 +275,8 @@ class DashboardViewModel : ViewModel() {
     //Navigation Drawer
     val drawerItems by mutableStateOf(
         listOf(
+            DrawerItems(icon = Icons.Default.AccountBox, title = "Account"),
             DrawerItems(icon = Icons.Default.VerifiedUser, title = "Kyc Verification"),
-            DrawerItems(icon = Icons.Default.Update, title = "Update information"),
             DrawerItems(icon = Icons.Default.JoinFull, title = "Become Merchant"),
             DrawerItems(icon = Icons.Default.Share, title = "Invite friends"),
             DrawerItems(icon = Icons.Default.Phone, title = "Contact us"),

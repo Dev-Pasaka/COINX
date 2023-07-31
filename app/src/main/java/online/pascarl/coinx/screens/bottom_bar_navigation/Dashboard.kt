@@ -168,6 +168,11 @@ fun Dashboard(
                             scope.launch { drawerState.close() }
                             dashboardViewModel.selectedDrawerItem = item
                             when (item.title) {
+                                "Become Merchant" -> {
+                                    navController.navigate(Screen.BecomeMerchant.route) {
+                                        popUpTo(Screen.BecomeMerchant.route) { inclusive = true }
+                                    }
+                                }
                                 "Invite friends" ->{
                                     navController.navigate(Screen.InviteFriends.route) {
                                         popUpTo(Screen.InviteFriends.route) { inclusive = true }

@@ -30,11 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.ComponentRegistry
 import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
@@ -51,6 +54,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import online.pascarl.coinx.R
+import online.pascarl.coinx.navigation.Screen
 
 @Preview(showSystemUi = true)
 @Composable
@@ -59,7 +63,7 @@ fun BecomeMerchantPreview(){
 }
 
 @Composable
-fun BecomeMerchant(){
+fun BecomeMerchant(navController:NavHostController = rememberNavController()){
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.invite_friends))
 
     val progress by animateLottieCompositionAsState(
@@ -91,7 +95,7 @@ fun BecomeMerchant(){
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = true),
                     ) {
-                        //navController.popBackStack()
+                        navController.popBackStack()
                     }
 
             )
@@ -145,7 +149,7 @@ fun BecomeMerchant(){
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 containerColor = MaterialTheme.colorScheme.primary
             ),
-            onClick = { /*TODO*/ }
+            onClick = { navController.navigate(Screen.MerchantPaymentInformation.route) }
         ) {
             Text(
                 text = "Become Merchant",

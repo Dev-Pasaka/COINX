@@ -28,6 +28,9 @@ sealed class Screen(val route:String){
     object Settings:Screen("settings")
     object ContactUs:Screen("contact_us")
     object InviteFriends:Screen("invite_friends")
+    object BecomeMerchant:Screen("become_merchant")
+    object MerchantPaymentInformation:Screen("merchant_payment_information")
+
 
 
 

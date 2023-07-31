@@ -9,8 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import online.pascarl.coinx.SlideInAnimation
+import online.pascarl.coinx.nav_drawer.BecomeMerchant
 import online.pascarl.coinx.nav_drawer.ContactUs
 import online.pascarl.coinx.nav_drawer.InviteFriends
+import online.pascarl.coinx.nav_drawer.MerchantPaymentInformation
 import online.pascarl.coinx.nav_drawer.Settings
 import online.pascarl.coinx.nav_drawer.SettingsViewModel
 import online.pascarl.coinx.screens.*
@@ -113,6 +115,13 @@ fun NavGraph(navController: NavHostController) {
         composable(route = Screen.InviteFriends.route) {
             InviteFriends(navController = navController)
         }
+        composable(route = Screen.BecomeMerchant.route) {
+            BecomeMerchant(navController = navController)
+        }
+        composable(route = Screen.MerchantPaymentInformation.route) {
+            MerchantPaymentInformation(navController = navController)
+        }
+
 
 
 

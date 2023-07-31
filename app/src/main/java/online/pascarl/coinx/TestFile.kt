@@ -9,8 +9,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import online.pascarl.coinx.KtorClient.KtorClient
 import online.pascarl.coinx.model.Cryptocurrency
-import online.pascarl.coinx.model.FormattedArticleList
-import online.pascarl.coinx.model.crytpo_info.CryptoInfo
+
 
 
 suspend fun main() {
