@@ -330,6 +330,7 @@ fun ReadMoreWebView(
     ) {
         AndroidView(factory = {
             WebView(context).apply {
+                settings.javaScriptEnabled = true // Enable JavaScript
                 webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView?, url: String?) {
                         super.onPageFinished(view, url)

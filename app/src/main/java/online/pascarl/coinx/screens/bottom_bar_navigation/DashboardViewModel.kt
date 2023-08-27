@@ -153,7 +153,7 @@ class DashboardViewModel : ViewModel() {
                         volume24h = currency["volume_24h"].toString(),
                         volumeChange24h = currency["volume_change_24h"].toString(),
                         percentageChange1h = currency["percent_change_1h"].toString(),
-                        percentageChange24h = (Math.round((currency["percent_change_24h"].toString()).toDouble()) * 100 / 1000.0).toString(),
+                        percentageChange24h = (Math.round((currency["percent_change_24h"].toString()).toDouble())).toString(),
                         percentageChange7d = currency["percent_change_7d"].toString(),
                         percentageChange30d = currency["percent_change_30d"].toString(),
                         percentageChange60d = currency["percent_change_60d"].toString(),

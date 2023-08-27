@@ -68,12 +68,14 @@ fun ComingSoon(navController:NavHostController = rememberNavController()){
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-               Row(modifier = Modifier.fillMaxWidth()){
+               Row(
+                   verticalAlignment = Alignment.CenterVertically,
+                   horizontalArrangement = Arrangement.Center,
+                   modifier = Modifier.fillMaxWidth()
+               ){
                    Text(
-                       text = """
-                        This feature is still in development
-                        kindly be patient.
-                        """.trimMargin(),
+                       text = "This feature is still in development\n" +
+                               "kindly be patient.",
                        textAlign = TextAlign.Center,
                        color = MaterialTheme.colorScheme.onBackground,
                        style = MaterialTheme.typography.bodyMedium
