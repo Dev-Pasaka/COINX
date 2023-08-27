@@ -155,8 +155,8 @@ fun RegisterScreen(
                     ),
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        textColor = MaterialTheme.colorScheme.onSurface,
-                        placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        //textColor = MaterialTheme.colorScheme.onSurface,
+                        //placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         errorIndicatorColor = MaterialTheme.colorScheme.error,
                         unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     ),
@@ -207,8 +207,8 @@ fun RegisterScreen(
                     },
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        textColor = MaterialTheme.colorScheme.onSurface,
-                        placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        //textColor = MaterialTheme.colorScheme.onSurface,
+                        //placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         errorIndicatorColor = MaterialTheme.colorScheme.error,
                         unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
 

@@ -158,8 +158,8 @@ fun NewPassword(updatePasswordViewModel: UpdatePasswordViewModel){
             isError = updatePasswordViewModel.formValidationPassed,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                //textColor = MaterialTheme.colorScheme.onSurface,
+                //placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 errorIndicatorColor = MaterialTheme.colorScheme.error
             ),
@@ -199,8 +199,8 @@ fun ConfirmNewPassword(updatePasswordViewModel: UpdatePasswordViewModel){
             isError = updatePasswordViewModel.formValidationPassed,
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                //textColor = MaterialTheme.colorScheme.onSurface,
+                //placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 errorIndicatorColor = MaterialTheme.colorScheme.error
             ),

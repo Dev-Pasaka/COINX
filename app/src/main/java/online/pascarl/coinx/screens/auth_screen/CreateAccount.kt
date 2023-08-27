@@ -21,7 +21,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -65,11 +68,11 @@ import online.pascarl.coinx.rememberImeState
 import online.pascarl.coinx.screens.auth_screen.CircularProgressBar
 import online.pascarl.coinx.screens.auth_screen.CreateAccountViewModel
 import online.pascarl.coinx.screens.auth_screen.showMessage
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun CreateAccount(
-    navController: NavHostController,
-    createAccountViewModel: CreateAccountViewModel = viewModel()
+    navController: NavHostController, createAccountViewModel: CreateAccountViewModel = viewModel()
 ) {
     DisableBackNavigation()
     when (createAccountViewModel.registerScreenIndex) {
@@ -78,54 +81,53 @@ fun CreateAccount(
                 mutableStateOf(false)
             }
             val alphaAnim = animateFloatAsState(
-                targetValue = if (startAnimation) 1f else 0f,
-                animationSpec = tween(
+                targetValue = if (startAnimation) 1f else 0f, animationSpec = tween(
                     durationMillis = 1000
                 )
             )
-            LaunchedEffect(key1 = true){
+            LaunchedEffect(key1 = true) {
                 startAnimation = true
                 delay(1000)
             }
 
             FirstRegistrationScreen(
-                    navController = navController,
-                    createAccountViewModel = createAccountViewModel,
+                navController = navController,
+                createAccountViewModel = createAccountViewModel,
                 alpha = alphaAnim.value
-                )
+            )
 
         }
+
         1 -> {
             var startAnimation by remember {
                 mutableStateOf(false)
             }
             val alphaAnim = animateFloatAsState(
-                targetValue = if (startAnimation) 1f else 0f,
-                animationSpec = tween(
+                targetValue = if (startAnimation) 1f else 0f, animationSpec = tween(
                     durationMillis = 1000
                 )
             )
-            LaunchedEffect(key1 = true){
+            LaunchedEffect(key1 = true) {
                 startAnimation = true
                 delay(1000)
             }
-                SecondRegistrationScreen(
-                    navController = navController,
-                    createAccountViewModel = createAccountViewModel,
-                    alpha = alphaAnim.value
-                )
-            }
+            SecondRegistrationScreen(
+                navController = navController,
+                createAccountViewModel = createAccountViewModel,
+                alpha = alphaAnim.value
+            )
+        }
+
         2 -> {
             var startAnimation by remember {
                 mutableStateOf(false)
             }
             val alphaAnim = animateFloatAsState(
-                targetValue = if (startAnimation) 1f else 0f,
-                animationSpec = tween(
+                targetValue = if (startAnimation) 1f else 0f, animationSpec = tween(
                     durationMillis = 1000
                 )
             )
-            LaunchedEffect(key1 = true){
+            LaunchedEffect(key1 = true) {
                 startAnimation = true
                 delay(1000)
             }
@@ -145,24 +147,21 @@ fun CreateAccount(
 @Composable
 fun FullName(createAccountViewModel: CreateAccountViewModel) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
-        OutlinedTextField(
-            value = createAccountViewModel.fullName,
+        OutlinedTextField(value = createAccountViewModel.fullName,
             onValueChange = {
                 createAccountViewModel.fullName = it
             },
-            placeholder = {Text(text = "Name")},
+            placeholder = { Text(text = "Name") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
+                keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
             ),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                //textColor = MaterialTheme.colorScheme.onSurface,
+                // placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             shape = RoundedCornerShape(10.dp),
@@ -177,24 +176,21 @@ fun FullName(createAccountViewModel: CreateAccountViewModel) {
 @Composable
 fun Username(createAccountViewModel: CreateAccountViewModel) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
-        OutlinedTextField(
-            value = createAccountViewModel.username,
+        OutlinedTextField(value = createAccountViewModel.username,
             onValueChange = {
                 createAccountViewModel.username = it
             },
-            placeholder = {Text(text = "Username")},
+            placeholder = { Text(text = "Username") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
+                keyboardType = KeyboardType.Text, imeAction = ImeAction.Next
             ),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                // textColor = MaterialTheme.colorScheme.onSurface,
+                //placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             shape = RoundedCornerShape(10.dp),
@@ -213,21 +209,19 @@ fun Email(createAccountViewModel: CreateAccountViewModel) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        OutlinedTextField(
-            value = createAccountViewModel.email,
+        OutlinedTextField(value = createAccountViewModel.email,
             onValueChange = {
                 createAccountViewModel.email = it
             },
-            placeholder = {Text(text = "Email")},
+            placeholder = { Text(text = "Email") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next
+                keyboardType = KeyboardType.Email, imeAction = ImeAction.Next
             ),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                // textColor = MaterialTheme.colorScheme.onSurface,
+                //placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             shape = RoundedCornerShape(10.dp),
@@ -242,24 +236,21 @@ fun Email(createAccountViewModel: CreateAccountViewModel) {
 @Composable
 fun PhoneNumber(createAccountViewModel: CreateAccountViewModel) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
-        OutlinedTextField(
-            value = createAccountViewModel.formatedPhoneNumber,
+        OutlinedTextField(value = createAccountViewModel.formatedPhoneNumber,
             onValueChange = {
                 createAccountViewModel.formatedPhoneNumber = it
             },
-            placeholder = { Text(text = "Phone")    },
+            placeholder = { Text(text = "Phone") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Phone,
-                imeAction = ImeAction.Next
+                keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next
             ),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                // textColor = MaterialTheme.colorScheme.onSurface,
+                //placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             shape = RoundedCornerShape(10.dp),
@@ -276,32 +267,28 @@ fun PhoneNumber(createAccountViewModel: CreateAccountViewModel) {
 @Composable
 fun Password(createAccountViewModel: CreateAccountViewModel) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = createAccountViewModel.password,
+        OutlinedTextField(value = createAccountViewModel.password,
             onValueChange = {
                 createAccountViewModel.password = it
             },
-            placeholder = { Text(text = "Password")},
-            visualTransformation = if (createAccountViewModel.showPassword)
-                VisualTransformation.None else PasswordVisualTransformation(),
+            placeholder = { Text(text = "Password") },
+            visualTransformation = if (createAccountViewModel.showPassword) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 IconButton(onClick = { createAccountViewModel.hidePassword() }) {
                     Icon(
-                        imageVector = if (createAccountViewModel.showPassword)
-                            Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                        imageVector = if (createAccountViewModel.showPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                         contentDescription = "Password icon"
                     )
                 }
             },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Next
+                keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
             ),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                //textColor = MaterialTheme.colorScheme.onSurface,
+                //placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             shape = RoundedCornerShape(10.dp),
@@ -319,32 +306,28 @@ fun Password(createAccountViewModel: CreateAccountViewModel) {
 @Composable
 fun ConfirmPassword(createAccountViewModel: CreateAccountViewModel) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = createAccountViewModel.confirmPassword,
+        OutlinedTextField(value = createAccountViewModel.confirmPassword,
             onValueChange = {
                 createAccountViewModel.confirmPassword = it
             },
-            placeholder = {Text(text = "Confirm password")},
-            visualTransformation = if (createAccountViewModel.showConfirmPassword)
-                VisualTransformation.None else PasswordVisualTransformation(),
+            placeholder = { Text(text = "Confirm password") },
+            visualTransformation = if (createAccountViewModel.showConfirmPassword) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Next
+                keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
 
             ),
             trailingIcon = {
                 IconButton(onClick = { createAccountViewModel.hideConfirmPassword() }) {
                     Icon(
-                        imageVector = if (createAccountViewModel.showConfirmPassword)
-                            Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                        imageVector = if (createAccountViewModel.showConfirmPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                         contentDescription = "Password icon"
                     )
                 }
             },
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                textColor = MaterialTheme.colorScheme.onSurface,
-                placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                //textColor = MaterialTheme.colorScheme.onSurface,
+                //placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
             singleLine = true,
@@ -353,7 +336,7 @@ fun ConfirmPassword(createAccountViewModel: CreateAccountViewModel) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
 
-            )
+        )
     }
 }
 
@@ -361,9 +344,7 @@ fun ConfirmPassword(createAccountViewModel: CreateAccountViewModel) {
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun FirstRegistrationScreen(
-    navController: NavHostController,
-    createAccountViewModel: CreateAccountViewModel,
-    alpha:Float
+    navController: NavHostController, createAccountViewModel: CreateAccountViewModel, alpha: Float
 ) {
     val scrollState = rememberScrollState()
     val imeState = rememberImeState()
@@ -390,16 +371,14 @@ fun FirstRegistrationScreen(
                 .fillMaxWidth(0.65f)
                 .padding(16.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
+            Icon(imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Go Back",
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
                         navController.popBackStack()
-                    }
-            )
+                    })
             Text(
                 text = "Sign up",
                 color = MaterialTheme.colorScheme.tertiary,
@@ -441,32 +420,19 @@ fun FirstRegistrationScreen(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .padding(horizontal = 32.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                    .clickable(
-                        enabled = createAccountViewModel.fullName.isNotBlank() &&
-                                createAccountViewModel.username.isNotBlank()
-                    ) {
-                        createAccountViewModel.next()
-                    }
-            ) {
+            FilledTonalButton(colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            ),
+                enabled = createAccountViewModel.fullName.isNotBlank() && createAccountViewModel.username.isNotBlank(),
+                onClick = { createAccountViewModel.next() }) {
                 Text(
                     text = "Next",
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                )
-            }
 
+                    )
+            }
         }
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -474,9 +440,7 @@ fun FirstRegistrationScreen(
 
 @Composable
 fun SecondRegistrationScreen(
-    navController: NavHostController,
-    createAccountViewModel: CreateAccountViewModel,
-    alpha:Float
+    navController: NavHostController, createAccountViewModel: CreateAccountViewModel, alpha: Float
 ) {
     val scrollState = rememberScrollState()
     val imeState = rememberImeState()
@@ -503,31 +467,27 @@ fun SecondRegistrationScreen(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
+            Icon(imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Go Back",
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
                         createAccountViewModel.back()
-                    }
-            )
+                    })
             Text(
                 text = "Sign up",
                 color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.bodyMedium
             )
-            Icon(
-                imageVector = Icons.Default.Close,
+            Icon(imageVector = Icons.Default.Close,
                 contentDescription = "Cancel",
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
                         navController.popBackStack()
-                    }
-            )
+                    })
         }
         Column(
             verticalArrangement = Arrangement.Center,
@@ -562,41 +522,27 @@ fun SecondRegistrationScreen(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .padding(horizontal = 32.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                    .clickable(
-                        enabled = createAccountViewModel.email.contains("@") &&
-                                createAccountViewModel.phoneNumber.length >= 10
-                    ) {
-                        createAccountViewModel.next()
-                    }
-            ) {
+            FilledTonalButton(colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            ),
+                enabled = createAccountViewModel.email.contains("@") && createAccountViewModel.phoneNumber.length >= 10,
+                onClick = { createAccountViewModel.next() }) {
                 Text(
                     text = "Next",
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                )
-            }
 
+                    )
+            }
         }
+
     }
 }
 
 @Composable
 fun ThirdRegistrationScreen(
-    navController: NavHostController,
-    createAccountViewModel: CreateAccountViewModel,
-    alpha:Float
+    navController: NavHostController, createAccountViewModel: CreateAccountViewModel, alpha: Float
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -609,8 +555,7 @@ fun ThirdRegistrationScreen(
     }
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.sign_up))
     val progress by animateLottieCompositionAsState(
-        composition = composition,
-        iterations = LottieConstants.IterateForever
+        composition = composition, iterations = LottieConstants.IterateForever
     )
     Column(
         modifier = Modifier
@@ -630,31 +575,27 @@ fun ThirdRegistrationScreen(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
+            Icon(imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Go Back",
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
                         createAccountViewModel.back()
-                    }
-            )
+                    })
             Text(
                 text = "Sign up",
                 color = MaterialTheme.colorScheme.tertiary,
                 style = MaterialTheme.typography.bodyMedium
             )
-            Icon(
-                imageVector = Icons.Default.Close,
+            Icon(imageVector = Icons.Default.Close,
                 contentDescription = "Cancel",
                 tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .size(20.dp)
                     .clickable {
                         navController.popBackStack()
-                    }
-            )
+                    })
         }
         Column(
             verticalArrangement = Arrangement.Center,
@@ -683,57 +624,55 @@ fun ThirdRegistrationScreen(
 
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            if (createAccountViewModel.showCircularProcessBar) CircularProgressBar()
-            else Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .padding(horizontal = 32.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                    .clickable(
-                        enabled = createAccountViewModel.password == createAccountViewModel.confirmPassword
-                                && createAccountViewModel.password.isNotBlank() && createAccountViewModel.confirmPassword.isNotBlank()
+        if (createAccountViewModel.showCircularProcessBar) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    strokeWidth = 4.dp,
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+            }
 
-                    ) {
+        }else{
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                FilledTonalButton(colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                ),
+                    enabled = createAccountViewModel.password == createAccountViewModel.confirmPassword && createAccountViewModel.password.isNotBlank() && createAccountViewModel.confirmPassword.isNotBlank(),
+                    onClick = {
                         scope.launch {
                             when (createAccountViewModel.createAccount()) {
                                 "user created" -> {
                                     navController.popBackStack()
                                     showMessage(context, "Registration Successful")
                                 }
+
                                 "user exists" -> showMessage(context, "User already exists")
                                 null -> showMessage(context, "Registration failed")
                             }
                         }
-                    }
-            ) {
-                Text(
-                    text = "Register",
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                )
+                    }) {
+                    Text(
+                        text = "Register",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodySmall,
 
+                        )
+                }
             }
-
         }
-
-
     }
 }
-
-
-
-
 
 
 @Composable

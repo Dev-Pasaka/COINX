@@ -243,8 +243,8 @@ fun MpesaSafaricomPaymentMethod(merchantInformationViewModel: MerchantPaymentInf
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    textColor = MaterialTheme.colorScheme.onSurface,
-                    placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                  //  textColor = MaterialTheme.colorScheme.onSurface,
+                    //placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     errorIndicatorColor = MaterialTheme.colorScheme.error
                 ),
@@ -347,8 +347,8 @@ fun MpesaPaybillPaymentMethod(merchantInformationViewModel: MerchantPaymentInfor
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    textColor = MaterialTheme.colorScheme.onSurface,
-                    placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                   // textColor = MaterialTheme.colorScheme.onSurface,
+                   // placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     errorIndicatorColor = MaterialTheme.colorScheme.error
                 ),
@@ -378,8 +378,8 @@ fun MpesaPaybillPaymentMethod(merchantInformationViewModel: MerchantPaymentInfor
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    textColor = MaterialTheme.colorScheme.onSurface,
-                    placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                   // textColor = MaterialTheme.colorScheme.onSurface,
+                  //  placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     errorIndicatorColor = MaterialTheme.colorScheme.error
                 ),
@@ -483,8 +483,8 @@ fun MpesaTillPaymentMethod(merchantInformationViewModel: MerchantPaymentInformat
                 shape = RoundedCornerShape(10.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    textColor = MaterialTheme.colorScheme.onSurface,
-                    placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    //textColor = MaterialTheme.colorScheme.onSurface,
+                   // placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     errorIndicatorColor = MaterialTheme.colorScheme.error
                 ),

@@ -30,6 +30,7 @@ sealed class Screen(val route:String){
     object InviteFriends:Screen("invite_friends")
     object BecomeMerchant:Screen("become_merchant")
     object MerchantPaymentInformation:Screen("merchant_payment_information")
+    object ComingSoon:Screen("coming_soon")
 
 
 

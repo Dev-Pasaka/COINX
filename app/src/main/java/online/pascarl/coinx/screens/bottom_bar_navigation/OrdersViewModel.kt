@@ -20,6 +20,8 @@ class OrdersViewModel: ViewModel() {
     init {
         dummyOrders()
         filterOrders(filterMethod = _orderSelected)
+        _dummyOrders.clear()
+        filteredList.clear()
     }
     private fun dummyOrders(){
         val orderStatuses = listOf("Completed", "Pending", "Cancelled", "Expired")

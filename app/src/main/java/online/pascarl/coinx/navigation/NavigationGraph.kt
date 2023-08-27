@@ -32,6 +32,7 @@ import online.pascarl.coinx.screens.buyOrSell.ReleasingScreen
 import online.pascarl.coinx.screens.buyOrSell.SellConfirmationScreen
 import online.pascarl.coinx.screens.buyOrSell.SellOrderCreationScreen
 import online.pascarl.coinx.screens.buyOrSell.TransferMoneyScreen
+import online.pascarl.coinx.screens.releases.ComingSoon
 import online.pascarl.spx.screens.CreateAccount
 
 
@@ -124,7 +125,6 @@ fun NavGraph(navController: NavHostController) {
 
 
 
-
         navigation(
             startDestination = Screen.BuyOrSellCryptos.route,
             route = "buy_or_sell"
@@ -157,6 +157,10 @@ fun NavGraph(navController: NavHostController) {
                 ReleasingScreen(navController = navController, sharedViewModel = sharedViewModel)
             }
 
+        }
+
+        composable(route = Screen.ComingSoon.route){
+            ComingSoon(navController = navController)
         }
 
 

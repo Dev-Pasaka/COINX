@@ -25,7 +25,7 @@ sealed class BottomBarScreen(
     )
     object Swap : BottomBarScreen(
         route = Screen.Swap.route,
-        title = "swap",
+        title = "",
         icon = Icons.Default.CompareArrows
     )
     object Orders : BottomBarScreen(
@@ -38,4 +38,10 @@ sealed class BottomBarScreen(
         title = "Wallet",
         icon = Icons.Default.AccountBalanceWallet
     )
+
 }
+
+data class Swap(
+    val icon: ImageVector  = Icons.Default.CompareArrows,
+    val route:String = Screen.Swap.route,
+)

@@ -15,12 +15,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.Outlined
 import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Update
-import androidx.compose.material.icons.filled.VerifiedUser
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
@@ -72,6 +66,7 @@ import online.pascarl.coinx.R
 import online.pascarl.coinx.navigation.BottomBarViewModel
 import online.pascarl.coinx.navigation.CustomBottomNavigation
 import online.pascarl.coinx.navigation.DrawerItems
+import online.pascarl.coinx.navigation.ISCOMINGSOONSCREENON
 import online.pascarl.coinx.navigation.LogOutDialog
 import online.pascarl.coinx.navigation.NavDrawer
 import online.pascarl.coinx.navigation.NavigationDrawer
@@ -157,7 +152,7 @@ fun Dashboard(
                         text = "Coinx",
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.titleLarge,
-                        )
+                    )
                 }
                 dashboardViewModel.drawerItems.forEach { item ->
                     NavigationDrawerItem(
@@ -173,21 +168,25 @@ fun Dashboard(
                                         popUpTo(Screen.BecomeMerchant.route) { inclusive = true }
                                     }
                                 }
-                                "Invite friends" ->{
+
+                                "Invite friends" -> {
                                     navController.navigate(Screen.InviteFriends.route) {
                                         popUpTo(Screen.InviteFriends.route) { inclusive = true }
                                     }
                                 }
-                                "Contact us" ->{
+
+                                "Contact us" -> {
                                     navController.navigate(Screen.ContactUs.route) {
                                         popUpTo(Screen.ContactUs.route) { inclusive = true }
                                     }
                                 }
+
                                 "Settings" -> {
                                     navController.navigate(Screen.Settings.route) {
                                         popUpTo(Screen.Settings.route) { inclusive = true }
                                     }
                                 }
+
                                 "Logout" -> {
                                     dashboardViewModel.openDialog = true
                                 }
@@ -417,8 +416,12 @@ fun WalletCardComposable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(bounded = true),
                         ) {
-                            ISBUYSELECTED = "Buy"
-                            navController.navigate("buy_or_sell")
+                            if (ISCOMINGSOONSCREENON){
+                                navController.navigate(route = Screen.ComingSoon.route)
+                            }else{
+                                ISBUYSELECTED = "Buy"
+                                navController.navigate("buy_or_sell")
+                            }
                         }
                 ) {
                     Icon(
@@ -447,8 +450,12 @@ fun WalletCardComposable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(bounded = true),
                         ) {
-                            ISBUYSELECTED = "Sell"
-                            navController.navigate(Screen.BuyOrSellCryptos.route)
+                           if(ISCOMINGSOONSCREENON){
+                               navController.navigate(route = Screen.ComingSoon.route)
+                           }else{
+                               ISBUYSELECTED = "Sell"
+                               navController.navigate(Screen.BuyOrSellCryptos.route)
+                           }
                         }
                 ) {
 
@@ -477,7 +484,13 @@ fun WalletCardComposable(
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(bounded = true),
-                        ) { }
+                        ) {
+                            if (ISCOMINGSOONSCREENON){
+                                navController.navigate(route = Screen.ComingSoon.route)
+                            }else{
+
+                            }
+                        }
                 ) {
                     Icon(
                         imageVector = Outlined.CreditCard,
@@ -504,7 +517,13 @@ fun WalletCardComposable(
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(bounded = true),
-                        ) { }
+                        ) {
+                            if (ISCOMINGSOONSCREENON){
+                                navController.navigate(route = Screen.ComingSoon.route)
+                            }else{
+
+                            }
+                        }
                 ) {
                     Icon(
                         imageVector = Outlined.Send,
@@ -1066,11 +1085,13 @@ fun CryptoListPreview() {
 
 
 @Composable
-fun LogOutAlertDialog(navController: NavHostController,dashboardViewModel: DashboardViewModel) {
+fun LogOutAlertDialog(navController: NavHostController, dashboardViewModel: DashboardViewModel) {
     val context = LocalContext.current
     val roomDB = RoomViewModel(
         application = Application(),
-        userRepository = UserRepository(UserDatabase.getInstance(LocalContext.current.applicationContext).userDao())
+        userRepository = UserRepository(
+            UserDatabase.getInstance(LocalContext.current.applicationContext).userDao()
+        )
     )
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -1086,7 +1107,7 @@ fun LogOutAlertDialog(navController: NavHostController,dashboardViewModel: Dashb
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.secondary
             )
-               },
+        },
         title = {
             Text(
                 text = "Logout Confirmation",
@@ -1099,7 +1120,7 @@ fun LogOutAlertDialog(navController: NavHostController,dashboardViewModel: Dashb
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
 
 
-            )
+                )
         },
         confirmButton = {
             TextButton(
@@ -1108,7 +1129,7 @@ fun LogOutAlertDialog(navController: NavHostController,dashboardViewModel: Dashb
                     if (result > 0) {
                         showMessage(context, "Logging you out")
                         navController.navigate(Screen.Register.route) {
-                            popUpTo(Screen.Register.route) { inclusive = true}
+                            popUpTo(Screen.Register.route) { inclusive = true }
                         }
 
                     }
