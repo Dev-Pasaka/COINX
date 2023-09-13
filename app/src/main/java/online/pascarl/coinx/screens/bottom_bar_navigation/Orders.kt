@@ -66,7 +66,6 @@ fun OrderPreview(){
 @Composable
 fun Orders(
     navController: NavHostController,
-    bottomBarViewModel: BottomBarViewModel = viewModel(),
     ordersViewModel: OrdersViewModel  = viewModel()
 ){
     val context = LocalContext.current

@@ -2,7 +2,7 @@ buildscript {
     ext {
         kotlinVersion = "1.8.0"
 
-        compose_ui_version = '1.4.1'
+        compose_ui_version = "1.4.1"
 
     }
     dependencies {
@@ -14,6 +14,8 @@ buildscript {
         google()
         mavenCentral()
         maven {url "https://maven.google.com"}
+
+
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {

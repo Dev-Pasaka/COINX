@@ -8,6 +8,7 @@ import io.ktor.client.request.post
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import online.pascarl.coinx.KtorClient.KtorClient
+import online.pascarl.coinx.config.AppConfigs
 import online.pascarl.coinx.model.UpdatePassword
 import online.pascarl.coinx.model.UpdatePasswordResponse
 
@@ -42,7 +43,7 @@ class UpdatePasswordViewModel: ViewModel() {
     suspend fun updatePassword(){
         formValidation()
         try {
-            val response = KtorClient.httpClient.post<UpdatePasswordResponse>("https://coinx-2590f763d976.herokuapp.com/updatePassword"){
+            val response = KtorClient.httpClient.post<UpdatePasswordResponse>("${AppConfigs.COINX_API}updatePassword"){
                 contentType(ContentType.Application.Json)
                 body = UpdatePassword(
                     newPassword = newPassword,

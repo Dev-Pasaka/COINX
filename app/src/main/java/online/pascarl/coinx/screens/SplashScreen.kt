@@ -24,6 +24,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.google.firebase.appcheck.ktx.appCheck
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.initialize
 import kotlinx.coroutines.delay
 import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.roomDB.RoomUser
@@ -34,6 +38,7 @@ import online.pascarl.coinx.roomDB.UserRepository
 
 @Composable
 fun AnimatedSplashScreen(navController: NavHostController, splashScreenViewModel: SplashScreenViewModel = viewModel()){
+    val context = LocalContext.current
     val roomDB = RoomViewModel(
         application = Application(),
         userRepository = UserRepository(UserDatabase.getInstance(LocalContext.current.applicationContext).userDao())
@@ -52,6 +57,8 @@ fun AnimatedSplashScreen(navController: NavHostController, splashScreenViewModel
 
 
     LaunchedEffect(key1 = true){
+
+
         startAnimation = true
         delay(3000)
         navController.popBackStack()

@@ -1,6 +1,8 @@
 package online.pascarl.coinx.screens.auth_screen
 
 import android.app.Activity
+import android.app.Application
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,12 +11,15 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
 import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.ktx.appCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.initialize
 import io.ktor.client.request.post
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -23,6 +28,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import online.pascarl.coinx.KtorClient.KtorClient
+import online.pascarl.coinx.config.AppConfigs
 import online.pascarl.coinx.model.Phone
 import online.pascarl.coinx.model.VerifyPhoneResponse
 
@@ -41,7 +47,7 @@ class ResetPasswordViewModel: ViewModel() {
 
     suspend fun verifyPhoneNumber():VerifyPhoneResponse?{
         val result =  try {
-           val response = KtorClient.httpClient.post<VerifyPhoneResponse>("https://coinx-2590f763d976.herokuapp.com/verifyPhoneNumber"){
+           val response = KtorClient.httpClient.post<VerifyPhoneResponse>("${AppConfigs.COINX_API}verifyPhoneNumber"){
                 contentType(ContentType.Application.Json)
                 body = Phone(phoneNumber = phoneNumber)
             }
@@ -58,7 +64,11 @@ class ResetPasswordViewModel: ViewModel() {
         return result
 
     }
-    fun sendOtp(activity: Activity, phoneNumber: String) {
+    fun sendOtp(activity: Activity, context: Context, phoneNumber: String) {
+        Firebase.initialize(context = context)
+        Firebase.appCheck.installAppCheckProviderFactory(
+            PlayIntegrityAppCheckProviderFactory.getInstance(),
+        )
         val firebaseAuth = FirebaseAuth.getInstance()
         val options = PhoneAuthOptions.newBuilder(firebaseAuth)
             .setPhoneNumber(phoneNumber)

@@ -81,7 +81,6 @@ import online.pascarl.coinx.screens.NoInternet
 fun NewsFeed(
     navController: NavHostController,
     newsFeedViewModel: NewsFeedViewModel = viewModel(),
-    bottomBarViewModel: BottomBarViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val isNetworkAvailable  = isInternetAvailable(context = context)

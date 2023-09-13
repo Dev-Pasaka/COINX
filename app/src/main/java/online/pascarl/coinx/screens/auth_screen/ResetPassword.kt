@@ -1,6 +1,7 @@
 package online.pascarl.coinx.screens.auth_screen
 
 import android.app.Activity
+import android.app.Application
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -149,8 +150,6 @@ fun ResetPassword(
             shape = RoundedCornerShape(10.dp),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                //textColor = MaterialTheme.colorScheme.onSurface,
-                //placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 errorIndicatorColor = MaterialTheme.colorScheme.error
             ),
@@ -209,6 +208,7 @@ fun ResetPassword(
                             showMessage(context, "Launching recaptcha ...")
                             resetPasswordViewModel.sendOtp(
                                 activity = activity!!,
+                                context = context ,
                                 phoneNumber = resetPasswordViewModel.phoneNumber
                             )
                             navController.popBackStack()

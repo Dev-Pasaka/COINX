@@ -200,15 +200,13 @@ fun RegisterScreen(
                                     imageVector = Icons.Filled.VisibilityOff,
                                     contentDescription = "Hide password"
                                 )
-                                //Text(text = "show")
+
 
                             }
                         }
                     },
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        //textColor = MaterialTheme.colorScheme.onSurface,
-                        //placeholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         errorIndicatorColor = MaterialTheme.colorScheme.error,
                         unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant,
 
@@ -239,7 +237,6 @@ fun RegisterScreen(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 /** Sign In Button */
-
                 FilledTonalButton(
                     onClick = {
                         scope.launch {
@@ -257,7 +254,9 @@ fun RegisterScreen(
                                         )
                                     )
                                     showMessage(context, "Signing in ...")
-                                    navController.navigate(Screen.Dashboard.route)
+                                    navController.navigate(Screen.Dashboard.route){
+                                        popUpTo(Screen.Dashboard.route)
+                                    }
                                 } else {
                                     roomDB.updateUser(
                                         user = RoomUser(
@@ -266,7 +265,9 @@ fun RegisterScreen(
                                         )
                                     )
                                     showMessage(context, "Signing in ...")
-                                    navController.navigate(Screen.Dashboard.route)
+                                    navController.navigate(Screen.Dashboard.route){
+                                        popUpTo(Screen.Dashboard.route)
+                                    }
                                 }
                             } else {
                                 showMessage(context, "Invalid email or password")

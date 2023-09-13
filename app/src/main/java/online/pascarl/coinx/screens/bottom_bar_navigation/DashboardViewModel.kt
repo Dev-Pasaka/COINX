@@ -1,5 +1,6 @@
 package online.pascarl.coinx.screens.bottom_bar_navigation
 
+import android.app.Application
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.JoinFull
@@ -20,6 +21,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.ktor.client.request.get
@@ -33,18 +35,40 @@ import io.ktor.http.HttpHeaders.Authorization
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import online.pascarl.coinx.config.AppConfigs
 import online.pascarl.coinx.model.CryptoModel
 import online.pascarl.coinx.model.CryptoSymbols
 import online.pascarl.coinx.model.UserData
 import online.pascarl.coinx.model.UserPortfolio
 import online.pascarl.coinx.navigation.DrawerItems
 import online.pascarl.coinx.roomDB.RoomUser
+import online.pascarl.coinx.roomDB.RoomViewModel
+import online.pascarl.coinx.roomDB.UserDatabase
+import online.pascarl.coinx.roomDB.UserRepository
 import java.text.NumberFormat
 import java.util.Currency
 
-class DashboardViewModel : ViewModel() {
-
+class DashboardViewModel(): ViewModel() {
+//    val roomDB = RoomViewModel(
+//        application = application,
+//        userRepository = userRepository
+//    )
     var roomUser by mutableStateOf(RoomUser())
+
+    init {
+        viewModelScope.launch {/*
+            try{
+                roomUser = roomDB.getUser("12345678") ?: RoomUser()
+                getCryptoPrices()
+                cryptoPrices()
+                getUserData()
+                getUserPortfolio()
+            }catch(e:Exception){
+                e.printStackTrace()
+            }*/
+        }
+    }
+
     private var _cryptocurrencies = mutableStateListOf<Cryptocurrency?>()
     private val _cryptoModel = mutableStateListOf<CryptoModel>()
     val cryptoModel: List<CryptoModel> get() = _cryptoModel.take(10)
@@ -97,7 +121,7 @@ class DashboardViewModel : ViewModel() {
     suspend fun getUserData() {
         val result = try {
             KtorClient.httpClient.get<UserData> {
-                url("https://coinx-2590f763d976.herokuapp.com/getUserData?email=${roomUser.email}")
+                url("${AppConfigs.COINX_API}getUserData?email=${roomUser.email}")
                 headers {
                     append(Authorization, "Bearer ${roomUser.token}")
                 }
@@ -218,7 +242,7 @@ class DashboardViewModel : ViewModel() {
     suspend fun getUserPortfolio() {
         val result = try {
             KtorClient.httpClient.get<UserPortfolio> {
-                url("https://coinx-2590f763d976.herokuapp.com/getUserPortfolio?email=${roomUser.email}")
+                url("${AppConfigs.COINX_API}getUserPortfolio?email=${roomUser.email}")
                 headers {
                     append(Authorization, "Bearer ${roomUser.token}")
                 }

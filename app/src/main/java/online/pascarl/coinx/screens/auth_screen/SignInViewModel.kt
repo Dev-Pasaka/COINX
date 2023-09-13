@@ -11,6 +11,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.coroutines.tasks.await
 import online.pascarl.coinx.KtorClient.KtorClient
+import online.pascarl.coinx.config.AppConfigs
 import online.pascarl.coinx.model.SignIn
 import online.pascarl.coinx.model.Token
 import online.pascarl.coinx.roomDB.RoomUser
@@ -46,7 +47,7 @@ class SignInViewModel: ViewModel() {
 
     suspend fun getSignInToken(){
         try {
-            val response = KtorClient.httpClient.post<Token>("https://coinx-2590f763d976.herokuapp.com/signIn"){
+            val response = KtorClient.httpClient.post<Token>("${AppConfigs.COINX_API}signIn"){
                 contentType(ContentType.Application.Json)
                 body = SignIn(
                     email = email,

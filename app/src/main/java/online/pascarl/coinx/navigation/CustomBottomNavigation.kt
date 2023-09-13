@@ -100,7 +100,7 @@ fun CustomBottomNavigation(navController: NavHostController) {
                                        imageVector = Swap().icon,
                                        contentDescription = Swap().route,
                                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                       modifier = Modifier.padding(8.dp)
+                                       modifier = Modifier.padding(12.dp)
                                    )
                                }
                         },

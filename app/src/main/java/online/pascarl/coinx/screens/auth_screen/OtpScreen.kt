@@ -1,6 +1,7 @@
 package online.pascarl.coinx.screens.auth_screen
 
 import android.app.Activity
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -251,7 +252,8 @@ fun ResendOTP(resetPasswordViewModel: ResetPasswordViewModel) {
                     scope.launch {
                         resetPasswordViewModel.sendOtp(
                             activity = activity!!,
-                            phoneNumber = PHONENUMBER
+                            phoneNumber = PHONENUMBER,
+                            context = context
                         )
                         resetPasswordViewModel.startTimer()
                     }

@@ -46,6 +46,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -79,7 +81,6 @@ import online.pascarl.coinx.screens.NoInternet
 import online.pascarl.coinx.screens.auth_screen.showMessage
 import online.pascarl.coinx.screens.buyOrSell.BuyOrSellCryptosViewModel
 import online.pascarl.coinx.screens.buyOrSell.ISBUYSELECTED
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true)
@@ -416,9 +417,9 @@ fun WalletCardComposable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(bounded = true),
                         ) {
-                            if (ISCOMINGSOONSCREENON){
+                            if (ISCOMINGSOONSCREENON) {
                                 navController.navigate(route = Screen.ComingSoon.route)
-                            }else{
+                            } else {
                                 ISBUYSELECTED = "Buy"
                                 navController.navigate("buy_or_sell")
                             }
@@ -450,12 +451,12 @@ fun WalletCardComposable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(bounded = true),
                         ) {
-                           if(ISCOMINGSOONSCREENON){
-                               navController.navigate(route = Screen.ComingSoon.route)
-                           }else{
-                               ISBUYSELECTED = "Sell"
-                               navController.navigate(Screen.BuyOrSellCryptos.route)
-                           }
+                            if (ISCOMINGSOONSCREENON) {
+                                navController.navigate(route = Screen.ComingSoon.route)
+                            } else {
+                                ISBUYSELECTED = "Sell"
+                                navController.navigate(Screen.BuyOrSellCryptos.route)
+                            }
                         }
                 ) {
 
@@ -485,9 +486,9 @@ fun WalletCardComposable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(bounded = true),
                         ) {
-                            if (ISCOMINGSOONSCREENON){
+                            if (ISCOMINGSOONSCREENON) {
                                 navController.navigate(route = Screen.ComingSoon.route)
-                            }else{
+                            } else {
 
                             }
                         }
@@ -518,9 +519,9 @@ fun WalletCardComposable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(bounded = true),
                         ) {
-                            if (ISCOMINGSOONSCREENON){
+                            if (ISCOMINGSOONSCREENON) {
                                 navController.navigate(route = Screen.ComingSoon.route)
-                            }else{
+                            } else {
 
                             }
                         }
@@ -836,7 +837,10 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
                         MaterialTheme.colorScheme.secondaryContainer
                     else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
                 )
-                .clickable {
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(bounded = true),
+                ) {
                     dashboardViewModel.filterCryptos("market-cap")
                     dashboardViewModel.sortCryptos("market-cap")
                 }
@@ -863,7 +867,10 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
                         MaterialTheme.colorScheme.secondaryContainer
                     else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
                 )
-                .clickable {
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(bounded = true),
+                ) {
                     dashboardViewModel.filterCryptos("price")
                     dashboardViewModel.sortCryptos("price")
                 }
@@ -890,7 +897,10 @@ fun FilterChips(modifier: Modifier = Modifier, dashboardViewModel: DashboardView
                         MaterialTheme.colorScheme.secondaryContainer
                     else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
                 )
-                .clickable {
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(bounded = true),
+                ) {
                     dashboardViewModel.filterCryptos("24h-change")
                     dashboardViewModel.sortCryptos("24h-change")
                 }

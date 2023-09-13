@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.ktx.auth
@@ -14,6 +15,8 @@ import io.ktor.http.contentType
 import kotlinx.coroutines.tasks.await
 import online.pascarl.coinx.Country
 import online.pascarl.coinx.KtorClient.KtorClient
+import online.pascarl.coinx.R
+import online.pascarl.coinx.config.AppConfigs
 import online.pascarl.coinx.getCountriesList
 import online.pascarl.coinx.model.AccountCreationResponse
 import online.pascarl.coinx.model.User
@@ -81,7 +84,7 @@ class CreateAccountViewModel : ViewModel() {
 
     private suspend fun registerUser(): AccountCreationResponse? {
         return try {
-            KtorClient.httpClient.post<AccountCreationResponse>("https://coinx-2590f763d976.herokuapp.com/registerUser") {
+            KtorClient.httpClient.post<AccountCreationResponse>("${AppConfigs.COINX_API}registerUser") {
                 contentType(ContentType.Application.Json)
                 body = User(
                     fullName = fullName,
