@@ -142,7 +142,9 @@ fun WalletBody(navController:NavHostController) {
             .background(color = MaterialTheme.colorScheme.background)
             .verticalScroll(state = scrollState)
     ) {
-        Column {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween
+        ){
             WalletTopSection(navController = navController, walletViewModel = walletViewModel)
             WalletMiddleSection(walletViewModel = walletViewModel)
             WalletBottomSection(walletViewModel = walletViewModel)
