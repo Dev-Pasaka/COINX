@@ -119,19 +119,21 @@ class DashboardViewModel(): ViewModel() {
     }
 
     suspend fun getUserData() {
+        println("Token = ${roomUser.token}")
         val result = try {
-            KtorClient.httpClient.get<UserData> {
-                url("${AppConfigs.COINX_API}getUserData?email=${roomUser.email}")
+            val response = KtorClient.httpClient.get<UserData> {
+                url("${AppConfigs.COINX_API}getUserData")
                 headers {
                     append(Authorization, "Bearer ${roomUser.token}")
                 }
             }
+            println("Response $response")
+            response
         } catch (e: Exception) {
             println("An exception was called ${e.printStackTrace()}")
             null
         }
         println("Here is user information $result")
-        _userInformation = UserData()
         result?.let {
             _userInformation = result
         }
@@ -242,13 +244,13 @@ class DashboardViewModel(): ViewModel() {
     suspend fun getUserPortfolio() {
         val result = try {
             KtorClient.httpClient.get<UserPortfolio> {
-                url("${AppConfigs.COINX_API}getUserPortfolio?email=${roomUser.email}")
+                url("${AppConfigs.COINX_API}getUserPortfolio")
                 headers {
                     append(Authorization, "Bearer ${roomUser.token}")
                 }
             }
-        } catch (_: Exception) {
-            println("An portfolio exception was called")
+        } catch (e: Exception) {
+            println("An portfolio exception was called : ${e.printStackTrace()}")
             null
         }
         println("Here is user portfolio $result")

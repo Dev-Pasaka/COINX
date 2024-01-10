@@ -19,7 +19,6 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,9 +44,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -57,7 +53,6 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.google.accompanist.flowlayout.SizeMode
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -65,13 +60,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.*
 import online.pascarl.coinx.R
-import online.pascarl.coinx.navigation.BottomBarViewModel
 import online.pascarl.coinx.navigation.CustomBottomNavigation
-import online.pascarl.coinx.navigation.DrawerItems
 import online.pascarl.coinx.navigation.ISCOMINGSOONSCREENON
-import online.pascarl.coinx.navigation.LogOutDialog
 import online.pascarl.coinx.navigation.NavDrawer
-import online.pascarl.coinx.navigation.NavigationDrawer
 import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.roomDB.RoomUser
 import online.pascarl.coinx.roomDB.RoomViewModel
@@ -79,8 +70,7 @@ import online.pascarl.coinx.roomDB.UserDatabase
 import online.pascarl.coinx.roomDB.UserRepository
 import online.pascarl.coinx.screens.NoInternet
 import online.pascarl.coinx.screens.auth_screen.showMessage
-import online.pascarl.coinx.screens.buyOrSell.BuyOrSellCryptosViewModel
-import online.pascarl.coinx.screens.buyOrSell.ISBUYSELECTED
+import online.pascarl.coinx.screens.buyOrSell.buyCryptoAds.ISBUYSELECTED
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true)
@@ -91,12 +81,10 @@ fun DashboardPreview() {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 
 @Composable
 fun Dashboard(
-    bottomBarViewModel: BottomBarViewModel = viewModel(),
     dashboardViewModel: DashboardViewModel = viewModel(),
     navController: NavHostController
 
@@ -120,7 +108,6 @@ fun Dashboard(
         delay(1000)
     }
 
-    //  val scaffoldState = rememberScaffoldState()
     val roomDB = RoomViewModel(
         application = Application(),
         userRepository = UserRepository(
@@ -346,8 +333,9 @@ fun WalletCardComposable(
     currencySymbol: String = "KES",
     navController: NavHostController,
     dashboardViewModel: DashboardViewModel,
-    buyOrSellCryptosViewModel: BuyOrSellCryptosViewModel = viewModel()
 ) {
+
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -417,12 +405,10 @@ fun WalletCardComposable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(bounded = true),
                         ) {
-                            if (ISCOMINGSOONSCREENON) {
-                                navController.navigate(route = Screen.ComingSoon.route)
-                            } else {
-                                ISBUYSELECTED = "Buy"
-                                navController.navigate("buy_or_sell")
-                            }
+
+                            ISBUYSELECTED = "Buy"
+                            navController.navigate("buy_or_sell")
+
                         }
                 ) {
                     Icon(
@@ -451,12 +437,9 @@ fun WalletCardComposable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(bounded = true),
                         ) {
-                            if (ISCOMINGSOONSCREENON) {
-                                navController.navigate(route = Screen.ComingSoon.route)
-                            } else {
-                                ISBUYSELECTED = "Sell"
-                                navController.navigate(Screen.BuyOrSellCryptos.route)
-                            }
+
+                            ISBUYSELECTED = "Sell"
+                            navController.navigate("buy_or_sell")
                         }
                 ) {
 

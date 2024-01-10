@@ -25,6 +25,7 @@ import androidx.core.view.WindowInsetsCompat
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
+import online.pascarl.coinx.model.CryptoSymbols
 import java.util.*
 
 
@@ -141,4 +142,21 @@ fun BottomUpAnimation(content: @Composable () -> Unit) {
         content = content,
         initiallyVisible = false
     )
+}
+fun getCryptoLogoUrl(input: String = CryptoSymbols.input, symbol: String = "eth"):String?{
+    val map = mutableMapOf<String, String>()
+    // Remove the curly braces at the beginning and end of the input string
+    val trimmedInput = input.trimStart('{').trimEnd('}')
+    // Split the input into individual key-value pairs using ', ' as a delimiter
+    val keyValuePairs = trimmedInput.split(", ")
+    // Iterate through each key-value pair and extract the key and value
+    keyValuePairs.forEach {
+        val (key, value) = it.split("=")
+        val trimmedKey = key.trim()
+        val trimmedValue = value.trim()
+        map[trimmedKey] = trimmedValue
+    }
+    // Print the entire map
+    println("Resulting Map: ${map[symbol.uppercase()]}")
+    return map[symbol.uppercase()]
 }

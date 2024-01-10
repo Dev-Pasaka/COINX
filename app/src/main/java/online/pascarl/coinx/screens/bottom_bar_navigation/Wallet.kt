@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -57,7 +56,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -75,16 +73,11 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 
 import kotlinx.coroutines.delay
 import online.pascarl.coinx.R
-import online.pascarl.coinx.model.UserPortfolio
-import online.pascarl.coinx.nav_drawer.MerchantPaymentInformationViewModel
-import online.pascarl.coinx.navigation.BottomBarViewModel
 import online.pascarl.coinx.navigation.CustomBottomNavigation
 import online.pascarl.coinx.navigation.ISCOMINGSOONSCREENON
 import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.roomDB.UserDatabase
 import online.pascarl.coinx.roomDB.UserRepository
-import online.pascarl.coinx.screens.buyOrSell.ISBUYSELECTED
-import java.lang.Double.NaN
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")

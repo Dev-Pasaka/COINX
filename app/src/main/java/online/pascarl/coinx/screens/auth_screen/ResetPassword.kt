@@ -52,16 +52,19 @@ fun ResetPasswordPreview(){
 @Composable
 fun ResetPassword(
     navController:NavHostController,
-    resetPasswordViewModel: ResetPasswordViewModel = viewModel()){
+    resetPasswordViewModel: ResetPasswordViewModel = viewModel())
+{
     val scope  = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     val imeState = rememberImeState()
     val context =  LocalContext.current
     val activity = LocalContext.current as? Activity
+
     LaunchedEffect(key1 = imeState.value) {
         if (imeState.value){
             scrollState.animateScrollTo(scrollState.maxValue, tween(500))
         }
+
     }
     Column(
         modifier = Modifier

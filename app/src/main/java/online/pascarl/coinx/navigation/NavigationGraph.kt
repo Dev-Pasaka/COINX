@@ -14,7 +14,6 @@ import online.pascarl.coinx.nav_drawer.ContactUs
 import online.pascarl.coinx.nav_drawer.InviteFriends
 import online.pascarl.coinx.nav_drawer.MerchantPaymentInformation
 import online.pascarl.coinx.nav_drawer.Settings
-import online.pascarl.coinx.nav_drawer.SettingsViewModel
 import online.pascarl.coinx.screens.*
 import online.pascarl.coinx.screens.auth_screen.EmailResetConfirmation
 import online.pascarl.coinx.screens.auth_screen.OtpScreen
@@ -22,16 +21,17 @@ import online.pascarl.coinx.screens.auth_screen.RegisterScreen
 import online.pascarl.coinx.screens.auth_screen.ResetPassword
 import online.pascarl.coinx.screens.auth_screen.UpdatePassword
 import online.pascarl.coinx.screens.bottom_bar_navigation.*
-import online.pascarl.coinx.screens.buyOrSell.BuyAmountScreen
-import online.pascarl.coinx.screens.buyOrSell.BuyConfirmationScreen
-import online.pascarl.coinx.screens.buyOrSell.BuyOrSellCryptos
+import online.pascarl.coinx.screens.bottom_bar_navigation.orders.Orders
+import online.pascarl.coinx.screens.buyOrSell.enterBuyAmount.BuyAmountScreen
+import online.pascarl.coinx.screens.buyOrSell.buyOrderConfirmation.BuyConfirmationScreen
+import online.pascarl.coinx.screens.buyOrSell.buyCryptoAds.CryptoAdsScreen
 import online.pascarl.coinx.screens.buyOrSell.SellAmountScreen
-import online.pascarl.coinx.screens.buyOrSell.BuyOrSellSharedViewModel
-import online.pascarl.coinx.screens.buyOrSell.BuyOrderCreationScreen
+import online.pascarl.coinx.screens.buyOrSell.BuyCryptoSharedViewModel
+import online.pascarl.coinx.screens.buyOrSell.buyOrderCreationScreen.BuyOrderCreationScreen
 import online.pascarl.coinx.screens.buyOrSell.ReleasingScreen
-import online.pascarl.coinx.screens.buyOrSell.SellConfirmationScreen
+import online.pascarl.coinx.screens.buyOrSell.sellOrderConfirmation.SellConfirmationScreen
 import online.pascarl.coinx.screens.buyOrSell.SellOrderCreationScreen
-import online.pascarl.coinx.screens.buyOrSell.TransferMoneyScreen
+import online.pascarl.coinx.screens.buyOrSell.transferNotifySeller.TransferMoneyScreen
 import online.pascarl.coinx.screens.releases.ComingSoon
 import online.pascarl.spx.screens.CreateAccount
 
@@ -39,9 +39,9 @@ import online.pascarl.spx.screens.CreateAccount
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavGraph(navController: NavHostController) {
-    val sharedViewModel: BuyOrSellSharedViewModel = viewModel()
-    val settingsViewModel: SettingsViewModel = viewModel()
+    val buyCryptoSharedViewModel: BuyCryptoSharedViewModel = viewModel()
     NavHost(navController = navController, startDestination = Screen.SplashScreen.route) {
+
         composable(route = Screen.SplashScreen.route) {
             AnimatedSplashScreen(navController = navController)
         }
@@ -125,36 +125,38 @@ fun NavGraph(navController: NavHostController) {
 
 
 
+
         navigation(
             startDestination = Screen.BuyOrSellCryptos.route,
             route = "buy_or_sell"
         ) {
+
             composable(route = Screen.BuyOrSellCryptos.route) {
-                BuyOrSellCryptos(navController = navController, sharedViewModel = sharedViewModel)
+                CryptoAdsScreen(navController = navController, buyCryptoSharedViewModel = buyCryptoSharedViewModel)
             }
             composable(route = Screen.BuyAmountScreen.route) {
-                BuyAmountScreen(navController = navController, sharedViewModel = sharedViewModel)
+                BuyAmountScreen(navController = navController, buyCryptoSharedViewModel = buyCryptoSharedViewModel)
             }
             composable(route = Screen.SellAmountScreen.route) {
-                SellAmountScreen(navController = navController, sharedViewModel = sharedViewModel)
+                SellAmountScreen(navController = navController, sharedViewModel = buyCryptoSharedViewModel)
             }
             composable(route = Screen.BuyConfirmationScreen.route) {
-                BuyConfirmationScreen(navController = navController, sharedViewModel = sharedViewModel)
+                BuyConfirmationScreen(navController = navController, buyCryptoSharedViewModel = buyCryptoSharedViewModel)
             }
             composable(route = Screen.SellConfirmationScreen.route) {
-                SellConfirmationScreen(navController = navController, sharedViewModel = sharedViewModel)
+                SellConfirmationScreen(navController = navController, sharedViewModel = buyCryptoSharedViewModel)
             }
             composable(route = Screen.BuyOrderCreationScreen.route) {
-                BuyOrderCreationScreen(navController = navController, sharedViewModel = sharedViewModel)
+                BuyOrderCreationScreen(navController = navController, buyCryptoSharedViewModel = buyCryptoSharedViewModel)
             }
             composable(route = Screen.SellOrderCreationScreen.route) {
-                SellOrderCreationScreen(navController = navController, sharedViewModel = sharedViewModel)
+                SellOrderCreationScreen(navController = navController, sharedViewModel = buyCryptoSharedViewModel)
             }
             composable(route = Screen.TransferMoneyScreen.route) {
-                TransferMoneyScreen(navController = navController, sharedViewModel = sharedViewModel)
+                TransferMoneyScreen(navController = navController, sharedViewModel = buyCryptoSharedViewModel)
             }
             composable(route = Screen.ReleasingScreen.route) {
-                ReleasingScreen(navController = navController, sharedViewModel = sharedViewModel)
+                ReleasingScreen(navController = navController, sharedViewModel = buyCryptoSharedViewModel)
             }
 
         }

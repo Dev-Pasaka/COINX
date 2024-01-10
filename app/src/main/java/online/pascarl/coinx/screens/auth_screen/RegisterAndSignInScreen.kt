@@ -56,6 +56,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import online.pascarl.coinx.R
+import online.pascarl.coinx.isInternetAvailable
 import online.pascarl.coinx.navigation.Screen
 import online.pascarl.coinx.rememberImeState
 import online.pascarl.coinx.roomDB.RoomUser
@@ -91,6 +92,8 @@ fun RegisterScreen(
     var showPassword by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
     val imeState = rememberImeState()
+    val isInternetAvailable = isInternetAvailable(context = context)
+
 
     LaunchedEffect(key1 = imeState.value) {
         if (imeState.value) {
@@ -240,6 +243,7 @@ fun RegisterScreen(
                 FilledTonalButton(
                     onClick = {
                         scope.launch {
+                            //Check Internet Connection
                             //Circular ProgressBard
                             signInViewModel.circularProgressBar()
                             //Backend SignIn Auth
@@ -255,7 +259,8 @@ fun RegisterScreen(
                                     )
                                     showMessage(context, "Signing in ...")
                                     navController.navigate(Screen.Dashboard.route){
-                                        popUpTo(Screen.Dashboard.route)
+                                       navController.popBackStack()
+                                       navController.popBackStack()
                                     }
                                 } else {
                                     roomDB.updateUser(
@@ -266,10 +271,13 @@ fun RegisterScreen(
                                     )
                                     showMessage(context, "Signing in ...")
                                     navController.navigate(Screen.Dashboard.route){
-                                        popUpTo(Screen.Dashboard.route)
+                                        navController.popBackStack()
+                                        navController.popBackStack()
                                     }
                                 }
-                            } else {
+                            }else if(!isInternetAvailable)
+                                showMessage(context, "No Internet connection")
+                                else {
                                 showMessage(context, "Invalid email or password")
                             }
                         }

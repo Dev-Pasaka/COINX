@@ -12,7 +12,7 @@ class InviteFriendsViewModel: ViewModel() {
         val share = Intent.createChooser(Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, """
-                Download the Coinx app at https://developer.android.com/training/sharing and
+                Download the Coinx app at https://play.google.com/store/apps/details?id=online.pascarl.coinx and
                 experience an intuitive and seamless way to buy sell and trade your
                 favourite cryptocurrencies with little to no fees.
             """.trimIndent())

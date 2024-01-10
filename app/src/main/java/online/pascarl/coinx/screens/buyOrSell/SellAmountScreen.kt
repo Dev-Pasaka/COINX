@@ -1,7 +1,6 @@
 package online.pascarl.coinx.screens.buyOrSell
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.Backspace
 import androidx.compose.material.ripple.rememberRipple
@@ -41,17 +39,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
-import online.pascarl.coinx.R
 import online.pascarl.coinx.imageLoader
+import online.pascarl.coinx.model.OrderData
 import online.pascarl.coinx.navigation.Screen
 
 
@@ -59,7 +54,7 @@ import online.pascarl.coinx.navigation.Screen
 fun SellAmountScreen(
     navController:NavHostController,
     sellAmountViewModel: SellAmountViewModel = viewModel(),
-    sharedViewModel: BuyOrSellSharedViewModel
+    sharedViewModel: BuyCryptoSharedViewModel
 ) {
     val scrollState = rememberScrollState()
     var startAnimation by remember {
@@ -67,7 +62,7 @@ fun SellAmountScreen(
     }
     val alphaAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
-        animationSpec = tween(durationMillis = 1000)
+        animationSpec = tween(durationMillis = 1000), label = ""
     )
     LaunchedEffect(key1 = true) {
         startAnimation = true
@@ -103,7 +98,7 @@ fun SellAmountScreen(
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = rememberRipple(bounded = true),
-                            ){
+                            ) {
                                 navController.popBackStack()
                             }
                     ){
@@ -125,7 +120,7 @@ fun SellAmountScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Image(
-                        painter = imageLoader(symbol = sharedViewModel.orderData.value.cryptoSymbol),
+                        painter = imageLoader(symbol = sharedViewModel.sellAdData?.cryptoSymbol?: ""),
                         contentDescription = "Crypto Icon",
                         modifier = Modifier
                             .size(20.dp)
@@ -139,7 +134,7 @@ fun SellAmountScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = "Limit ${sharedViewModel.orderData.value.minLimit} - ${sharedViewModel.orderData.value.maxLimit}",
+                        text = "Limit ${sharedViewModel.sellAdData?.minLimit} - ${sharedViewModel.sellAdData?.maxLimit}",
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.secondary,
                         style = MaterialTheme.typography.bodySmall,
@@ -150,11 +145,18 @@ fun SellAmountScreen(
 
         SellAmountInput(sellAmountViewModel = sellAmountViewModel, sharedViewModel = sharedViewModel)
         SellNumberPad(sellAmountViewModel = sellAmountViewModel)
-        SellButton(
-            sellAmountViewModel = sellAmountViewModel,
-            sharedViewModel = sharedViewModel,
-            navController = navController
-        )
+        if (
+            sellAmountViewModel.cryptoAmount > (sharedViewModel.sellAdData?.minLimit ?: 0.0)
+            && sellAmountViewModel.cryptoAmount <= (sharedViewModel.sellAdData?.maxLimit ?: 0.0)
+            ){
+            SellButton(
+                sellAmountViewModel = sellAmountViewModel,
+                sharedViewModel = sharedViewModel,
+                navController = navController
+            )
+        }else{
+            Text(text = "")
+        }
 
     }
 }
@@ -215,7 +217,7 @@ fun SellNumberPad(sellAmountViewModel: SellAmountViewModel) {
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = true),
-                    ){
+                    ) {
                         sellAmountViewModel.cryptoSellAmount =
                             sellAmountViewModel.removeLastCharacter(
                                 input = sellAmountViewModel.cryptoSellAmount
@@ -244,7 +246,7 @@ fun SellNumberKey(numberKey: String = "1", sellAmountViewModel: SellAmountViewMo
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(bounded = true),
-            ){
+            ) {
                 sellAmountViewModel.cryptoSellAmount += numberKey
             }
     ) {
@@ -260,28 +262,28 @@ fun SellNumberKey(numberKey: String = "1", sellAmountViewModel: SellAmountViewMo
 }
 
 @Composable
-fun SellAmountInput(sellAmountViewModel: SellAmountViewModel, sharedViewModel: BuyOrSellSharedViewModel) {
+fun SellAmountInput(sellAmountViewModel: SellAmountViewModel, sharedViewModel: BuyCryptoSharedViewModel) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "AMT ${sellAmountViewModel.fiatAmount}",
+            text = "AMT ${sellAmountViewModel.cryptoAmount}",
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Normal,
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodyMedium,
         )
         Text(
-            text = "1 ${sharedViewModel.orderData.value.cryptoSymbol} = ${sharedViewModel.orderData.value.cryptoPrice} KES",
+            text = "1 ${sharedViewModel.sellAdData?.cryptoSymbol} = ${sharedViewModel.sellAdData?.cryptoPrice?.toInt()} KES",
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodySmall,
         )
         Text(
             text = sellAmountViewModel.formatCurrency(
-                amount = sellAmountViewModel.fiatAmount*sharedViewModel.orderData.value.cryptoPrice
+                amount = (sellAmountViewModel.cryptoAmount)*(sharedViewModel.sellAdData?.cryptoPrice ?: 1.0).toInt()
             ),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onBackground,
@@ -296,7 +298,7 @@ fun SellAmountInput(sellAmountViewModel: SellAmountViewModel, sharedViewModel: B
 fun SellButton(
     navController:NavHostController,
     sellAmountViewModel: SellAmountViewModel,
-    sharedViewModel: BuyOrSellSharedViewModel,
+    sharedViewModel: BuyCryptoSharedViewModel,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -310,15 +312,11 @@ fun SellButton(
             modifier = Modifier
                 .padding(top = 16.dp),
             onClick = {
-                if (
-                    sellAmountViewModel.fiatAmount > sharedViewModel.orderData.value.minLimit
-                    && sellAmountViewModel.fiatAmount < sharedViewModel.orderData.value.maxLimit
-                ){
-                    sharedViewModel.youWillReceive.value = sellAmountViewModel.fiatAmount*sharedViewModel.orderData.value.cryptoPrice
-                    sharedViewModel.youSold.value = sellAmountViewModel.fiatAmount
-                    navController.navigate(Screen.SellConfirmationScreen.route)
-                }
-
+                sharedViewModel.updateSellCryptoAmountAndFiatAmount(
+                    cryptoAmount = sellAmountViewModel.cryptoAmount,
+                    fiatAmount = (sellAmountViewModel.cryptoAmount)*(sharedViewModel.sellAdData?.cryptoPrice ?: 1.0).toInt()
+                )
+                navController.navigate(Screen.SellConfirmationScreen.route)
             }
         ) {
             Icon(
